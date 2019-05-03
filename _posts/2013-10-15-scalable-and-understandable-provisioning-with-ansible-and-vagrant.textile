@@ -1,0 +1,583 @@
+---
+title: "Scalable and Understandable Provisioning with Ansible and Vagrant"
+layout: post
+---
+
+h2. Introduction
+
+Loosing or migrating a server and having to rebuild its configuration by hand is anything but a fun
+job.
+
+It may be the case that you heard of the "infrastructure as code" mantra of the DevOps culture,
+tried popular tools like "Chef":http://www.opscode.com/chef/ or "Puppet":https://puppetlabs.com/ but
+found them to be just incredibly complex even for simple cases.
+
+Not everyone is managing 500 servers in the cloud after all.
+
+This post will walk you through Ansible, a powerful yet simple configuration management tool that I
+am particularly fond of, and not just because it took me 5 minutes to understand it.
+
+We will also see how it fits well with Vagrant, a tool that makes playing with virtual machines as
+simple as editing a small configuration file and then forgetting about GUIs, ISO files and all the
+funk.
+
+h2. Overview
+
+Ansible is an automation and orchestration tool written in Python. It works through SSH connections
+and does not require installing agents on hosts.
+
+By the way if you don't know about password-less SSH connections using public keys,
+"it may be a good idea to do so":http://paulkeck.com/ssh/.
+
+Configuration specifications are written in YAML documents called *playbooks*, providing tasks and
+event handlers. An example task would be to update the configuration files or a database server, and
+an event handler would restart the database upon completion of the task.
+
+h3. Ansible is push-based
+
+Ansible is commonly used in a push-style architecture:
+
+!/images/posts/2013/ansible-push-architecture.png(Ansible push-architecture)!
+
+The control host is typically your machine from that you will initiate Ansible runs. In more
+elaborated scenarios it can be a _cronjob_.
+
+Ansible takes advantage of a *hosts inventory file*. It contains a list of machine addresses
+arranged by groups. In the previous example we have 2 groups: database servers and web servers. The
+inventory file would simple list the IP addresses and/or host names for each one.
+
+Of course there are cases where the inventory is dynamic by nature: cloud computing environments,
+elastic groups of hosts, etc. Ansible provides support for that, too, but we won't discuss it here.
+
+Each *playbook* addresses one or several groups from the inventory. In the previous example we would
+have a playbook to configure and orchestrate database servers, and another one for web servers. The
+definition of playbooks can be factored out, too, so you could have a third playbook with the common
+parts, serving as an include for the database and web server playbooks.
+
+h3. Ansible can be pull-based, too
+
+It is not always desirable to have a push-based infrastructure. There are many valid reasons such as 
+network constraints preventing easy SSH connections or scalability / automation issues.
+
+In such situations Ansible remains your next very best friend. I will not cover the details here,
+but the @ansible-pull@ command can be used as follows:
+
+# each host has Ansible installed,
+# the configuration is stored in a Git repository,
+# @ansible-pull@ checkouts the configuration repository at a given branch or tag (hint: think @prod@, @staging@, etc),
+# @ansible-pull@ executes a specified playbook,
+# you automate the process using a _cronjob_, and then all you have to do is pushing the configuration changes to a Git repository.
+
+!/images/posts/2013/ansible-pull-architecture.png(Ansible pull-architecture)!
+
+Sounds good? Let us now get back to Ansible in push-mode.
+
+h2. The @ansible@ tool
+
+Ansible comes with several command-line tools. The first one is simply called... @ansible@.
+
+The purpose of the @ansible@ tool is mainly to execute a command over selected groups of an
+inventory.
+
+Now is the good time to define an inventory file. If you know how to write Windows-style @.ini@
+files then you have basically won:
+
+{% highlight text %}
+[web]
+192.168.100.10
+192.168.100.11
+
+[db]
+192.168.100.11
+192.168.100.12
+db.private.foo-bar.org
+{% endhighlight %}
+
+This would define 2 groups @web@ and @db@ over hosts. Note that a single host can belong to more
+than one group, too.
+
+Now for testing purposes let's just consider the case of a single host with the content of a @hosts@
+file:
+
+{% highlight text %}
+[main]
+192.168.100.10
+{% endhighlight %}
+
+We can now run the @ansible@ tool to execute a command (@ls -lsa /usr@) over the @main@ group:
+
+{% highlight text %}
+$ ansible main -i hosts -a "ls -lsa /usr"
+192.168.100.10 | success | rc=0 >>
+total 56
+ 4 drwxr-xr-x 10 root root   4096 Apr 10  2012 .
+ 4 drwxrwxr-x 22 root admin  4096 Jul 26 08:29 ..
+20 drwxr-xr-x  2 root root  20480 Oct 10 15:39 bin
+ 4 drwxr-xr-x  2 root root   4096 Jan 27  2012 games
+ 4 drwxr-xr-x 31 root root   4096 Jul 26 11:18 include
+ 4 drwxr-xr-x 40 root root   4096 Oct  7 16:07 lib
+ 4 drwxr-xr-x 10 root root   4096 Apr 10  2012 local
+ 4 drwxr-xr-x  2 root root   4096 Oct  7 16:08 sbin
+ 4 drwxr-xr-x 81 root root   4096 Aug 28 14:32 share
+ 4 drwxr-xr-x  2 root root   4096 Jan 27  2012 src
+$
+{% endhighlight %}
+
+Not bad, not bad.
+
+The takeaway is simply that @ansible@ can execute commands to many hosts over SSH and report back to
+you.
+
+h2. Playbooks and the @ansible-playbook@ tool
+
+While you could probably use @ansible@ as a general-purpose command execution tool over SSH, it does
+not scale to deal with automation and configuration management. This is where playbooks enter the
+fray.
+
+Playbooks serve both as a way to express commands to be executed, and as abstractions over the tasks
+to be done. While you can execute commands such as @ls -lsa@, you can also take advantage of
+higher-level actions to, say, require the @nginx@ service to be running.
+
+Ansible has a "fairly large set of modules":http://www.ansibleworks.com/docs/modules.html that can
+be used to construct powerful playbooks. I encourage you to look at the list.
+
+h3. What's in a playbook
+
+Because a sample is always better than anything else, here is the @playbook.yml@ file that I am
+using for a server that I manage internally:
+
+{% highlight yaml %}
+---
+- hosts: main
+
+  tasks:
+
+    - action: shell whoami
+      register: whoami
+
+    - name: update apt cache
+      apt: update_cache=yes cache_valid_time=3600
+      sudo: yes
+
+    - name: upgrade the distro
+      apt: upgrade=yes
+      sudo: yes
+
+    - name: install packages
+      apt: pkg={{ "{{ item " }}}} state=latest
+      sudo: yes
+      with_items:
+        - build-essential
+        - git
+        - tree
+        - vim
+        - psmisc
+        - fail2ban
+        - chkrootkit
+        - ufw
+        - nginx
+        - curl
+        - gnupg
+        - zip
+        - rsync
+        - wget
+        - unattended-upgrades
+      notify:
+        - restart nginx
+
+    - name: ensure fail2ban is running
+      sudo: yes
+      action: service name=fail2ban state=restarted enabled=yes
+    
+    - name: forbid SSH root login
+      sudo: yes
+      lineinfile: destfile=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
+      notify:
+        - restart ssh
+    
+    - name: reset firewall
+      sudo: yes
+      action: shell ufw --force reset
+    
+    - name: allow firewall authorized ports
+      sudo: yes
+      action: shell ufw allow {{ "{{ item " }}}} 
+      with_items:
+        - 22
+        - 80
+    
+    - name: enable firewall
+      sudo: yes
+      action: shell ufw --force enable
+    
+    - name: configure nginx default site
+      copy: src=files/nginx-default dest=/etc/nginx/sites-available/default
+      sudo: yes
+      notify: restart nginx
+
+    - name: ensure /srv/data/websites/ exists
+      file: path=/srv/data/websites state=directory recurse=yes owner=${whoami.stdout} group=www-data 
+      sudo: yes
+
+    - name: ensure /srv/data/websites/samplesite.internal.tld exists
+      file: path=/srv/data/websites/samplesite.internal.tld state=directory recurse=yes owner=${whoami.stdout} group=www-data 
+      sudo: yes
+
+    - name: ensure /srv/data/git/ exists
+      file: path=/srv/data/git state=directory recurse=yes owner=${whoami.stdout} group=${whoami.stdout}
+      sudo: yes
+
+    - name: ensure ~/git is a symlink to /srv/data/git
+      file: path=~/git state=link src=/srv/data/git
+
+  handlers:
+
+    - name: restart nginx
+      sudo: yes
+      action: service name=nginx state=restarted enabled=yes
+    
+    - name: restart ssh
+      sudo: yes
+      action: service name=ssh state=restarted enabled=yes
+{% endhighlight %}
+
+While it is quite easy to understand, there are a few points worth detailing.
+
+h4. Hosts definition
+
+The @hosts@ key does what you would expect: it specifies what groups shall the playbook be aimed at.
+
+h4. @sudo@-ing
+
+Many actions require you to be run through @sudo@, in that case you simply add a @sudo@ attribute.
+This is the case of upgrading the system though @apt@ (or any other similar package management
+tool):
+
+{% highlight yaml %}
+- name: update apt cache
+  apt: update_cache=yes cache_valid_time=3600
+  sudo: yes
+
+- name: upgrade the distro
+  apt: upgrade=yes
+  sudo: yes
+{% endhighlight %}
+
+Note that running @sudo@ _may_ require typing a password, which is a sure way of blocking Ansible
+forever. A simple fix is to run @visudo@ on the target host, and make sure that the user Ansible
+will use to login does not have to type a password:
+
+<pre><code>@username ALL=(ALL) NOPASSWD: ALL@</code></pre>
+
+h4. Action handlers
+
+An action can define a @notify@ attribute to fire an event once it is done. The case of the Nginx
+server configuration is a good one.
+
+First, we copy a local file from the relative path @files/niginx-default@ to the host at path
+@/etc/nginx/sites-available/default@. Once this is done, the @restart nginx@ notification is fired:
+
+{% highlight yaml %}
+- name: configure nginx default site
+  copy: src=files/nginx-default dest=/etc/nginx/sites-available/default
+  sudo: yes
+  notify: restart nginx
+{% endhighlight %}
+
+The notification handler can then restart the Nginx service:
+
+{% highlight yaml %}
+- name: restart nginx
+  sudo: yes
+  action: service name=nginx state=restarted enabled=yes
+{% endhighlight %}
+
+Note the @enabled@ attribute: it ensures that the service is run as part of the system init scripts.
+The details of how to do that is managed by the @service@ module that knows how to do so on each
+operating system.
+
+h4. Loops
+
+A good example for loops is the installation of packages:
+
+{% highlight yaml %}
+- name: install packages
+  apt: pkg={{ "{{ item " }}}} state=latest
+  sudo: yes
+  with_items:
+    - build-essential
+    - git
+    - tree
+    - vim
+    - psmisc
+    - fail2ban
+    - chkrootkit
+    - ufw
+    - nginx
+    - curl
+    - gnupg
+    - zip
+    - rsync
+    - wget
+    - unattended-upgrades
+  notify:
+    - restart nginx
+{% endhighlight %}
+
+This simply repeats the action for many items, and eventually fires a @restart nginx@ notification.
+
+h4. Touching file contents
+
+There are many ways to edit files instead of copying them from your control host. One of these is
+the @lineinfile@ action:
+
+{% highlight yaml %}
+- name: forbid SSH root login
+  sudo: yes
+  lineinfile: destfile=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
+  notify:
+    - restart ssh
+{% endhighlight %}
+
+No matter what the rest of the @sshd_config@ file is, this ensure that a line contains the
+instruction to disable root logins over SSH.
+
+h4. Shell actions
+
+Not everything is captured by an Ansible module. While you can develop your own actions, you may
+simply issue shell commands, too.
+
+The following example manipulates the @ufw@ firewall to ensure that only ports 22 and 80 are open
+from the hostile Internet:
+
+{% highlight yaml %}
+- name: reset firewall
+  sudo: yes
+  action: shell ufw --force reset
+
+- name: allow firewall authorized ports
+  sudo: yes
+  action: shell ufw allow {{ "{{ item " }}}}
+  with_items:
+    - 22
+    - 80
+{% endhighlight %}
+
+h4. Using console output
+
+We can register the console output of an action:
+
+{% highlight yaml %}
+- action: shell whoami
+  register: whoami
+{% endhighlight %}
+
+This runs the @whoami@ command to know what login is being used on the target host. This makes a
+playbook flexible for, say, update permissions without having a hard-coded login:
+
+{% highlight yaml %}
+- name: ensure /srv/data/websites/samplesite.internal.tld exists
+  file: path=/srv/data/websites/samplesite.internal.tld state=directory recurse=yes owner=${whoami.stdout} group=www-data 
+  sudo: yes
+{% endhighlight %}
+
+h3. Running a playbook
+
+By now you should have a good understanding of what a playbook is like.
+
+Running a playbook is equally simple:
+
+{% highlight text %}
+$ ansible-playbook -i hosts playbook.yml
+
+PLAY [main] *******************************************************************
+
+GATHERING FACTS ***************************************************************
+ok: [192.168.100.10]
+
+TASK: [shell whoami] **********************************************************
+changed: [192.168.100.10]
+
+TASK: [update apt cache] ******************************************************
+ok: [192.168.100.10]
+
+TASK: [upgrade the distro] ****************************************************
+changed: [192.168.100.10]
+
+TASK: [install packages] ******************************************************
+ok: [192.168.100.10] => (item=build-essential,git,tree,vim,psmisc,fail2ban,chkrootkit,ufw,nginx,curl,gnupg,zip,rsync,wget,unattended-upgrades)
+
+TASK: [ensure fail2ban is running] ********************************************
+changed: [192.168.100.10]
+
+TASK: [forbid SSH root login] *************************************************
+ok: [192.168.100.10]
+
+TASK: [reset firewall] ********************************************************
+changed: [192.168.100.10]
+
+TASK: [allow firewall authorized ports] ***************************************
+changed: [192.168.100.10] => (item=22)
+changed: [192.168.100.10] => (item=80)
+
+TASK: [enable firewall] *******************************************************
+changed: [192.168.100.10]
+
+TASK: [configure nginx default site] ******************************************
+ok: [192.168.100.10]
+
+TASK: [ensure /srv/data/websites/ exists] *************************************
+ok: [192.168.100.10]
+
+TASK: [ensure /srv/data/websites/samplesite.internal.tld exists] *********************
+ok: [192.168.100.10]
+
+TASK: [ensure /srv/data/git/ exists] ******************************************
+ok: [192.168.100.10]
+
+TASK: [ensure ~/git is a symlink to /srv/data/git] ****************************
+ok: [192.168.100.10]
+
+PLAY RECAP ********************************************************************
+192.168.100.10         : ok=15   changed=6    unreachable=0    failed=0
+
+$
+{% endhighlight %}
+
+The great thing with Ansible playbooks is that they are mostly *idempotent*, so you can run them as
+often as you want.
+
+Indeed, modules store some state called *facts*, and Ansible won't perform an action again if some
+fact hasn't changed between 2 runs.
+
+Most Ansible-provided modules provide actions that store facts, but always keep in mind that not
+everything can be idempotent. Running shell commands is a good example. We did that in the previous
+playbook to update the firewall configuration. If we wanted to avoid redoing it on each playbook
+run, we would need to write some kind of @upf@ action and ensure that facts are being stored
+regarding the firewall configuration.
+
+h2. Testing with Vagrant
+
+There is little chance that you will get a correct configuration out of the box.
+
+Like any good software project, the only solution is to test, test and test.
+
+Getting a server up and running is costly, so your best solution is to try in a virtual machine.
+"Oracle VirtualBox":https://www.virtualbox.org is a well-known opensource solution. The problem is
+that booting an ISO image and starting the installation from scratch is tedious, boring and
+time-consuming.
+
+h3. Vagrant to the rescue
+
+"Vagrant":http://www.vagrantup.com/ is a the real deal. It is a command-line tool to manage virtual
+machines from simple configuration files. You can start a virtual machine from a single command,
+log-in through SSH, stop it and trash it at will. Vagrant is your best friend when you want to test
+a given server(s) configuration using virtual machines.
+
+Vagrant is most often used in combination with VirtualBox, but it can run other virtualization
+engines too. Getting Vagrant up and running is easy:
+
+# install Oracle VirtualBox, then
+# install Vagrant.
+
+Voilà, you're done!
+
+h3. Vagrant files
+
+Vagrant configuration files are very simple. They use a Ruby DSL to describe the configuration,
+including:
+
+* how many machines to run,
+* what base images to use for each machine (Ubuntu, Fedora, FreeBSD, your own, etc),
+* what network configuration shall be used,
+* how much CPU / memory do you want,
+* which local folder shall be synchronized with a folder in the virtual machine, etc.
+
+For the Ansible configuration above, my testing @Vagrantfile@ looks as follows:
+
+{% highlight ruby %}
+Vagrant.configure("2") do |config|
+  
+  config.vm.box = "base"
+  config.vm.box_url = "http://files.vagrantup.com/precise32.box"
+  
+  config.vm.network :forwarded_port, guest: 80, host: 8080
+  config.vm.network :private_network, ip: "192.168.100.10"
+
+end
+{% endhighlight %}
+
+This single-machine configuration is quite simple. It boots a Ubuntu-based box. There are many more
+community-contributed boxes, and you can create your own ones. Next, the machine is being put in a
+private network with IP @192.168.100.10@. We also forward connections from port 80 to port 8080 on
+the host machine.
+
+h3. Playing with Vagrant
+
+The configuration file above is simple, and so is running the VM:
+
+* @vagrant up@ starts the machine, possibly downloading and caching the box image,
+* @vagrant ssh@ logs you into the VM,
+* @vagrant halt@ stops the VM,
+* @vagrant suspend@... suspends the VM,
+* @vagrant destroy@ trashes the VM.
+
+This is quite handy: a simple @Vagrantfile@ is all you need, and Vagrant takes care of preparing the
+VMs for you.
+
+h3. Ansible and Vagrant integration
+
+Vagrant supports different types of *provisioning* methods, including shells scripts, Puppet and
+your new best friend Ansible.
+
+Configuration is easy by adding the following to your @Vagrantfile@:
+
+{% highlight ruby %}
+config.vm.provision :ansible do |ansible|
+  ansible.playbook = "provisioning/playbook.yml"
+  ansible.inventory_path = "provisioning/hosts-vagrant"
+  # On Vagrant < 1.3 this used to be `inventory_file`...
+  # ansible.inventory_file = "provisioning/hosts-vagrant"
+  ansible.verbose = false
+end
+{% endhighlight %}
+
+I suggest having a specific inventory file that matches the IP addresses of your Vagrant
+configuration.
+
+Once this is done, Vagrant calls Ansible to provision the VM. There are a few extra commands that
+are useful while working on your Ansible setup with Vagrant:
+
+* @vagrant reload@, and
+* @vagrant provision@ to force calling Ansible without a reboot.
+
+When you are confident with your Ansible configuration, I suggest a @vagrant destroy@ followed by a
+@vagrant up@, just to retry your automated configuration from scratch.
+
+h2. Conclusion
+
+Automatic configuration of machines is quite easy with Ansible. Knowing that you can configure a
+whole set of machines or just a single one with a reproducible process is priceless.
+
+Ansible is very approchable. While primarily push-based, it can also work in a pull fashion with
+little friction.
+
+Good programmers test, and Vagrant makes it so easy to play with virtual machines that you have no
+excuse for not fine-crafting Ansible configuration with it.
+
+We only scratched the surface of what you can do with Ansible, yet the simplicity of the tool should
+be convincing.
+
+On a final note, Ansible is useful for more than servers. It knows how to deal with package managers
+such as MacPorts and Homebrew, so you could also use it for managing desktops. We successfully used
+Ansible as part of our research experiments to provision RaspberryPi devices from a generic Raspbian
+image.
+
+h2. Further links
+
+* "Ansible":http://www.ansibleworks.com
+* "Ansible Modules":http://www.ansibleworks.com/docs/modules.html
+* "Vagrant":http://www.vagrantup.com
+* "Community-contributed Vagrant boxes":http://www.vagrantbox.es
+* "Oracle VirtualBox":https://www.virtualbox.org
+

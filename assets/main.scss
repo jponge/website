@@ -1,0 +1,12 @@
+---
+---
+
+@import url('https://fonts.googleapis.com/css?family=Cousine|IBM+Plex+Sans');
+
+$base-font-family: "IBM Plex Sans", sans-serif;
+
+pre, code {
+    font-family: "Cousine", monospace;
+}
+
+@import "minima";
