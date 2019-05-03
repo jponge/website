@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.0 -->
+<title>In Defense of Contributor License Agreements | Julien Ponge</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="In Defense of Contributor License Agreements" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The other day I stumbled upon a retweet on the anger of Pierre Joye against contributor license agreements (CLAs):" />
+<meta property="og:description" content="The other day I stumbled upon a retweet on the anger of Pierre Joye against contributor license agreements (CLAs):" />
+<link rel="canonical" href="https://julien.ponge.org/blog/in-defense-of-contributor-license-agreements/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/in-defense-of-contributor-license-agreements/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2013-08-27T00:00:00+02:00" />
+<script type="application/ld+json">
+{"headline":"In Defense of Contributor License Agreements","dateModified":"2013-08-27T00:00:00+02:00","datePublished":"2013-08-27T00:00:00+02:00","url":"https://julien.ponge.org/blog/in-defense-of-contributor-license-agreements/","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/in-defense-of-contributor-license-agreements/"},"description":"The other day I stumbled upon a retweet on the anger of Pierre Joye against contributor license agreements (CLAs):","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">In Defense of Contributor License Agreements</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2013-08-27T00:00:00+02:00" itemprop="datePublished">Aug 27, 2013
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>The other day I stumbled upon a retweet on the anger of <a href="https://twitter.com/PierreJoye">Pierre Joye</a> against contributor license agreements (CLAs):</p>
+<blockquote class="twitter-tweet" data-dnt="true"><p><a href="https://twitter.com/github">@github</a> you should put a red button on any repo requiring a <span class="caps">CLA</span> to contribute so we don&#39;t even bother trying to contribute.</p><p>&mdash; PierreJoye (@PierreJoye) <a href="https://twitter.com/PierreJoye/statuses/366067690714038272">August 10, 2013</a></blockquote><br />
+<script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
+<p>It is not the first time that I saw complaints or suspicion against CLAs. For as much as I hate all forms of bureaucracy, I feel that CLAs are being mistaken by many fellow open source developers.</p>
+<p>Here is my modest attempt at debunking some myths and clarifying a few things. Thanks a lot Pierre for triggering this response that I had promised you, although I understand we may only agree to disagree :-)</p>
+<p><strong>Warning: I am not a lawyer.</strong></p>
+<h3>TL;DR summary</h3>
+<p>Not everyone will go through this post, so here is in short my opinionated view on CLAs:</p>
+<blockquote>
+<p>Requiring a contributor license agreement is a sign that you intend to sustain your project in the long run with responsible practices regarding intellectual property management. Responsible open source developers aren&#8217;t afraid of signing contributor license agreements: they simply understand the legal implications of sharing source code with the rest of the world.</p>
+</blockquote>
+<p>Now if you have a bit of time, here is why I believe that CLAs are a good thing, although not every project actually needs it.</p>
+<h3>But we have licenses, don&#8217;t we?</h3>
+<p>Of course we have, but one shall not forget what a license is meant to be.</p>
+<p>Once upon a time, an individual, a group of individuals or a company decides to publish its work as an open source project. Great I hear you say, so <a href="http://choosealicense.com/">they pick up a license</a> according to how much freedom they want to give to the recipients of their work.</p>
+<p>And this is where the story ends for licenses: they grant certain permissions to whoever receives the source code. In particular, they provide permissions to make derivative works. Sometimes they will also permit re-licensing, or include patent protection clauses so that you cannot both abide to the license terms and threaten to use patents against copyright holders and recipients.</p>
+<h3>What happens the other way around?</h3>
+<p>Interesting projects attract contributions. People and organizations propose code changes to the original project maintainers.</p>
+<p>It is implicitly and culturally implied that by doing so, one publishes changes under the same conditions as the original license.</p>
+<p>Well, it&#8217;s not as simple as that. Lawyers dislike blurred lines (or like, depending on what side of a case they are).</p>
+<p>In most jurisdiction and by default, the contributor retains copyright unless an explicit copyright transfer or license agreement has been established between both parties. Upon contribution acceptance, the resulting software published by the upstream project is now in reality a joint-copyright effort.</p>
+<p>This raises a few questions, including:</p>
+<ul>
+	<li>What is the license governing the contribution?</li>
+	<li>Who holds the contribution copyright? (employers may have a say)</li>
+	<li>Was the contributor legally entitled to make the contribution?</li>
+	<li>Did the contributor reuse third-party works? (potential harmful copy and paste&#8230;)</li>
+	<li>(&#8230;)</li>
+</ul>
+<p>Blurred lines, isn&#8217;t it?</p>
+<p>Licenses do not clarify much either on what happens when a contribution knocks at a project door. A rare exception is section 5 of the <a href="http://choosealicense.com/licenses/apache/">Apache Software License v2</a> that says:</p>
+<blockquote>
+<p>5. Submission of Contributions.<br />
+Unless You explicitly state otherwise, any Contribution intentionally submitted<br />
+for inclusion in the Work by You to the Licensor shall be under the terms and<br />
+conditions of this License, without any additional terms or conditions.<br />
+Notwithstanding the above, nothing herein shall supersede or modify the terms of<br />
+any separate license agreement you may have executed with Licensor regarding<br />
+such Contributions.</p>
+</blockquote>
+<h3>But&#8230; we are good folks!</h3>
+<p>Sure!</p>
+<p>Most software developers are well-rounded and honest individuals making worthy contributions.</p>
+<p>The lack of a <span class="caps">CLA</span> is not much on an issue for the vast majority of projects, especially when using a permissive license such as the <a href="http://choosealicense.com/licenses/apache/">Apache Software License v2</a> or an <a href="http://choosealicense.com/licenses/mit/"><span class="caps">MIT</span>-style license</a>.</p>
+<p>A <span class="caps">CLA</span> is probably overkill if you are running a project as an individual free of employer restrictions. Needless to say, it is probably a wise choice even in these cases to use the <a href="http://choosealicense.com/licenses/apache/">Apache Software License v2</a> because the section 5 that we highlighted above is explicit on what happens by default when someone proposes a contribution.</p>
+<h3>Things can go bad</h3>
+<p>There are many case of long-lived open source projects for which the lack of clear-cut handling of contributions revealed to be an issue. Sometimes things go bad, and CLAs can be very useful tools in such situations.</p>
+<h4>Poisoned contributions</h4>
+<p>I once was chatting with a friend who is an Apache Software Foundation member. Countless times, he received contribution proposals. While they did what they were meant to do, they contained large portions of copy&#8217;n&#8217;paste code that a simple web search could reveal.</p>
+<p>Accepting contributions on sole technical merits is sometimes not enough&#8230;</p>
+<h4>License lock</h4>
+<p>A classic case that comes to my mind is the one of the <a href="http://techbase.kde.org/Projects/KDE_Relicensing"><span class="caps">KDE</span> Project re-licensing effort</a>. <span class="caps">KDE</span> is a long-lived effort that was originally released under the terms of <span class="caps">GNU</span> <span class="caps">GPL</span> licenses version 2. Like many GPL&#8217;ed projects, the project investigators opted for version 2 only of the licenses. The <span class="caps">GNU</span> licenses have an option for code to be released under subsequent versions, too, but given that you don&#8217;t know what the next versions will be it is not a bad choice to stick to what you know, especially when the Free Software Foundation folks are in command.</p>
+<p>When version 3 of the <span class="caps">GNU</span> licenses came out, <span class="caps">KDE</span>, like other high-profile projects got interested in switching to the new licenses. Now recall what I said above: by default contributors retain copyright, and the availability of their contribution under the same license terms is a convention.</p>
+<p>The project license terms cannot be changed unless all contributors agree. Some contributors may be hard to contact a few years later. Some may sadly have died, too. Same problem with company contributions: they may have been bought or have disappeared.</p>
+<p>Conclusion: the lack of suitable provisions in the license combined with no separate agreement means that the project is locked to a specific version of the license that was initially chosen.</p>
+<h3>So, what&#8217;s in a <span class="caps">CLA</span>?</h3>
+<p>The Apache Software Foundation has an <a href="https://www.apache.org/licenses/icla.txt">individual contributor license agreement</a>, which is very popular. It serves as the basis for many other projects, including Scala, Square projects, Twitter projects and many more.</p>
+<p>The sections that I find especially interesting are the following ones.</p>
+<blockquote>
+<p>You accept and agree to the following terms and conditions for Your<br />
+present and future Contributions submitted to the Foundation. In<br />
+return, the Foundation shall not use Your Contributions in a way that<br />
+is contrary to the public benefit or inconsistent with its nonprofit<br />
+status and bylaws in effect at the time of the Contribution. Except<br />
+for the license granted herein to the Foundation and recipients of<br />
+software distributed by the Foundation, You reserve all right, title,<br />
+and interest in and to Your Contributions.</p>
+</blockquote>
+<p>This clause is subject to adaptations outside the <span class="caps">ASF</span>, but it nevertheless specificies that it is <strong>not a copyright transfer</strong>. The contribution stays yours.</p>
+<blockquote>
+<p>Grant of Copyright License. Subject to the terms and conditions of<br />
+this Agreement, You hereby grant to the Foundation and to<br />
+recipients of software distributed by the Foundation a perpetual,<br />
+worldwide, non-exclusive, no-charge, royalty-free, irrevocable<br />
+copyright license to reproduce, prepare derivative works of,<br />
+publicly display, publicly perform, sublicense, and distribute Your<br />
+Contributions and such derivative works.</p>
+</blockquote>
+<p>This is, I think, the first key point. Contributors explictly grant a license to the upstream project maintainers to use contributions. Sublicensing is important, too, as it opens licensing under new terms in the future, even if the contributor is out of reach.</p>
+<blockquote>
+<p>Grant of Patent License. (&#8230;)</p>
+</blockquote>
+<p>Good licenses already have a provision for that, but it is nevertheless useful.</p>
+<blockquote>
+<p>You represent that you are legally entitled to grant the above license.<br />
+(&#8230;)<br />
+You represent that each of Your Contributions is Your original<br />
+creation (see section 7 for submissions on behalf of others).  You<br />
+represent that Your Contribution submissions include complete<br />
+details of any third-party license or other restriction (including,<br />
+but not limited to, related patents and trademarks) of which you<br />
+are personally aware and which are associated with any part of Your<br />
+Contributions.</p>
+</blockquote>
+<p>Second key point, this time against poisonous contributions.</p>
+<blockquote>
+<p>You are not expected to provide support for Your Contributions,<br />
+except to the extent You desire to provide support. You may provide<br />
+support for free, for a fee, or not at all. Unless required by<br />
+applicable law or agreed to in writing, You provide Your<br />
+Contributions on an &#8220;AS IS&#8221; <span class="caps">BASIS</span>, <span class="caps">WITHOUT</span> <span class="caps">WARRANTIES</span> OR <span class="caps">CONDITIONS</span><br />
+OF <span class="caps">ANY</span> <span class="caps">KIND</span>, either express or implied, including, without<br />
+limitation, any warranties or conditions of <span class="caps">TITLE</span>, <span class="caps">NON</span>-<br />
+<span class="caps">INFRINGEMENT</span>, <span class="caps">MERCHANTABILITY</span>, or <span class="caps">FITNESS</span> <span class="caps">FOR</span> A <span class="caps">PARTICULAR</span> <span class="caps">PURPOSE</span>.</p>
+</blockquote>
+<p>This may sound funny at first, but this clause just lifts support duties from the contributor. In certain jurisdictions, you could have to provide support for your work&#8230; even if it is opensource.</p>
+<h3>Great, so do I really need a <span class="caps">CLA</span>?</h3>
+<p>By far, not every project needs a <span class="caps">CLA</span> and the small bureaucracy overhead.</p>
+<p>My advice is that you use a <span class="caps">CLA</span> for any project that meets these conditions:</p>
+<ol>
+	<li>you expect the project to be long-lived,</li>
+	<li>you develop this project as part of your work,</li>
+	<li>you expect contributions from third-party organizations.</li>
+</ol>
+<p>Otherwise, use your gut feeling.</p>
+<h3>A <span class="caps">CLA</span> in practice</h3>
+<p>It is not as hard as you think. It is probably a good idea to adapt <a href="https://www.apache.org/licenses/icla.txt">the Apache <span class="caps">ICLA</span></a> (see <a href="https://dev.twitter.com/opensource/cla">how Twitter does</a> as an example).</p>
+<p>Next, push the <span class="caps">CLA</span> on your project website, and ensure that every contribution that you get is from someone who signed it.</p>
+<p>It is a good practice to collect CLAs in the form of scanned documents sent by email.</p>
+<p>You may go purely online, too:</p>
+<ol>
+	<li>some collect agreements through a simple web form (Google Doc is a fine choice),</li>
+	<li><a href="http://www.clahub.com/">CLAHub</a> is a <span class="caps">CLA</span> management service that also checks for <span class="caps">CLA</span> on pull-requests.</li>
+</ol>
+<h3>Conclusion</h3>
+<p>I hope to have demystified some myths on the usefulness of contributor license agreements. While they are not practical for every project that you may create, I believe that they shall not be overlooked either.</p>
+<p>While an open source license gives permissions to project recipients, a contributor license agreement clarifies the terms and scope of contributions being made back to such project.</p>
+<p>Contributor license agreements are usually not a sign of evilness from the project maintainers. Evil maintainers with hidden agendas reveal themselves in how they deal with a community, not by requiring you to sign a <span class="caps">CLA</span>.</p>
+<p>So next time you see a <span class="caps">CLA</span>: please be a responsible developer and look beyond the code.</p>
+<p>I do not hold the truth, if any, so feel free to comment below!</p>
+<h4>Further readings</h4>
+<ul>
+	<li><a href="https://www.apache.org/licenses/">Licenses at the Apache Software Foundation</a></li>
+	<li><a href="http://choosealicense.com/">Choose a License</a>, by GitHub</li>
+	<li><a href="http://www.clahub.com/pages/why_cla">What is a <span class="caps">CLA</span> and why do I care?</a>, on CLAHub</li>
+	<li><a href="http://blogs.computerworlduk.com/simon-says/2010/08/on-contributor-agreements/">Should Open Source Communities Avoid Contributor Agreements?</a>, by Simon Phipps</li>
+	<li><a href="http://www.opscode.com/blog/2009/08/11/why-we-chose-the-apache-license/">Why we chose the Apache License</a>, by OpsCode, with a discussion on CLAs.</li>
+</ul>
+  </div><a class="u-url" href="/blog/in-defense-of-contributor-license-agreements/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://instagram.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

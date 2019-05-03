@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.0 -->
+<title>Revisiting a (JSON) Benchmark | Julien Ponge</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Revisiting a (JSON) Benchmark" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Update 2014/04/29: for the record Boon is the new JSON implementation for Groovy. groovy in the benchmarks actually refers to the old implementation." />
+<meta property="og:description" content="Update 2014/04/29: for the record Boon is the new JSON implementation for Groovy. groovy in the benchmarks actually refers to the old implementation." />
+<link rel="canonical" href="https://julien.ponge.org/blog/revisiting-a-json-benchmark/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/revisiting-a-json-benchmark/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2014-04-28T00:00:00+02:00" />
+<script type="application/ld+json">
+{"headline":"Revisiting a (JSON) Benchmark","dateModified":"2014-04-28T00:00:00+02:00","datePublished":"2014-04-28T00:00:00+02:00","url":"https://julien.ponge.org/blog/revisiting-a-json-benchmark/","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/revisiting-a-json-benchmark/"},"description":"Update 2014/04/29: for the record Boon is the new JSON implementation for Groovy. groovy in the benchmarks actually refers to the old implementation.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Revisiting a (JSON) Benchmark</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2014-04-28T00:00:00+02:00" itemprop="datePublished">Apr 28, 2014
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <blockquote>
+  <p><strong>Update 2014/04/29:</strong> for the record Boon is the new JSON implementation for Groovy. 
+<code>groovy</code> in the benchmarks actually refers to the old implementation.</p>
+</blockquote>
+
+<p>Rick Hightower recently <a href="http://rick-hightower.blogspot.fr/2014/04/groovy-and-boon-provide-fastest-json.html">published a JSON JVM libraries benchmark</a>
+where his project <a href="https://github.com/RichardHightower/boon/wiki">Boon</a> was the clear winner.</p>
+
+<p>For some reason I ended up looking at <a href="https://github.com/bura/json-benchmarks">Andrey Bloschetsov’s JSON benchmarks</a>.
+I found a few mistakes in the way the benchmark was written, and here is how I revisited and fixed it.</p>
+
+<p><strong>Spoiler alert:</strong> the results are similar because the code under test is complex enough, but fixing
+potential flaws never hurts.</p>
+
+<h2 id="initial-measures">Initial measures</h2>
+
+<p>I started with the <code>master</code> branch of the benchmark suite, and ran the benchmark with the default
+configuration.</p>
+
+<p>The benchmark is written with <a href="http://openjdk.java.net/projects/code-tools/jmh/">OpenJDK JMH</a>, a solid
+harness for writing benchmarks. With the results exported to a <code>.csv</code> file, I was able to plot the
+results:</p>
+
+<p><img src="/images/posts/2014/bad-serialization.png" alt="Serialization" /></p>
+
+<p><img src="/images/posts/2014/bad-deserialization.png" alt="Deserialization" /></p>
+
+<p>Results seem quite consistent and Boon is indeed faster than GSON, Jackson and the old Groovy built-in
+JSON support (Boon is becoming the new Groovy built-in JSON implementation).</p>
+
+<h2 id="what-i-fixed">What I fixed</h2>
+
+<p>Looking at the source code I found a few areas of improvement.</p>
+
+<h3 id="longer-runs-better-defaults">Longer runs, better defaults</h3>
+
+<p>While JMH-built benchmark settings can always be tweaked from the command-line, I thought it would
+be better to improve the default settings:</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span></span><span class="gd">--- a/src/main/java/org/bura/benchmarks/json/DeserializationBenchmarks.java</span>
+<span class="gi">+++ b/src/main/java/org/bura/benchmarks/json/DeserializationBenchmarks.java</span>
+<span class="gu">@@ -33,6 +25,9 @@ import com.google.gson.reflect.TypeToken;</span>
+ @State(Scope.Benchmark)
+ @BenchmarkMode(Mode.Throughput)
+ @OutputTimeUnit(TimeUnit.SECONDS)
+<span class="gi">+@Fork(value = 1, jvmArgsAppend = {&quot;-Xmx2048m&quot;, &quot;-server&quot;, &quot;-XX:+AggressiveOpts&quot;})</span>
+<span class="gi">+@Measurement(iterations = 10, time = 3, timeUnit = TimeUnit.SECONDS)</span>
+<span class="gi">+@Warmup(iterations = 20, time = 3, timeUnit = TimeUnit.SECONDS)</span>
+ public class DeserializationBenchmarks {
+
+     private static final String RESOURCE_CITYS = &quot;citys&quot;;</code></pre></figure>
+
+<p><em>(a similar change was made to the <code>SerializationBenchmarks</code> class)</em></p>
+
+<p>Iterations are now longer than the default 1s, and we have more warmup rounds. I could not observe
+much variation using different JVM instances, so a <code>fork</code> value of <code>1</code> is fine. It would be worth
+having more forks if the resulting values were less contrasted.</p>
+
+<p>I also set the JVM options and introduced <code>-XX:+AggressiveOpts</code>. Since we are doing flat out
+benchmarking, why not just ask the JVM for that extra crazyness?</p>
+
+<h3 id="avoid-potential-dead-code-elimination">Avoid (potential) dead-code elimination</h3>
+
+<p>HotSpot is clever. I mean, <em>really</em> clever.</p>
+
+<p>When it sees code with no side-effect, it simply removes it. I would recommend reading the
+<a href="https://wikis.oracle.com/display/HotSpotInternals/PerformanceTechniques">list of optimization techniques</a>
+on the OpenJDK wiki to get a glimpse of what clever tricks HotSpot employs.</p>
+
+<p>The benchmark code was full of potential dead-code eliminations:</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span></span><span class="gu">@@ -65,29 +61,29 @@ public class DeserializationBenchmarks {</span>
+     private TypeReference&lt;?&gt; jacksonType;
+
+     @GenerateMicroBenchmark
+<span class="gd">-    public void jackson() throws JsonParseException, JsonMappingException, IOException {</span>
+<span class="gd">-        jacksonMapper.readValue(resource, jacksonType);</span>
+<span class="gi">+    public Object jackson() throws IOException {</span>
+<span class="gi">+        return jacksonMapper.readValue(resource, jacksonType);</span>
+     }
+
+     private final Gson gson = new GsonBuilder().setDateFormat(&quot;yyyy-MM-dd&#39;T&#39;HH:mm:ssZ&quot;).create();
+     private java.lang.reflect.Type gsonType;
+
+     @GenerateMicroBenchmark
+<span class="gd">-    public void gson() {</span>
+<span class="gd">-        gson.fromJson(resource, gsonType);</span>
+<span class="gi">+    public Object gson() {</span>
+<span class="gi">+        return gson.fromJson(resource, gsonType);</span>
+     }
+
+     private final JsonParser boon = new JsonFastParser();
+
+     @GenerateMicroBenchmark
+<span class="gd">-    public void boon() {</span>
+<span class="gd">-        boon.parse(resource);</span>
+<span class="gi">+    public Object boon() {</span>
+<span class="gi">+        return boon.parse(resource);</span>
+     }
+
+     private final JsonSlurper groovy = new JsonSlurper();
+
+     @GenerateMicroBenchmark
+<span class="gd">-    public void groovy() {</span>
+<span class="gd">-        groovy.parseText(resource);</span>
+<span class="gi">+    public Object groovy() {</span>
+<span class="gi">+        return groovy.parseText(resource);</span>
+     }
+ }</code></pre></figure>
+
+<p>I simply replaced <code>void</code> methods with value-returning methods. This way, JMH consumes the value
+in a way that prevents HotSpot from thinking that the code in the method is useless. Another way
+to do so is to push values into a JMH-injected <code>Blackhole</code> object.</p>
+
+<p>Looking at other places in the benchmark source code, you could see that the author actually knew
+about dead-code elimination:</p>
+
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span></span>     @GenerateMicroBenchmark
+<span class="gd">-    public void boon() {</span>
+<span class="gd">-        String json = boon.serialize(data).toString();</span>
+<span class="gd">-        json.charAt(0);</span>
+<span class="gi">+    public String boon() {</span>
+<span class="gi">+        return boon.serialize(data).toString();</span>
+     }</code></pre></figure>
+
+<p>The call to <code>json.charAt(0)</code> was probably meant to ensure that the result value of <code>boon.serialize(...)</code>
+was not going to considered as dead-code.</p>
+
+<p>Aside from potential dead-code elimination, what is wrong here is that the benchmark was actually
+not just about benchmarking <code>boon.serialize(...)</code>, but <code>boon.serialize(...)</code> <em>and</em> <code>json.charAt(0)</code>.</p>
+
+<p>I did not check what native code HotSpot generated, but I suspect that the <code>json.charAt(0)</code> call
+itself was subject to dead-code elimination: it’s simple and free of side-effects.</p>
+
+<h2 id="new-measures">New measures</h2>
+
+<p>You can see all my changes as a pull-request:
+<a href="https://github.com/bura/json-benchmarks/pull/3">https://github.com/bura/json-benchmarks/pull/3</a>.</p>
+
+<p>The new plots do not show much difference:</p>
+
+<p><img src="/images/posts/2014/ok-serialization.png" alt="Serialization" /></p>
+
+<p><img src="/images/posts/2014/ok-deserialization.png" alt="Deserialization" /></p>
+
+<h2 id="so-what">So what?</h2>
+
+<p>My fixes did not significantly change the figures, so what?</p>
+
+<p>It turns out that the benchmark figures were good because the code under test for each library
+was complex enough, and possibly with some side-effects.</p>
+
+<p>This is typical of writing benchmarks rather than micro-benchmarks.</p>
+
+<p>While HotSpot <em>did not</em> apply dead-code elimination, the way benchmark methods were written
+<em>actually</em> made them <em>candidates</em> for dead-code elimination. With these simple fixes we are now
+sure that this will never be the case.</p>
+
+<p>It is actually very easy to reproduce the effects of dead-code elimination in simple JMH benchmarks.
+As an exercise, try to benchmark the following code:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@State</span><span class="o">(</span><span class="n">Scope</span><span class="o">.</span><span class="na">Benchmark</span><span class="o">)</span>
+<span class="nd">@BenchmarkMode</span><span class="o">(</span><span class="n">Mode</span><span class="o">.</span><span class="na">Throughput</span><span class="o">)</span>
+<span class="nd">@OutputTimeUnit</span><span class="o">(</span><span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">)</span>
+<span class="nd">@Fork</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="mi">3</span><span class="o">,</span> <span class="n">jvmArgsAppend</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;-Xmx2048m&quot;</span><span class="o">,</span> <span class="s">&quot;-server&quot;</span><span class="o">,</span> <span class="s">&quot;-XX:+AggressiveOpts&quot;</span><span class="o">})</span>
+<span class="nd">@Measurement</span><span class="o">(</span><span class="n">iterations</span> <span class="o">=</span> <span class="mi">10</span><span class="o">,</span> <span class="n">time</span> <span class="o">=</span> <span class="mi">3</span><span class="o">,</span> <span class="n">timeUnit</span> <span class="o">=</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">)</span>
+<span class="nd">@Warmup</span><span class="o">(</span><span class="n">iterations</span> <span class="o">=</span> <span class="mi">20</span><span class="o">,</span> <span class="n">time</span> <span class="o">=</span> <span class="mi">3</span><span class="o">,</span> <span class="n">timeUnit</span> <span class="o">=</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DeadcodeBenchmark</span> <span class="o">{</span>
+
+  <span class="kd">private</span> <span class="kt">double</span> <span class="n">value</span> <span class="o">=</span> <span class="mf">16.0d</span><span class="o">;</span>
+
+  <span class="nd">@GenerateMicroBenchmark</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">i_do_nothing_at_all</span><span class="o">()</span> <span class="o">{</span>
+  <span class="o">}</span>
+
+  <span class="nd">@GenerateMicroBenchmark</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">deadcode</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">Math</span><span class="o">.</span><span class="na">sqrt</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="nd">@GenerateMicroBenchmark</span>
+  <span class="kd">public</span> <span class="kt">double</span> <span class="nf">ok</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">Math</span><span class="o">.</span><span class="na">sqrt</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span></code></pre></figure>
+
+<p>What we see is clear: dead-code elimination in action!</p>
+
+<p><img src="/images/posts/2014/deadcode.png" alt="Dead-code elimination" /></p>
+
+<h2 id="happy-end-and-conclusion">Happy end and conclusion</h2>
+
+<p>Benchmarks are always tricky to write <em>right</em> on the JVM.</p>
+
+<p>Using JMH is a very good start, but JMH itself will not shield you from all HotSpot optimizations.</p>
+
+<p>As a rule of thumb: always make sure that benchmarked code outputs are consumed, either as return
+values or using a black hole.</p>
+
+  </div><a class="u-url" href="/blog/revisiting-a-json-benchmark/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://instagram.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

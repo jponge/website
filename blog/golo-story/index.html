@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.0 -->
+<title>Golo Story | Julien Ponge</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Golo Story" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="So… I started writing this while in the train to Lyon going back from the Devoxx France 2013 conference held in Paris." />
+<meta property="og:description" content="So… I started writing this while in the train to Lyon going back from the Devoxx France 2013 conference held in Paris." />
+<link rel="canonical" href="https://julien.ponge.org/blog/golo-story/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/golo-story/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2013-04-01T00:00:00+02:00" />
+<script type="application/ld+json">
+{"headline":"Golo Story","dateModified":"2013-04-01T00:00:00+02:00","datePublished":"2013-04-01T00:00:00+02:00","url":"https://julien.ponge.org/blog/golo-story/","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/golo-story/"},"description":"So… I started writing this while in the train to Lyon going back from the Devoxx France 2013 conference held in Paris.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Golo Story</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2013-04-01T00:00:00+02:00" itemprop="datePublished">Apr 1, 2013
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>So… I started writing this while in the train to Lyon going back from the <a href="http://www.devoxx.fr/">Devoxx France 2013 conference</a> held in Paris.</p>
+
+<p>The fact that this note got eventually published on April 1st is of course <em>pure coincidence</em>.</p>
+
+<p>What a week it has been! As you probably know by now, I demoed and released my latest creation: the <a href="http://golo-lang.org/">Golo programming language</a>.</p>
+
+<p>Before this release there are many months of work behind, and I thought that it could be a good idea to share the story behind Golo with you.</p>
+
+<h2 id="how-it-started">How it started</h2>
+
+<p>I started working on Golo in July 2012. I initially did not intend to make a <em>real</em> language as I was instead looking into playing further with <code>invokedynamic</code>.</p>
+
+<p>My colleague Fred Le Mouel and I had started a research project the year before around the idea of taking advantage of <code>invokedynamic</code> to provide a JVM agent for dynamic aspect-oriented programming. <a href="https://github.com/dynamid/jooflux">Here was born JooFlux</a>, a research project for which there is still so much to be done.</p>
+
+<p>We were all fresh on the things around the JVM. At that time we did not knew much about how a modern adaptive virtual machine such as HotSpot worked. We learned about inline-caches, deoptimization, bytecode weaving and more generally about all of those black magic patterns and practices. For somebody like myself who had a background in enterprise middleware design, I can tell how exciting yet scary learning such low-level stuff was.</p>
+
+<p>But it was worth the pain.</p>
+
+<p>I had never written a language before, and we were only using a limited set of the possibilities of <code>invokedynamic</code> in JooFlux, so the natural next step was to play with writting a dynamic language.</p>
+
+<h2 id="but-why-oh-why">But why, oh why?</h2>
+
+<p>Basically there are 2 justifications for a computer scientist like myself to devote so much time on creating a new language while there are already so many (good!) ones on the JVM.</p>
+
+<p>First off, I am working in a <a href="http://dynamid.citi-lab.fr/">small team</a> whose focus is around dynamic middleware and applications. As such, I am developing my research expertise on everything that sits between a dynamic application and its runtime environment.</p>
+
+<p>While we now know how to hack into existing compiled applications as we did in JooFlux to inject efficient AOP, we also frequently would love to play with language extensions. Some languages such as Ruby or Groovy provide excellent extension points, but it is more than often the case that the scope of a language semantics goes well beyond the scope that we would like to keep it into. The code bases of such projects tend to be quite large, too. It is very much possible to use such languages, but there are many cases where having a tiny language would be a better fit in a research context.</p>
+
+<p>A language with a small codebase, a small runtime, … the kind of language where a student working on a 4 months project won’t spend 3 of them just understanding how it works. The learning curve is indeed very steep for anybody new to programming languages design and implementations, and students clearly fall into that category.</p>
+
+<p>Another good justification for making a new language is simply that <strong>the only way to develop an expertise into an area is simply to make all possible mistakes you can do</strong>.</p>
+
+<p>Being myself new to virtual machines and dynamic languages implementation, the best thing that I could do was to jump in hands-on.</p>
+
+<h2 id="so-whats-next">So… what’s next?</h2>
+
+<p>Golo is made to be simple to use, simple to hack.</p>
+
+<p>It works <em>fast</em> on the JVM. It is very lightweight and easy to embed in existing apps.</p>
+
+<p>It is a good learning example of how <code>invokedynamic</code> can be used to create small and efficient runtimes for dynamic languages.</p>
+
+<p>As a research group, we now have a basis to work on, and to experiment extensions and ideas with. I learned tons of useful things along the way, which will definitely strengthen our group expertise and credibility in the field.</p>
+
+<p>Beyond that, we are going to develop it further in the open, and we invite the larger JVM community to play with Golo.</p>
+
+<p><strong>Hack with it. Hack it.</strong></p>
+
+<p>There is no limit as long as you stick to our core values:</p>
+
+<ol>
+  <li>be fun,</li>
+  <li>be respectful,</li>
+  <li>don’t take what you do too seriously.</li>
+</ol>
+
+<h2 id="but-you-do-have-hidden-plans-dont-you">But you do have hidden plans, don’t you?</h2>
+
+<p>No.</p>
+
+<p>Golo is being developed as part of normal research activities. It belongs to <a href="http://www.insa-lyon.fr/">my (public) institution</a>.</p>
+
+<p>Golo is made available under the terms of a <a href="https://github.com/golo-lang/golo-lang/blob/master/LICENSE">very liberal license</a>, and if you decide to contribute we will just need you to sign a simple contributor license agreement.</p>
+
+<p>Golo is certainly a good case for dissemination, technology transfer and academic-industry collaboration.</p>
+
+<h2 id="why-working-behind-closed-doors-for-so-long">Why working behind closed doors for so long?</h2>
+
+<p>That’s a pretty good question.</p>
+
+<p>The problem with Golo is that it’s basically a one-man show: myself, myself and myself.</p>
+
+<p>I did not get any specific funding to work on this project, which means that I devoted part of my research time to it, and mostly many hours at night.</p>
+
+<p>I have more than 10 years of opensource experience at a fairly good international level. I know what it’s like to create a project, promote it, build a community, and eventually pass the torch to fresher minds when your time is gone.</p>
+
+<p>A language is a very special piece of software. Many companies are betting on their own JVM language to sell middleware stacks or IDEs. People love to troll about languages. It is anything but a space where you can be in peace.</p>
+
+<p>If I had made Golo opensource from day 1, then I would probably have never been able to get to the state where it is today. I would have faced early criticism, early suggestions on how to do things, and so on. You cannot develop a JVM language <em>and</em> have many communication channels open at the same time.</p>
+
+<p>What happened to <a href="http://openjdk.java.net/projects/nashorn/">Nashorn</a>? Pretty much the same story: they bootstraped the project in a quiet environment before making the code public.</p>
+
+<p>All you need to get to a minimally viable product is some time in peace and a few people you trust to give you feedback. People you know to have no conflict of interest in telling you if anything is <em>genius</em> or a <em>huge pile of crap</em>.</p>
+
+<p>I had the immense privilege of having a few people motivated enough to give Golo a try, and they all made a huge impact, be it with just testing the provided samples or hacking weird things with the language.</p>
+
+<p>I know that some people got frustrated with the development happening in the shadows while I did some occasional buzz around the <em>“yet-to-be-released”</em> language.</p>
+
+<p>Just put yourself into my shoes with all context in mind for a minute, and maybe you’ll understand why I did things this way.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I don’t know what the future holds for Golo, really.</p>
+
+<p>The sure thing I know is that I am proud of what I have achieved in so little time, and that I am even prouder and humbled of having had the enthusiastic early testers to help me along the way.</p>
+
+<p>The early feedback now that the project is open seems to be pretty positive, so this will definitely encourage me in going further ahead.</p>
+
+<p>Golo is there, and you are invited to have fun with it! Golo is for all of you, not just rock star programmers.</p>
+
+<p>I am looking forward to hearing what you will do with it, and in any case feel free to ping me with ideas, suggestions and constructive criticism!</p>
+
+<ul>
+  <li><a href="http://golo-lang.org/">golo-lang.org</a></li>
+  <li><a href="https://github.com/golo-lang/golo-lang">Golo on GitHub</a></li>
+  <li><a href="http://golo-console.appspot.com/">Try Golo from a web browser</a></li>
+</ul>
+
+  </div><a class="u-url" href="/blog/golo-story/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://instagram.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.0 -->
+<title>Java Coding With Style | Julien Ponge</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Java Coding With Style" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="What few may realize is that we are extremely lucky with the tooling quality in the Java world." />
+<meta property="og:description" content="What few may realize is that we are extremely lucky with the tooling quality in the Java world." />
+<link rel="canonical" href="https://julien.ponge.org/blog/java-coding-with-style/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/java-coding-with-style/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2013-01-13T00:00:00+01:00" />
+<script type="application/ld+json">
+{"headline":"Java Coding With Style","dateModified":"2013-01-13T00:00:00+01:00","datePublished":"2013-01-13T00:00:00+01:00","url":"https://julien.ponge.org/blog/java-coding-with-style/","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/java-coding-with-style/"},"description":"What few may realize is that we are extremely lucky with the tooling quality in the Java world.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Java Coding With Style</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2013-01-13T00:00:00+01:00" itemprop="datePublished">Jan 13, 2013
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>What few may realize is that we are extremely lucky with the tooling quality in the Java world.</p>
+
+<p>This note summarizes my current recommendations for coding in Java with style.</p>
+
+<h2 id="ides-and-text-editors">IDEs and text editors</h2>
+
+<p>There is no better way to ignite a troll than discussing the merits of an IDE or a text editor.</p>
+
+<p>First off: doing Java development without an IDE is just absurd. IDEs are not text editors. They
+understand your code. They can refactor your code. They can perform some kinds of static analysis.
+They can run your tests. They can just load your project definition from an independent build system
+like Maven.</p>
+
+<p>I sometimes bump into die-hard folks that claim to be more productive in Java with Vim rather than
+with an IDE. Coding in Vim is not bad, especially if you master it, but rejecting IDEs in 2013 is
+stupid, especially in the Java world where tooling is exceptionally polished. Long is gone the days
+of JBuilder or other constraining IDEs. Most justifications for not using an IDE were more often
+than not a severe form of blind conservatism in disguise, not even counting the desire to feel superior
+just because a tool like Vim requires some mastery.</p>
+
+<p>In terms of IDEs I strongly recommend <a href="http://www.jetbrains.com/idea/">IntelliJ IDEA</a>. The community
+version is more than enough for Java SE and Android development. You may equally opt for
+<a href="http://netbeans.org">Netbeans</a>. Every release of Netbeans brings it on par with IDEA, and sometimes
+even slightly ahead.</p>
+
+<p>Do not use <a href="http://www.eclipse.org/">Eclipse</a> unless you absolutely have to, or muscle memory is too
+hard to reboot. I have been an Eclipse plugin developer a few years ago and actually enjoyed it.
+However what Eclipse has become does not appeal to me anymore. The competition (IDEA, Netbeans) is
+simply too far ahead, and healthy.</p>
+
+<p>For anything else knowing a good text editor or two is a necessity. I recommend <a href="http://www.vim.org">Vim</a>
+as it works everywhere you go. The learning curve is steep, but it pays off in the long run.
+On Mac OS X I also enjoy <a href="https://github.com/textmate/textmate">TextMate</a> very much. I bought a license
+in 2008 and never regretted it. TextMate 2 is opensource, hence there is no reason not to go
+for it.</p>
+
+<p>Last but not least: do not use Emacs unless you actually want to hurt your hands, or you have
+a fascination for Richard Stallman.</p>
+
+<h2 id="loving-maven">Loving Maven</h2>
+
+<p>Ah… <a href="http://maven.apache.org/">Maven</a>!</p>
+
+<p>Yes I know, Maven is a common source of jokes and troll in the Java world. It downloads the
+Internet, anything that you need to customize requires writing a plugin or using the ugly
+<a href="http://maven.apache.org/plugins/maven-antrun-plugin/">AntRun plugin</a>, and… XML hurts.</p>
+
+<p><strong>Yet, despite all of this, I love Maven, and I am no masochist.</strong></p>
+
+<p>To me, Maven is all about:</p>
+
+<ul>
+  <li>giving structure to your project,</li>
+  <li>having excellent tool support (IDEs, continuous integration servers, …),</li>
+  <li>a high probability that a plugin exists for whatever you need.</li>
+</ul>
+
+<p>Again, XML hurts, but I don’t touch my POMs that often. Once a POM is in place, most edits will be
+about adding a new plugin once in a while and updating versions. The decoupling between the <em>“what”</em>
+and the <em>“how”</em> in Maven is useful for most projects.</p>
+
+<p><a href="http://www.gradle.org">Gradle</a> is an interesting alternative to Maven, just like
+<a href="http://buildr.apache.org/">Apache BuildR</a>. In most cases I would still recommend going the Maven route
+until both mature. Of the two, Gradle has the most potential. They embrace a declarative-style,
+convention-based build definition that is the strength of Maven, while allowing the definition of
+custom tasks without the need for systematically writing external plugins.</p>
+
+<p>We used Apache BuildR in <a href="https://github.com/dynamid/jooflux">JooFlux</a> because we had a need for
+<em>many</em> custom tasks. We looked at Gradle initially, but it had issues with Java 7 on Mac OS X. This
+is a very specific kind of project, though.</p>
+
+<p>In most cases I always found it both simpler and more structuring to bend a project into the Maven
+conventions rather than fighting those.</p>
+
+<h2 id="continuous-testing-with-infinitest">Continuous testing with Infinitest</h2>
+
+<p>Fellow <a href="http://www.ossgtp.org">OSSGTP</a> member <a href="https://twitter.com/dgageot">David Gageot</a>
+maintains an awesome tool called <a href="http://infinitest.github.com">Infinitest</a>.</p>
+
+<p>It comes in the form of a plugin for Eclipse (damn!) or IDEA (yeah!) that automatically launches tests
+whenever you save a file. It intelligently guesses which tests have been impacted and launches them again
+on changes, giving you instant feedback.</p>
+
+<p>I rarely launch tests from my IDE and prefer going to the terminal console to launch <code>mvn test</code>. It
+is somehow faster for me to simply switch applications. I also have less friction navigating through
+console outputs in a terminal application rather than in a view of my IDE. Maybe I am just strange.</p>
+
+<p>I strongly recommend installing Infinitest. You will be surprised to see how incredibly useful the
+tool can be!</p>
+
+<h2 id="wrapping-rake-around-maven">Wrapping Rake around Maven</h2>
+
+<p><a href="http://rake.rubyforge.org">Rake</a> is a build tool written in Ruby. It defines tasks just like
+a <code>Makefile</code>, except that it comes in the form of a nice Ruby domain-specific language.</p>
+
+<p>I use Rake for anything that does not fit into Maven. Ruby launches fast, and Rake just does what it
+is supposed to do with lots of elegance.</p>
+
+<p>It is sometimes the case that I need to type long Maven commands, especially to launch a specific
+test case with extra verbosity. In such cases, I use Rake to launch Maven, giving me a range of
+easy-to-remember tasks such as:</p>
+
+<pre><code>$ rake -T
+rake all                      # Build a complete distribution (packages + documentation)
+rake build                    # Build and install
+rake clean                    # Clean
+rake doc                      # Build the documentation
+rake rebuild                  # Clean, build and install
+rake run:golo[arguments]      # Run golo
+rake run:goloc[arguments]     # Run goloc
+rake run:gologolo[arguments]  # Run gologolo
+rake test:all                 # Run all tests
+rake test:bytecode            # Bytecode compilation output tests (verbose)
+rake test:parser              # Parser tests (verbose)
+rake test:run                 # Samples running tests (verbose)
+rake test:visitors            # IR tests (verbose)
+</code></pre>
+
+<p>As an example, the definition of the <code>test:run</code> task wraps Maven as follows:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="n">desc</span> <span class="s2">&quot;Samples running tests (verbose)&quot;</span>
+<span class="n">task</span> <span class="ss">:run</span> <span class="k">do</span>
+  <span class="n">sh</span> <span class="s2">&quot;mvn test -Dtest=CompileAndRunTest -P verbose-tests&quot;</span>
+<span class="k">end</span></code></pre></figure>
+
+<p>The combination of Rake and Maven works great for me, and I encourage you to give it a try.</p>
+
+<h2 id="asciidoc">AsciiDoc</h2>
+
+<p>My final recommendation for coding with style is to use <a href="http://asciidoc.org">AsciiDoc</a> for your
+documentation.</p>
+
+<p>It uses a simple text syntax that lets you organize the many chapters of your documentation.
+AsciiDoc outputs either direct HTML with nice themes, or converts to XML DocBook. From there
+you can then generate HTML, chunked HTML, PDF, ePub, …</p>
+
+<p>I was initially skeptic with AsciiDoc and thought about using Markdown. Having tried both, 
+AsciiDoc just scales better for large documents, while Markdown excels at smaller documents.</p>
+
+<p>I suggest looking at <a href="http://mojavelinux.github.com/decks/">some slides by Dan Allen from Red Hat</a>
+as they make a strong case for AsciiDoc. Bonus: his slides were made using AsciiDoc!</p>
+
+<p>XML DocBook is just a nightmare. I don’t know how can somebody decently write anything with such
+a complicated XML format. AsciiDoc allows you to write documentation in a humane syntax, and then
+let it be converted to DocBook.</p>
+
+<p>If you absolutely want to tie documentation generation with your Maven builds, you can imagine
+a Rake build for your documentation that outputs DocBook XML to the location expected by a
+Maven DocBook plugin. Again, best of both worlds!</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I hope that those recommendations will be useful to others.</p>
+
+<p>While they work great for me, I understand that not everyone will agree with this. Your mileage varies
+depending on your own tastes and work context.</p>
+
+<p>Feel free to get in touch!</p>
+
+
+  </div><a class="u-url" href="/blog/java-coding-with-style/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://instagram.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

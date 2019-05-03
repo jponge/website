@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.0 -->
+<title>Scalable and Understandable Provisioning with Ansible and Vagrant | Julien Ponge</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Scalable and Understandable Provisioning with Ansible and Vagrant" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Introduction" />
+<meta property="og:description" content="Introduction" />
+<link rel="canonical" href="https://julien.ponge.org/blog/scalable-and-understandable-provisioning-with-ansible-and-vagrant/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/scalable-and-understandable-provisioning-with-ansible-and-vagrant/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2013-10-15T00:00:00+02:00" />
+<script type="application/ld+json">
+{"headline":"Scalable and Understandable Provisioning with Ansible and Vagrant","dateModified":"2013-10-15T00:00:00+02:00","datePublished":"2013-10-15T00:00:00+02:00","url":"https://julien.ponge.org/blog/scalable-and-understandable-provisioning-with-ansible-and-vagrant/","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/scalable-and-understandable-provisioning-with-ansible-and-vagrant/"},"description":"Introduction","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Scalable and Understandable Provisioning with Ansible and Vagrant</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2013-10-15T00:00:00+02:00" itemprop="datePublished">Oct 15, 2013
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2>Introduction</h2>
+<p>Loosing or migrating a server and having to rebuild its configuration by hand is anything but a fun<br />
+job.</p>
+<p>It may be the case that you heard of the &#8220;infrastructure as code&#8221; mantra of the DevOps culture,<br />
+tried popular tools like <a href="http://www.opscode.com/chef/">Chef</a> or <a href="https://puppetlabs.com/">Puppet</a> but<br />
+found them to be just incredibly complex even for simple cases.</p>
+<p>Not everyone is managing 500 servers in the cloud after all.</p>
+<p>This post will walk you through Ansible, a powerful yet simple configuration management tool that I<br />
+am particularly fond of, and not just because it took me 5 minutes to understand it.</p>
+<p>We will also see how it fits well with Vagrant, a tool that makes playing with virtual machines as<br />
+simple as editing a small configuration file and then forgetting about GUIs, <span class="caps">ISO</span> files and all the<br />
+funk.</p>
+<h2>Overview</h2>
+<p>Ansible is an automation and orchestration tool written in Python. It works through <span class="caps">SSH</span> connections<br />
+and does not require installing agents on hosts.</p>
+<p>By the way if you don&#8217;t know about password-less <span class="caps">SSH</span> connections using public keys,<br />
+<a href="http://paulkeck.com/ssh/">it may be a good idea to do so</a>.</p>
+<p>Configuration specifications are written in <span class="caps">YAML</span> documents called <strong>playbooks</strong>, providing tasks and<br />
+event handlers. An example task would be to update the configuration files or a database server, and<br />
+an event handler would restart the database upon completion of the task.</p>
+<h3>Ansible is push-based</h3>
+<p>Ansible is commonly used in a push-style architecture:</p>
+<p><img src="/images/posts/2013/ansible-push-architecture.png" title="Ansible push-architecture" alt="Ansible push-architecture" /></p>
+<p>The control host is typically your machine from that you will initiate Ansible runs. In more<br />
+elaborated scenarios it can be a <em>cronjob</em>.</p>
+<p>Ansible takes advantage of a <strong>hosts inventory file</strong>. It contains a list of machine addresses<br />
+arranged by groups. In the previous example we have 2 groups: database servers and web servers. The<br />
+inventory file would simple list the IP addresses and/or host names for each one.</p>
+<p>Of course there are cases where the inventory is dynamic by nature: cloud computing environments,<br />
+elastic groups of hosts, etc. Ansible provides support for that, too, but we won&#8217;t discuss it here.</p>
+<p>Each <strong>playbook</strong> addresses one or several groups from the inventory. In the previous example we would<br />
+have a playbook to configure and orchestrate database servers, and another one for web servers. The<br />
+definition of playbooks can be factored out, too, so you could have a third playbook with the common<br />
+parts, serving as an include for the database and web server playbooks.</p>
+<h3>Ansible can be pull-based, too</h3>
+<p>It is not always desirable to have a push-based infrastructure. There are many valid reasons such as <br />
+network constraints preventing easy <span class="caps">SSH</span> connections or scalability / automation issues.</p>
+<p>In such situations Ansible remains your next very best friend. I will not cover the details here,<br />
+but the <code>ansible-pull</code> command can be used as follows:</p>
+<ol>
+	<li>each host has Ansible installed,</li>
+	<li>the configuration is stored in a Git repository,</li>
+	<li><code>ansible-pull</code> checkouts the configuration repository at a given branch or tag (hint: think <code>prod</code>, <code>staging</code>, etc),</li>
+	<li><code>ansible-pull</code> executes a specified playbook,</li>
+	<li>you automate the process using a <em>cronjob</em>, and then all you have to do is pushing the configuration changes to a Git repository.</li>
+</ol>
+<p><img src="/images/posts/2013/ansible-pull-architecture.png" title="Ansible pull-architecture" alt="Ansible pull-architecture" /></p>
+<p>Sounds good? Let us now get back to Ansible in push-mode.</p>
+<h2>The <code>ansible</code> tool</h2>
+<p>Ansible comes with several command-line tools. The first one is simply called&#8230; <code>ansible</code>.</p>
+<p>The purpose of the <code>ansible</code> tool is mainly to execute a command over selected groups of an<br />
+inventory.</p>
+<p>Now is the good time to define an inventory file. If you know how to write Windows-style <code>.ini</code><br />
+files then you have basically won:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>[web]
+192.168.100.10
+192.168.100.11
+
+[db]
+192.168.100.11
+192.168.100.12
+db.private.foo-bar.org</code></pre></figure><p>This would define 2 groups <code>web</code> and <code>db</code> over hosts. Note that a single host can belong to more<br />
+than one group, too.</p>
+<p>Now for testing purposes let&#8217;s just consider the case of a single host with the content of a <code>hosts</code><br />
+file:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>[main]
+192.168.100.10</code></pre></figure><p>We can now run the <code>ansible</code> tool to execute a command (<code>ls -lsa /usr</code>) over the <code>main</code> group:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ ansible main -i hosts -a &quot;ls -lsa /usr&quot;
+192.168.100.10 | success | rc=0 &gt;&gt;
+total 56
+ 4 drwxr-xr-x 10 root root   4096 Apr 10  2012 .
+ 4 drwxrwxr-x 22 root admin  4096 Jul 26 08:29 ..
+20 drwxr-xr-x  2 root root  20480 Oct 10 15:39 bin
+ 4 drwxr-xr-x  2 root root   4096 Jan 27  2012 games
+ 4 drwxr-xr-x 31 root root   4096 Jul 26 11:18 include
+ 4 drwxr-xr-x 40 root root   4096 Oct  7 16:07 lib
+ 4 drwxr-xr-x 10 root root   4096 Apr 10  2012 local
+ 4 drwxr-xr-x  2 root root   4096 Oct  7 16:08 sbin
+ 4 drwxr-xr-x 81 root root   4096 Aug 28 14:32 share
+ 4 drwxr-xr-x  2 root root   4096 Jan 27  2012 src
+$</code></pre></figure><p>Not bad, not bad.</p>
+<p>The takeaway is simply that <code>ansible</code> can execute commands to many hosts over <span class="caps">SSH</span> and report back to<br />
+you.</p>
+<h2>Playbooks and the <code>ansible-playbook</code> tool</h2>
+<p>While you could probably use <code>ansible</code> as a general-purpose command execution tool over <span class="caps">SSH</span>, it does<br />
+not scale to deal with automation and configuration management. This is where playbooks enter the<br />
+fray.</p>
+<p>Playbooks serve both as a way to express commands to be executed, and as abstractions over the tasks<br />
+to be done. While you can execute commands such as <code>ls -lsa</code>, you can also take advantage of<br />
+higher-level actions to, say, require the <code>nginx</code> service to be running.</p>
+<p>Ansible has a <a href="http://www.ansibleworks.com/docs/modules.html">fairly large set of modules</a> that can<br />
+be used to construct powerful playbooks. I encourage you to look at the list.</p>
+<h3>What&#8217;s in a playbook</h3>
+<p>Because a sample is always better than anything else, here is the <code>playbook.yml</code> file that I am<br />
+using for a server that I manage internally:</p>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="nn">---</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">main</span>
+
+  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell whoami</span>
+      <span class="l l-Scalar l-Scalar-Plain">register</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">whoami</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">update apt cache</span>
+      <span class="l l-Scalar l-Scalar-Plain">apt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">update_cache=yes cache_valid_time=3600</span>
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">upgrade the distro</span>
+      <span class="l l-Scalar l-Scalar-Plain">apt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">upgrade=yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">install packages</span>
+      <span class="l l-Scalar l-Scalar-Plain">apt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pkg={{ item }} state=latest</span>
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">with_items</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">build-essential</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">git</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">tree</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">vim</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">psmisc</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">fail2ban</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">chkrootkit</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ufw</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">nginx</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">curl</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">gnupg</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">zip</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">rsync</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">wget</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">unattended-upgrades</span>
+      <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">restart nginx</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ensure fail2ban is running</span>
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">service name=fail2ban state=restarted enabled=yes</span>
+    
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">forbid SSH root login</span>
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">lineinfile</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">destfile=/etc/ssh/sshd_config regexp=&quot;^PermitRootLogin&quot; line=&quot;PermitRootLogin no&quot; state=present</span>
+      <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">restart ssh</span>
+    
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">reset firewall</span>
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell ufw --force reset</span>
+    
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">allow firewall authorized ports</span>
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell ufw allow {{ item }}</span> 
+      <span class="l l-Scalar l-Scalar-Plain">with_items</span><span class="p p-Indicator">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">22</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+    
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">enable firewall</span>
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell ufw --force enable</span>
+    
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">configure nginx default site</span>
+      <span class="l l-Scalar l-Scalar-Plain">copy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">src=files/nginx-default dest=/etc/nginx/sites-available/default</span>
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">restart nginx</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ensure /srv/data/websites/ exists</span>
+      <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">path=/srv/data/websites state=directory recurse=yes owner=${whoami.stdout} group=www-data</span> 
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ensure /srv/data/websites/samplesite.internal.tld exists</span>
+      <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">path=/srv/data/websites/samplesite.internal.tld state=directory recurse=yes owner=${whoami.stdout} group=www-data</span> 
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ensure /srv/data/git/ exists</span>
+      <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">path=/srv/data/git state=directory recurse=yes owner=${whoami.stdout} group=${whoami.stdout}</span>
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ensure ~/git is a symlink to /srv/data/git</span>
+      <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">path=~/git state=link src=/srv/data/git</span>
+
+  <span class="l l-Scalar l-Scalar-Plain">handlers</span><span class="p p-Indicator">:</span>
+
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">restart nginx</span>
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">service name=nginx state=restarted enabled=yes</span>
+    
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">restart ssh</span>
+      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+      <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">service name=ssh state=restarted enabled=yes</span></code></pre></figure><p>While it is quite easy to understand, there are a few points worth detailing.</p>
+<h4>Hosts definition</h4>
+<p>The <code>hosts</code> key does what you would expect: it specifies what groups shall the playbook be aimed at.</p>
+<h4><code>sudo</code>-ing</h4>
+<p>Many actions require you to be run through <code>sudo</code>, in that case you simply add a <code>sudo</code> attribute.<br />
+This is the case of upgrading the system though <code>apt</code> (or any other similar package management<br />
+tool):</p>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">update apt cache</span>
+  <span class="l l-Scalar l-Scalar-Plain">apt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">update_cache=yes cache_valid_time=3600</span>
+  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">upgrade the distro</span>
+  <span class="l l-Scalar l-Scalar-Plain">apt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">upgrade=yes</span>
+  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span></code></pre></figure><p>Note that running <code>sudo</code> <em>may</em> require typing a password, which is a sure way of blocking Ansible<br />
+forever. A simple fix is to run <code>visudo</code> on the target host, and make sure that the user Ansible<br />
+will use to login does not have to type a password:</p>
+<pre><code>@username ALL=(ALL) NOPASSWD: ALL@</code></pre>
+<h4>Action handlers</h4>
+<p>An action can define a <code>notify</code> attribute to fire an event once it is done. The case of the Nginx<br />
+server configuration is a good one.</p>
+<p>First, we copy a local file from the relative path <code>files/niginx-default</code> to the host at path<br />
+<code>/etc/nginx/sites-available/default</code>. Once this is done, the <code>restart nginx</code> notification is fired:</p>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">configure nginx default site</span>
+  <span class="l l-Scalar l-Scalar-Plain">copy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">src=files/nginx-default dest=/etc/nginx/sites-available/default</span>
+  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+  <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">restart nginx</span></code></pre></figure><p>The notification handler can then restart the Nginx service:</p>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">restart nginx</span>
+  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+  <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">service name=nginx state=restarted enabled=yes</span></code></pre></figure><p>Note the <code>enabled</code> attribute: it ensures that the service is run as part of the system init scripts.<br />
+The details of how to do that is managed by the <code>service</code> module that knows how to do so on each<br />
+operating system.</p>
+<h4>Loops</h4>
+<p>A good example for loops is the installation of packages:</p>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">install packages</span>
+  <span class="l l-Scalar l-Scalar-Plain">apt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pkg={{ item }} state=latest</span>
+  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+  <span class="l l-Scalar l-Scalar-Plain">with_items</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">build-essential</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">git</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">tree</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">vim</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">psmisc</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">fail2ban</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">chkrootkit</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ufw</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">nginx</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">curl</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">gnupg</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">zip</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">rsync</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">wget</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">unattended-upgrades</span>
+  <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">restart nginx</span></code></pre></figure><p>This simply repeats the action for many items, and eventually fires a <code>restart nginx</code> notification.</p>
+<h4>Touching file contents</h4>
+<p>There are many ways to edit files instead of copying them from your control host. One of these is<br />
+the <code>lineinfile</code> action:</p>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">forbid SSH root login</span>
+  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+  <span class="l l-Scalar l-Scalar-Plain">lineinfile</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">destfile=/etc/ssh/sshd_config regexp=&quot;^PermitRootLogin&quot; line=&quot;PermitRootLogin no&quot; state=present</span>
+  <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">restart ssh</span></code></pre></figure><p>No matter what the rest of the <code>sshd_config</code> file is, this ensure that a line contains the<br />
+instruction to disable root logins over <span class="caps">SSH</span>.</p>
+<h4>Shell actions</h4>
+<p>Not everything is captured by an Ansible module. While you can develop your own actions, you may<br />
+simply issue shell commands, too.</p>
+<p>The following example manipulates the <code>ufw</code> firewall to ensure that only ports 22 and 80 are open<br />
+from the hostile Internet:</p>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">reset firewall</span>
+  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+  <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell ufw --force reset</span>
+
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">allow firewall authorized ports</span>
+  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+  <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell ufw allow {{ item }}</span>
+  <span class="l l-Scalar l-Scalar-Plain">with_items</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">22</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80</span></code></pre></figure><h4>Using console output</h4>
+<p>We can register the console output of an action:</p>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell whoami</span>
+  <span class="l l-Scalar l-Scalar-Plain">register</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">whoami</span></code></pre></figure><p>This runs the <code>whoami</code> command to know what login is being used on the target host. This makes a<br />
+playbook flexible for, say, update permissions without having a hard-coded login:</p>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ensure /srv/data/websites/samplesite.internal.tld exists</span>
+  <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">path=/srv/data/websites/samplesite.internal.tld state=directory recurse=yes owner=${whoami.stdout} group=www-data</span> 
+  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span></code></pre></figure><h3>Running a playbook</h3>
+<p>By now you should have a good understanding of what a playbook is like.</p>
+<p>Running a playbook is equally simple:</p>
+<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ ansible-playbook -i hosts playbook.yml
+
+PLAY [main] *******************************************************************
+
+GATHERING FACTS ***************************************************************
+ok: [192.168.100.10]
+
+TASK: [shell whoami] **********************************************************
+changed: [192.168.100.10]
+
+TASK: [update apt cache] ******************************************************
+ok: [192.168.100.10]
+
+TASK: [upgrade the distro] ****************************************************
+changed: [192.168.100.10]
+
+TASK: [install packages] ******************************************************
+ok: [192.168.100.10] =&gt; (item=build-essential,git,tree,vim,psmisc,fail2ban,chkrootkit,ufw,nginx,curl,gnupg,zip,rsync,wget,unattended-upgrades)
+
+TASK: [ensure fail2ban is running] ********************************************
+changed: [192.168.100.10]
+
+TASK: [forbid SSH root login] *************************************************
+ok: [192.168.100.10]
+
+TASK: [reset firewall] ********************************************************
+changed: [192.168.100.10]
+
+TASK: [allow firewall authorized ports] ***************************************
+changed: [192.168.100.10] =&gt; (item=22)
+changed: [192.168.100.10] =&gt; (item=80)
+
+TASK: [enable firewall] *******************************************************
+changed: [192.168.100.10]
+
+TASK: [configure nginx default site] ******************************************
+ok: [192.168.100.10]
+
+TASK: [ensure /srv/data/websites/ exists] *************************************
+ok: [192.168.100.10]
+
+TASK: [ensure /srv/data/websites/samplesite.internal.tld exists] *********************
+ok: [192.168.100.10]
+
+TASK: [ensure /srv/data/git/ exists] ******************************************
+ok: [192.168.100.10]
+
+TASK: [ensure ~/git is a symlink to /srv/data/git] ****************************
+ok: [192.168.100.10]
+
+PLAY RECAP ********************************************************************
+192.168.100.10         : ok=15   changed=6    unreachable=0    failed=0
+
+$</code></pre></figure><p>The great thing with Ansible playbooks is that they are mostly <strong>idempotent</strong>, so you can run them as<br />
+often as you want.</p>
+<p>Indeed, modules store some state called <strong>facts</strong>, and Ansible won&#8217;t perform an action again if some<br />
+fact hasn&#8217;t changed between 2 runs.</p>
+<p>Most Ansible-provided modules provide actions that store facts, but always keep in mind that not<br />
+everything can be idempotent. Running shell commands is a good example. We did that in the previous<br />
+playbook to update the firewall configuration. If we wanted to avoid redoing it on each playbook<br />
+run, we would need to write some kind of <code>upf</code> action and ensure that facts are being stored<br />
+regarding the firewall configuration.</p>
+<h2>Testing with Vagrant</h2>
+<p>There is little chance that you will get a correct configuration out of the box.</p>
+<p>Like any good software project, the only solution is to test, test and test.</p>
+<p>Getting a server up and running is costly, so your best solution is to try in a virtual machine.<br />
+<a href="https://www.virtualbox.org">Oracle VirtualBox</a> is a well-known opensource solution. The problem is<br />
+that booting an <span class="caps">ISO</span> image and starting the installation from scratch is tedious, boring and<br />
+time-consuming.</p>
+<h3>Vagrant to the rescue</h3>
+<p><a href="http://www.vagrantup.com/">Vagrant</a> is a the real deal. It is a command-line tool to manage virtual<br />
+machines from simple configuration files. You can start a virtual machine from a single command,<br />
+log-in through <span class="caps">SSH</span>, stop it and trash it at will. Vagrant is your best friend when you want to test<br />
+a given server(s) configuration using virtual machines.</p>
+<p>Vagrant is most often used in combination with VirtualBox, but it can run other virtualization<br />
+engines too. Getting Vagrant up and running is easy:</p>
+<ol>
+	<li>install Oracle VirtualBox, then</li>
+	<li>install Vagrant.</li>
+</ol>
+<p>Voilà, you&#8217;re done!</p>
+<h3>Vagrant files</h3>
+<p>Vagrant configuration files are very simple. They use a Ruby <span class="caps">DSL</span> to describe the configuration,<br />
+including:</p>
+<ul>
+	<li>how many machines to run,</li>
+	<li>what base images to use for each machine (Ubuntu, Fedora, FreeBSD, your own, etc),</li>
+	<li>what network configuration shall be used,</li>
+	<li>how much <span class="caps">CPU</span> / memory do you want,</li>
+	<li>which local folder shall be synchronized with a folder in the virtual machine, etc.</li>
+</ul>
+<p>For the Ansible configuration above, my testing <code>Vagrantfile</code> looks as follows:</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  
+  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;base&quot;</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_url</span> <span class="o">=</span> <span class="s2">&quot;http://files.vagrantup.com/precise32.box&quot;</span>
+  
+  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:forwarded_port</span><span class="p">,</span> <span class="ss">guest</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="mi">8080</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:private_network</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.100.10&quot;</span>
+
+<span class="k">end</span></code></pre></figure><p>This single-machine configuration is quite simple. It boots a Ubuntu-based box. There are many more<br />
+community-contributed boxes, and you can create your own ones. Next, the machine is being put in a<br />
+private network with IP <code>192.168.100.10</code>. We also forward connections from port 80 to port 8080 on<br />
+the host machine.</p>
+<h3>Playing with Vagrant</h3>
+<p>The configuration file above is simple, and so is running the VM:</p>
+<ul>
+	<li><code>vagrant up</code> starts the machine, possibly downloading and caching the box image,</li>
+	<li><code>vagrant ssh</code> logs you into the VM,</li>
+	<li><code>vagrant halt</code> stops the VM,</li>
+	<li><code>vagrant suspend</code>&#8230; suspends the VM,</li>
+	<li><code>vagrant destroy</code> trashes the VM.</li>
+</ul>
+<p>This is quite handy: a simple <code>Vagrantfile</code> is all you need, and Vagrant takes care of preparing the<br />
+VMs for you.</p>
+<h3>Ansible and Vagrant integration</h3>
+<p>Vagrant supports different types of <strong>provisioning</strong> methods, including shells scripts, Puppet and<br />
+your new best friend Ansible.</p>
+<p>Configuration is easy by adding the following to your <code>Vagrantfile</code>:</p>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="ss">:ansible</span> <span class="k">do</span> <span class="o">|</span><span class="n">ansible</span><span class="o">|</span>
+  <span class="n">ansible</span><span class="o">.</span><span class="n">playbook</span> <span class="o">=</span> <span class="s2">&quot;provisioning/playbook.yml&quot;</span>
+  <span class="n">ansible</span><span class="o">.</span><span class="n">inventory_path</span> <span class="o">=</span> <span class="s2">&quot;provisioning/hosts-vagrant&quot;</span>
+  <span class="c1"># On Vagrant &lt; 1.3 this used to be `inventory_file`...</span>
+  <span class="c1"># ansible.inventory_file = &quot;provisioning/hosts-vagrant&quot;</span>
+  <span class="n">ansible</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="kp">false</span>
+<span class="k">end</span></code></pre></figure><p>I suggest having a specific inventory file that matches the IP addresses of your Vagrant<br />
+configuration.</p>
+<p>Once this is done, Vagrant calls Ansible to provision the VM. There are a few extra commands that<br />
+are useful while working on your Ansible setup with Vagrant:</p>
+<ul>
+	<li><code>vagrant reload</code>, and</li>
+	<li><code>vagrant provision</code> to force calling Ansible without a reboot.</li>
+</ul>
+<p>When you are confident with your Ansible configuration, I suggest a <code>vagrant destroy</code> followed by a<br />
+<code>vagrant up</code>, just to retry your automated configuration from scratch.</p>
+<h2>Conclusion</h2>
+<p>Automatic configuration of machines is quite easy with Ansible. Knowing that you can configure a<br />
+whole set of machines or just a single one with a reproducible process is priceless.</p>
+<p>Ansible is very approchable. While primarily push-based, it can also work in a pull fashion with<br />
+little friction.</p>
+<p>Good programmers test, and Vagrant makes it so easy to play with virtual machines that you have no<br />
+excuse for not fine-crafting Ansible configuration with it.</p>
+<p>We only scratched the surface of what you can do with Ansible, yet the simplicity of the tool should<br />
+be convincing.</p>
+<p>On a final note, Ansible is useful for more than servers. It knows how to deal with package managers<br />
+such as MacPorts and Homebrew, so you could also use it for managing desktops. We successfully used<br />
+Ansible as part of our research experiments to provision RaspberryPi devices from a generic Raspbian<br />
+image.</p>
+<h2>Further links</h2>
+<ul>
+	<li><a href="http://www.ansibleworks.com">Ansible</a></li>
+	<li><a href="http://www.ansibleworks.com/docs/modules.html">Ansible Modules</a></li>
+	<li><a href="http://www.vagrantup.com">Vagrant</a></li>
+	<li><a href="http://www.vagrantbox.es">Community-contributed Vagrant boxes</a></li>
+	<li><a href="https://www.virtualbox.org">Oracle VirtualBox</a></li>
+</ul>
+  </div><a class="u-url" href="/blog/scalable-and-understandable-provisioning-with-ansible-and-vagrant/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://instagram.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

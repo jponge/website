@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.0 -->
+<title>Jekyll and Amazon AWS hosting | Julien Ponge</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Jekyll and Amazon AWS hosting" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I used to host my website on a virtual private server. Maintaining a server is always a useful skill to have, especially when using a “infrastructure as code” approach. See my article on Vagrant as an example." />
+<meta property="og:description" content="I used to host my website on a virtual private server. Maintaining a server is always a useful skill to have, especially when using a “infrastructure as code” approach. See my article on Vagrant as an example." />
+<link rel="canonical" href="https://julien.ponge.org/blog/jekyll-amazon-hosting/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/jekyll-amazon-hosting/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-04-10T00:00:00+02:00" />
+<script type="application/ld+json">
+{"headline":"Jekyll and Amazon AWS hosting","dateModified":"2015-04-10T00:00:00+02:00","datePublished":"2015-04-10T00:00:00+02:00","url":"https://julien.ponge.org/blog/jekyll-amazon-hosting/","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/jekyll-amazon-hosting/"},"description":"I used to host my website on a virtual private server. Maintaining a server is always a useful skill to have, especially when using a “infrastructure as code” approach. See my article on Vagrant as an example.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Jekyll and Amazon AWS hosting</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2015-04-10T00:00:00+02:00" itemprop="datePublished">Apr 10, 2015
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>I used to host <a href="https://julien.ponge.org/">my website</a> on a virtual private server. Maintaining a
+server is always a useful skill to have, especially when using a <em>“infrastructure as code”</em> approach.
+See <a href="/blog/scalable-and-understandable-provisioning-with-ansible-and-vagrant/">my article on Vagrant</a>
+as an example.</p>
+
+<p>My VPS instance used to be hosted by <a href="https://www.gandi.net/hosting/iaas">Gandi</a>. I have been a Gandi
+customer for 15 years to deal with domain names, and I jumped to them for hosting when they ventured
+into the IaaS offering business.</p>
+
+<p>I can only say positive things on the Gandi IaaS offering. It has always been rock solid in my experience.
+It is a bit pricey, but you get what you pay for.</p>
+
+<p>As I wasn’t using the server instance for anything more than running a HTTP server for static files,
+I looked into a cheaper option (I was paying around 9 euros per month for a tuned-down VPS).</p>
+
+<p>I could have gone the <a href="https://pages.github.com">GitHub Pages</a> way, but I prefer the flexibility of
+custom Jekyll plugins, or the ability to switch to another static site generator. I also wanted to
+keep the HTTPS support.</p>
+
+<p>So I went with <a href="http://aws.amazon.com/">Amazon AWS</a>.</p>
+
+<h2 id="tools-of-the-trade">Tools of the trade</h2>
+
+<p>I generate my websites with <a href="http://jekyllrb.com">Jekyll</a>, mostly because it is as minimalistic as it
+needs to be. Jekyll just gets out of the way with minimal fuss.</p>
+
+<p>The produced static website is then stored to a S3 bucket, and delivered using the CloudFront CDN.
+Because I had specific requirements on <em>not</em> using a <code>CNAME</code> DNS entry to point <code>julien.ponge.org</code> to
+a CloudFront distribution, I also use Route53 to manage the DNS.</p>
+
+<p>This costs me overall about 0.50 / 0.60 euros per month depending on the dollar-euro conversion
+rate, and taking into account that S3 and CloudFront cost me pretty much nothing since I am still
+eligible for the 1-year free tier.</p>
+
+<p>That is a pretty good deal I guess, and from my traffic figures it should not be significantly more
+expensive when I exit the free tier.</p>
+
+<h2 id="important-notes">Important notes</h2>
+
+<h3 id="https">HTTPS</h3>
+
+<p>HTTPS support for CloudFront instances is done via <a href="http://en.wikipedia.org/wiki/Server_Name_Indication">SNI</a>.
+You will need to upload your certificates from the command-line tooling with the
+<a href="http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/SecureConnections.html#CNAMEsAndHTTPS"><code>aws iam upload-server-certificate</code> subcommand</a>.</p>
+
+<p>You should also pay attention to the length of your SSL Certificate: it should be no more than 2048 bits.
+I initially had a 4096 bits certificate, and spend some time digging the issue.</p>
+
+<h3 id="setup-uploading-and-invalidating">Setup, uploading and invalidating</h3>
+
+<p>Uploading to S3 and invalidating CloudFront entries can be daunting, so you should simplify your task
+with <a href="https://github.com/laurilehmijoki/s3_website">s3_website</a>.</p>
+
+<p>It also does the proper configuration of your S3 bucket to server websites over HTTP. It does the
+same with CloudFront, by creating a distribution if need be.</p>
+
+<p>It uses a simple <code>s3_website.yml</code> configuration file. In my case it looks like this:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="l l-Scalar l-Scalar-Plain">s3_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;%= ENV[&#39;S3_ID&#39;] %&gt;</span>
+<span class="l l-Scalar l-Scalar-Plain">s3_secret</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;%= ENV[&#39;S3_SECRET&#39;] %&gt;</span>
+<span class="l l-Scalar l-Scalar-Plain">s3_bucket</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">julien.ponge.org</span>
+
+<span class="l l-Scalar l-Scalar-Plain">max_age</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">300</span>
+
+<span class="l l-Scalar l-Scalar-Plain">gzip</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="l l-Scalar l-Scalar-Plain">s3_reduced_redundancy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="l l-Scalar l-Scalar-Plain">cloudfront_distribution_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;%= ENV[&#39;CLOUDFRONT_ID&#39;] %&gt;</span>
+<span class="l l-Scalar l-Scalar-Plain">cloudfront_invalidate_root</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="l l-Scalar l-Scalar-Plain">cloudfront_distribution_config</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">default_cache_behavior</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">min_TTL</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;%= 60 * 60 * 24 %&gt;</span>
+  <span class="l l-Scalar l-Scalar-Plain">aliases</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">quantity</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+    <span class="l l-Scalar l-Scalar-Plain">items</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">CNAME</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">julien.ponge.org</span>
+  <span class="l l-Scalar l-Scalar-Plain">price_class</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">PriceClass_100</span></code></pre></figure>
+
+<p>Note that I am using <code>PriceClass_100</code>, which means that I chose the cheapest CloudFront price class.
+Most of my traffic comes from the US and Europe anyway, so I can save money by not having broad CDN replicates
+around the globe.</p>
+
+<h3 id="misc">Misc.</h3>
+
+<p><code>s3_website.yml</code> is likely to be in the root of your Jekyll content, so it is a good idea to
+exclude it from the output files in <code>_config.yml</code>:</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="l l-Scalar l-Scalar-Plain">exclude</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">bower.json</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">s3_website.yml</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">bower_components</span></code></pre></figure>
+
+
+  </div><a class="u-url" href="/blog/jekyll-amazon-hosting/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://instagram.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

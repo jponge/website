@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.0 -->
+<title>The Mozilla Public License Version 2.0: A Good Middle Ground? | Julien Ponge</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="The Mozilla Public License Version 2.0: A Good Middle Ground?" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The release of the Mozilla Public License Version 2.0 probably flew under the radar when it happened in January 2012." />
+<meta property="og:description" content="The release of the Mozilla Public License Version 2.0 probably flew under the radar when it happened in January 2012." />
+<link rel="canonical" href="https://julien.ponge.org/blog/mozilla-public-license-v2-a-good-middleground/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/mozilla-public-license-v2-a-good-middleground/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2012-08-09T00:00:00+02:00" />
+<script type="application/ld+json">
+{"headline":"The Mozilla Public License Version 2.0: A Good Middle Ground?","dateModified":"2012-08-09T00:00:00+02:00","datePublished":"2012-08-09T00:00:00+02:00","url":"https://julien.ponge.org/blog/mozilla-public-license-v2-a-good-middleground/","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/mozilla-public-license-v2-a-good-middleground/"},"description":"The release of the Mozilla Public License Version 2.0 probably flew under the radar when it happened in January 2012.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">The Mozilla Public License Version 2.0: A Good Middle Ground?</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2012-08-09T00:00:00+02:00" itemprop="datePublished">Aug 9, 2012
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>The release of the <a href="http://www.mozilla.org/MPL/2.0/">Mozilla Public License Version 2.0</a> probably flew under the radar <a href="https://mpl.mozilla.org/2012/01/03/announcing-mpl-2-0/">when it happened in January 2012</a>.</p>
+
+<p>In fairness, the initial Mozilla Public License (MPL) was admittedly not much used outside of the Mozilla world. Mozilla-branded software source code have traditionally been released under a tri-license comprising the <a href="http://www.gnu.org/copyleft/gpl.html">GNU GPL</a>, the GNU LGPL and the MPL itself. Some Mozilla extensions and derivatives decided to follow the same path, but the reality is that the MPL never really spread outside of its originating community (<a href="http://www.adobe.com/products/eula/flex/flex3sdk.html">Adobe publishing significant parts of Flex under the MPL</a> is a rare counter-example). This is in sharp contrast to, say, the Apache License or the Eclipse Public License.</p>
+
+<h2 id="spirit-of-the-mpl">Spirit of the MPL</h2>
+
+<p>In essence, the MPL was designed as a “middle-ground” license sitting between the extremes of restrictive licenses like the GNU (A)GPL and liberal licenses such as the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache</a> / <a href="http://opensource.org/licenses/bsd-license.php/">BSD</a> / <a href="http://opensource.org/licenses/mit-license.php/">MIT</a>. While the MPL license itself allows derivative works to be released under <em>any</em> license, including a proprietary one, it still requires a form of <a href="http://www.gnu.org/copyleft/">copyleft</a> at the file level. This consequently puts the MPL in the same bucket as the <a href="http://www.eclipse.org/legal/epl-v10.html">Eclipse Public License</a> and the <a href="http://www.gnu.org/licenses/lgpl.html">GNU LGPL</a>.</p>
+
+<p>In practice, you may take some MPL code and use it as part of your proprietary software. However, you must give access in source form to the MPL-covered parts, and any modification of a piece of MPL-covered code from your side must also be published as MPL-covered code. <strong>This is just simple copyleft, really.</strong></p>
+
+<p>The fact that most Mozilla-branded software have been historically released under a tri MPL/GPL/LGPL license is for increased compatibility with third-party libraries, especially those published under the terms of a GNU license. The versions 1.x of the MPL were not (L)GPL-compliant.</p>
+
+<h2 id="a-simpler-reusable-and-pragmatic-software-license">A simpler, reusable and pragmatic software license?</h2>
+
+<p>A weak copyleft license certainly has some merits, especially when the said license applies at the file level, was written in the open by both opensource advocates and lawyers, and… is free of any political message which you may not necessarily adhere to (<em>yes, I am looking at you Richard</em>).</p>
+
+<p>That being said, the MPL in its original form was not necessarily easy to apply to non-Mozilla projects, so much that derivatives of the MPL were written such as the <a href="http://opensource.org/licenses/cddl-1.0">CDDL by (late) Sun Microsystems</a>.</p>
+
+<p>The latest installment of the MPL looks much more appealing outside of the Mozilla world. Quoting the <a href="https://mpl.mozilla.org/2012/01/03/announcing-mpl-2-0/">announcement blog post</a>:</p>
+
+<blockquote>
+  <p>The result of a two year revision process that included feedback and suggestions from the Mozilla community, users of the MPL (both community and corporate), and the broader open source legal community, MPL 2.0 contains several important changes from MPL 1.1. In particular, MPL 2.0:</p>
+
+  <ul>
+    <li>is simpler and shorter, using the past 10 years of in-practice application of the license to help better understand what is and isn’t necessary in an open source license.</li>
+    <li>is modernized for recent changes in copyright law, and incorporates feedback from lawyers outside the United States on issues of applicability in non-US jurisdictions.</li>
+    <li>provides patent protections for contributors more in line with those of other open source licenses, and allows an entire community of contributors to protect any contributor if they are sued.</li>
+    <li>provides compatibility with the Apache and GPL licenses, making code reuse and redistribution easier.</li>
+  </ul>
+</blockquote>
+
+<p>The explicit compatibility with the GNU and Apache licenses is also an added benefit, especially as it does not involve a complex multi-licenses scheme like it was the case with the old MPL. I recommend reading what <a href="http://blogs.computerworlduk.com/simon-says/2012/01/can-mozilla-unify-open-source/index.htm">Simon Phipps had to say in his “Can Mozilla Unify Open Source?” column for Computer World</a>:</p>
+
+<blockquote>
+  <p>Other coverage of the new license has focussed on the modified patent-peace and other adjusted terms (goodbye, Netscape!) but the most important development in the creation of version 2 of the Mozilla license in my opinion is the inclusion of specific compatibility with the GNU General Public License (GPL). Previously, the Mozilla project used a complex and messy triple license arrangement to allow it to straddle the worlds of copyleft and non-copyleft licensing. Other users of the MPL (and its many vanity-named clones) tended not to bother, with the result that some code-bases were isolated from collaboration with the great universe of GPL-licensed software.</p>
+</blockquote>
+
+<h2 id="you-should-consider-using-it">You should consider using it!</h2>
+
+<p>I can say that I am certainly going to consider the MPL v2.0 for future software publications.</p>
+
+<p>I am clearly not a proponent of the strong copyleft GNU licenses (GPL and AGPL): they are way too restrictive and they carry a political message which should not be part of a license text if you ask me. That being said those licenses can be very useful in certain contexts, especially when a business model needs to be put in place to sustain the development of a project.</p>
+
+<p>While the <em>lax</em> BSD / MIT / Apache licenses generally have my preference, I sometime feel that they may be giving away too much to the “free loaders” who never give anything back to the upstream projects. Open source is now widespread unlike it was the case 10 years ago, and I have witnessed first-hand a change in the way people “consume” open source projects. I don’t want to sound like an old fart, but people participate less in the projects than back in the days.</p>
+
+<p><strong>The MPL v2.0 form of copyleft may be an appealing incentive to those projects that want to liberate creativity while reminding its users that a bit of ethics never hurts.</strong></p>
+
+<p>The simplicity of the MPL v2.0 combined with a fair yet unobtrusive level of copyleft is what makes it a strong candidate for your next open source project!</p>
+
+<h3 id="resources">Resources</h3>
+
+<ul>
+  <li><a href="http://www.mozilla.org/MPL/2.0/">MPL v2.0</a></li>
+  <li><a href="http://www.mozilla.org/MPL/2.0/FAQ.html">MPL v2.0 FAQ</a></li>
+</ul>
+
+<h3 id="how-to-apply-it-to-your-code">How to apply it to your code</h3>
+
+<p>You should follow the convention of putting the license text at the root of your source code tree in a <code>LICENSE</code> file.</p>
+
+<p>In each source file, simply add a header with the text from <em>Exhibit A</em> in the MPL v2.0:</p>
+
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="cm">/*</span>
+<span class="cm"> * Copyright (c) &lt;year&gt; &lt;copyright holders&gt;</span>
+<span class="cm"> *</span>
+<span class="cm"> * This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="cm"> * License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="cm"> * file, You can obtain one at http://mozilla.org/MPL/2.0/.</span>
+<span class="cm"> */</span></code></pre></figure>
+
+
+  </div><a class="u-url" href="/blog/mozilla-public-license-v2-a-good-middleground/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://instagram.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

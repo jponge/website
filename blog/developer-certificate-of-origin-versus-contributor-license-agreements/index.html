@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.0 -->
+<title>Developer Certificate of Origin versus Contributor License Agreements | Julien Ponge</title>
+<meta name="generator" content="Jekyll v3.8.5" />
+<meta property="og:title" content="Developer Certificate of Origin versus Contributor License Agreements" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I am in favor of using contributor license agreements (CLA) for opensource projects that are expected to be developed in the long run, especially when you develop them as part of your professional activities." />
+<meta property="og:description" content="I am in favor of using contributor license agreements (CLA) for opensource projects that are expected to be developed in the long run, especially when you develop them as part of your professional activities." />
+<link rel="canonical" href="https://julien.ponge.org/blog/developer-certificate-of-origin-versus-contributor-license-agreements/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/developer-certificate-of-origin-versus-contributor-license-agreements/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-03-11T00:00:00+01:00" />
+<script type="application/ld+json">
+{"headline":"Developer Certificate of Origin versus Contributor License Agreements","dateModified":"2016-03-11T00:00:00+01:00","datePublished":"2016-03-11T00:00:00+01:00","url":"https://julien.ponge.org/blog/developer-certificate-of-origin-versus-contributor-license-agreements/","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/developer-certificate-of-origin-versus-contributor-license-agreements/"},"description":"I am in favor of using contributor license agreements (CLA) for opensource projects that are expected to be developed in the long run, especially when you develop them as part of your professional activities.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Developer Certificate of Origin versus Contributor License Agreements</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2016-03-11T00:00:00+01:00" itemprop="datePublished">Mar 11, 2016
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><a href="/blog/in-defense-of-contributor-license-agreements/">I am in favor of using <em>contributor license agreements (CLA)</em></a>
+for opensource projects that are expected to be developed in the long run, especially when you develop them as part of your professional activities.</p>
+
+<p>That being said, using a CLA is not always a <em>practical</em> option as it adds a bit of bureaucracy.
+Indeed, you will need to adapt a CLA <a href="https://www.apache.org/licenses/icla.txt">like the one from the Apache Software Foundation</a>, and you will have to make sure that people send it back to you before you can accept any contribution from them.</p>
+
+<p>The Linux kernel does not use a CLA, but in 2004 the team introduced a <a href="http://elinux.org/Developer_Certificate_Of_Origin"><em>developer certificate of origin (DCO)</em></a>. How does it compare to CLAs?</p>
+
+<h3 id="whats-in-a-dco">What’s in a DCO?</h3>
+
+<p>From <a href="http://developercertificate.org/">http://developercertificate.org/</a>:</p>
+
+<pre><code>Developer Certificate of Origin
+Version 1.1
+
+Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
+660 York Street, Suite 102,
+San Francisco, CA 94110 USA
+
+Everyone is permitted to copy and distribute verbatim copies of this
+license document, but changing it is not allowed.
+
+
+Developer's Certificate of Origin 1.1
+
+By making a contribution to this project, I certify that:
+
+(a) The contribution was created in whole or in part by me and I
+have the right to submit it under the open source license
+indicated in the file; or
+
+(b) The contribution is based upon previous work that, to the best
+of my knowledge, is covered under an appropriate open source
+license and I have the right under that license to submit that
+work with modifications, whether created in whole or in part
+by me, under the same open source license (unless I am
+permitted to submit under a different license), as indicated
+in the file; or
+
+(c) The contribution was provided directly to me by some other
+person who certified (a), (b) or (c) and I have not modified
+it.
+
+(d) I understand and agree that this project and the contribution
+are public and that a record of the contribution (including all
+personal information I submit with it, including my sign-off) is
+maintained indefinitely and may be redistributed consistent with
+this project or the open source license(s) involved.
+</code></pre>
+
+<p>The idea is pretty simple: you certify that you adhere to these requirements by <em>signing-off</em> your commits (<code>git commit -s</code>), and it essentially means that:</p>
+
+<ol>
+  <li>you offer the changes under the same license agreement as the project, and</li>
+  <li>you have the right to do that,</li>
+  <li>you did not <em>steal</em> somebody else’s work.</li>
+</ol>
+
+<p>This is a clearer than accepting commits from the random pull-request, and at least the person sharing the contribution engages on some IP cleanliness requirements.</p>
+
+<p>Another bonus point for the DCO is that it is light on bureaucracy compared to a CLA: everything is bound to making signed-off commits with Git.</p>
+
+<h3 id="what-is-missing-compared-to-a-cla">What is missing compared to a CLA?</h3>
+
+<p>Looking at the <a href="https://eclipse.org/legal/CLA.php">Eclipse CLA</a> and the <a href="https://www.apache.org/licenses/icla.txt">Apache CLA</a>, a first difference is that the DCO does not explicitly grant a license to the receiving entities.</p>
+
+<p>Apache does it with clause 2:</p>
+
+<pre><code>2. Grant of Copyright License. Subject to the terms and conditions of
+this Agreement, You hereby grant to the Foundation and to
+recipients of software distributed by the Foundation a perpetual,
+worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+copyright license to reproduce, prepare derivative works of,
+publicly display, publicly perform, sublicense, and distribute Your
+Contributions and such derivative works.
+</code></pre>
+
+<p>and Eclipse has a mention in the preambule:</p>
+
+<pre><code>This CLA, and the license(s) associated with the particular Eclipse Foundation
+projects You are contributing to, provides a license to Your Contributions to
+the Eclipse Foundation and downstream consumers, but You still own Your Contributions,
+and except for the licenses provided for in this CLA, You reserve all right, title and
+interest in Your Contributions.
+</code></pre>
+
+<p>The remainder of the Eclipse CLA is quite similar to the Linux DCO, and very short. My guess is that it mostly defers to the <em>Eclipse Public License</em>, especially for patent issues.</p>
+
+<p>The Apache CLA is more lengthy than the one from Eclipse, and it adds a few more clauses, but in effect they are more or less redundant with what the <em>Apache Software License</em> provides. Still, there is one clause that is interesting:</p>
+
+<pre><code> 6. You are not expected to provide support for Your Contributions,
+ except to the extent You desire to provide support. You may provide
+ support for free, for a fee, or not at all. Unless required by
+ applicable law or agreed to in writing, You provide Your
+ Contributions on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
+ OF ANY KIND, either express or implied, including, without
+ limitation, any warranties or conditions of TITLE, NON-
+ INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.
+</code></pre>
+
+<p>This lifts any requirement for supporting the contributions. This may come as a surprise, but in some countries this <em>could</em> be the case that by default one has to support its work.</p>
+
+<h3 id="a-warning-on-trust">A warning on trust</h3>
+
+<p>The DCO is very Git-centric, and it only relies on commit metadata. Indeed, signing-off a commit is just about appending a <code>Signed-off-by:</code> line in the commit comment as in:</p>
+
+<pre><code>commit 0909d26f5de9e7e67fabcc94bab55f82fd33a1d3
+Author: Julien Ponge &lt;julien.ponge@insa-lyon.fr&gt;
+Date:   Tue Nov 17 10:29:19 2015 +0100
+
+Gradle sample rework
+
+* Switch to Gradle 2.8
+* Use the new plugins declaration section
+* Point to jCenter and Sonatype OSS snapshots (also switched to HTTPS)
+* Make the Java 8 source requirement explicit
+* The Java 8 Gradle check has been moved to settings.gradle to reduce clutter
+* The application plugin is being used to run the application from Gradle
+* The application code has been made verbose to know if the listen() operation succeeded or not.
+
+Signed-off-by: Julien Ponge &lt;julien.ponge@insa-lyon.fr&gt;
+</code></pre>
+
+<p>It is very easy to use <em>whatever</em> email address you want for a commit, and the sign-off is just text.</p>
+
+<h3 id="should-you-use-a-dco">Should you use a DCO?</h3>
+
+<p>In many respects, the Linux DCO is a valuable alternative to using a CLA, and it is certainly better than having no such mechanism at all for receiving contributions.</p>
+
+<p>Still, the issue of trust is important. What can be done to mitigate that is using GnuPG signatures in Git commits:</p>
+
+<ul>
+  <li><code>git commit -s -S</code> makes GnuPG-signed commits, and</li>
+  <li><code>git log --show-signature</code> shows GnuPG signatures in the log history, and</li>
+  <li><code>git merge --verify-signatures branch</code> ensures that all commits are signed <em>and</em> valid before performing a merge.</li>
+</ul>
+
+<p>Now having to use GnuPG for <em>all</em> commits can be a bit daunting. Perhaps a simple alternative can be to require that contributors add their name and email to a file (e.g., <code>CONTRIBUTORS</code>), and do so with a GnuPG + signed-off commit, and later at least sign-off commits. This is especially doable with services like <a href="https://keybase.io/">keybase.io</a> that can link several public profiles to a key, and especially GitHub (although yes, GitHub shall not be the center of the universe in opensource!).</p>
+
+<p>I think many variants can work out here, the most important thing is to have GnuPG in the loop at some point.</p>
+
+  </div><a class="u-url" href="/blog/developer-certificate-of-origin-versus-contributor-license-agreements/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://instagram.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
