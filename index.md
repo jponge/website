@@ -15,8 +15,7 @@ I am currently a **Principal Software Engineer** at [Red Hat](https://www.redhat
 I am primarily working on _reactive_ things and the [Eclipse Vert.x](https://vertx.io/) project.
 I am based in [Lyon, France](https://en.wikipedia.org/wiki/Lyon).
 
-I am _"on leave"_ from [INSA Lyon](http://www.insa-lyon.fr/) (Telecom Department) and the [CITI Laboratory](http://www.citi-lab.fr/) where I was an **Associate Professor** in computer science and engineering.
-I remain a member and _Associate Research Fellow_ of the CITI Lab within the [Dynamid](https://dynamid.citi-lab.fr/) team.
+I am _"on leave"_ from [INSA Lyon](http://www.insa-lyon.fr/) (Telecom Department) and the [CITI Laboratory](http://www.citi-lab.fr/) where I was an **Associate Professor** in computer science and engineering and a member of the [Dynamid](https://dynamid.citi-lab.fr/) team.
 
 I have held various teaching, research, managing and executive positions while at INSA.
 I have a long history in open source, having participated and created many projects.
@@ -24,8 +23,7 @@ I enjoy being at the frontier between academia and industry.
 
 ## Positions held 👨🏻‍💻
 
-* Since October 2018: **Principal Software Engineer** at **Red Hat**. _On leave_ from INSA Lyon. 
-* Since November 2018: **Associate Research Fellow** at the [CITI Laboratory](http://www.citi-lab.fr/) from INSA Lyon.
+* Since October 2018: **Principal Software Engineer** at **Red Hat**.
 * September 2016 to August 2018: **Delegation to Red Hat** to work on the [Eclipse Vert.x project](https://vertx.io/), thanks to an agreement between INSA Lyon and [Red Hat](https://www.redhat.com/).
 * 2009 -- 2018: **Associate Professor** (tenured) and **Researcher** at INSA Lyon Telecom and the CITI Laboratory.
 * 2016 -- 2017: **Scientific Deputy Manager** of the [Spie ICS - INSA Lyon IoT Chair](http://www.citi-lab.fr/chairs/iot-chair/).
