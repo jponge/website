@@ -58,8 +58,10 @@ I enjoy being at the frontier between academia and industry.
 
 ## Selected publications 📚
 
-These publications reflect some significant milestones of my research, not necessarily the value in terms of destination ranking.
+These publications reflect some significant milestones of my activities, not necessarily the value in terms of destination ranking.
 Check out my [full publications page](/academia/publications/) for a more comprehensive listing.
+
+* Julien Ponge and Mark Little. **Scalability and resilience in practice: current trends and opportunities** (Invited talk). *SRDS 2019 (38th International Symposium on Reliable Distributed Systems)*, October 2019, Lyon, France. [PDF](/files/publications/srds-jpml19.pdf)
 
 * Stefan-Gabriel Chitic, Julien Ponge and Olivier Simonin. **SDfR - Service discovery for multi-robot systems**. *ICAART 2016: The 8th International Conference on Agents and Artificial Intelligence*, Feb 2016, Rome, Italy. [HAL entry](https://hal.inria.fr/hal-01286895)
 

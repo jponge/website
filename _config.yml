@@ -12,11 +12,9 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://julien.ponge.org"
 permalink: /blog/:title/
 
-
 twitter_username: jponge
 github_username:  jponge
 linkedin_username: JulienPonge
-instagram_username: jponge
 rss: rss
 
 header_pages:
