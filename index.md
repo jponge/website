@@ -43,11 +43,7 @@ I enjoy being at the frontier between academia and industry.
 
 * Patrik Fortier (Since fall 2017, funded by the INSA Lyon / Spie ICS chair on the Internet of Things), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Programming language abstractions for the Internet of Things**.
 
-<!-- * Jean-Baptiste Trystram (Since fall 2016, CIFRE grant with Red Hat), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/), David Ingham (Red Hat) and Mark Little (Red Hat). **Distributed software management for large systems of IoT gateways**. -->
-
 * Stefan-Gabriel Chitic (Fall 2013 -- March 2018, French Research Ministry Grant), co-supervision with [Olivier Simonin](http://perso.citi-lab.fr/osimonin/). **Middleware and programming models for multi-robot systems**, defended March 15th 2018. Stefan now works at [CERN](https://home.cern/).
-
-<!-- * Ma Fuda (2012 -- 2013, China CSC Grant), co-supervision with [Stéphane Grumbach](https://who.rocq.inria.fr/Stephane.Grumbach/). Opted out of his PhD studies at INSA Lyon. -->
 
 ## Major open source contributions ✨
 
@@ -61,7 +57,7 @@ I enjoy being at the frontier between academia and industry.
 These publications reflect some significant milestones of my activities, not necessarily the value in terms of destination ranking.
 Check out my [full publications page](/academia/publications/) for a more comprehensive listing.
 
-* Julien Ponge and Mark Little. **Scalability and resilience in practice: current trends and opportunities** (Invited talk). *SRDS 2019 (38th International Symposium on Reliable Distributed Systems)*, October 2019, Lyon, France. [PDF](/files/publications/srds-jpml19.pdf)
+* Julien Ponge and Mark Little. **Scalability and resilience in practice: current trends and opportunities**. *SRDS 2019 (38th International Symposium on Reliable Distributed Systems)*, October 2019, Lyon, France. [PDF](/files/publications/srds-jpml19.pdf)
 
 * Stefan-Gabriel Chitic, Julien Ponge and Olivier Simonin. **SDfR - Service discovery for multi-robot systems**. *ICAART 2016: The 8th International Conference on Agents and Artificial Intelligence*, Feb 2016, Rome, Italy. [HAL entry](https://hal.inria.fr/hal-01286895)
 

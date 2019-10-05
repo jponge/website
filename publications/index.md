@@ -29,7 +29,7 @@ Julien Ponge. **Vert.x in Action**. Manning Publications, currently in early acc
 
 ## International peer-reviewed conferences ##
 
-* Julien Ponge and Mark Little. **Scalability and resilience in practice: current trends and opportunities** (Invited talk). *SRDS 2019 (38th International Symposium on Reliable Distributed Systems)*, October 2019, Lyon, France. [PDF](/files/publications/srds-jpml19.pdf)
+* Julien Ponge and Mark Little. **Scalability and resilience in practice: current trends and opportunities**. *SRDS 2019 (38th International Symposium on Reliable Distributed Systems)*, October 2019, Lyon, France. [PDF](/files/publications/srds-jpml19.pdf)
 
 * Roya Golchay, Frédéric Le Mouël, Julien Ponge and Nicolas Stouls. **Spontaneous Proximity Clouds: Making Mobile Devices to Collaborate for Resource and Data Sharing**. *CollaborateCom 2016*, November 2016, Beijing, China. [HAL entry](https://hal.inria.fr/hal-01391114)
 
