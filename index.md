@@ -11,7 +11,7 @@ redirect_from:
 ![Me](/images/me.png) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 [![Cover of Vert.x in Action](/images/MEAP-cover.png)](https://www.manning.com/books/vertx-in-action?a_aid=vertx-in-action&a_bid=22152024)
 
-I am currently a **Principal Software Engineer** at [Red Hat](https://www.redhat.com/).
+I am a **Principal Software Engineer** at [Red Hat](https://www.redhat.com/).
 I am primarily working on _reactive_ things and the [Eclipse Vert.x](https://vertx.io/) project.
 I am based in [Lyon, France](https://en.wikipedia.org/wiki/Lyon).
 
@@ -33,6 +33,13 @@ I enjoy being at the frontier between academia and industry.
 * 2004 -- 2009: **Researcher and Lecturer** at Clermont-Auvergne University (ISIMA) and the University of New South Wales.
 * 2003: **Intern** at Michelin, working in the software methods and tools group.
 
+## Major open source contributions ✨
+
+* [Eclipse Vert.x](https://vertx.io/): reactive toolkit for the JVM. Developer and modules maintainer.
+* [Eclipse Golo](https://golo-lang.org/): dynamically-typed language for the JVM. Creator.
+* [JooFlux](https://github.com/dynamid/jooflux): Java agent for dynamic aspect injection and method patching. Co-creator.
+* [IzPack](http://izpack.org/): software package installer toolkit. Creator, long retired.
+
 ## Research interests 🤔
 
 * Middleware
@@ -44,13 +51,6 @@ I enjoy being at the frontier between academia and industry.
 * Patrik Fortier (Since fall 2017, funded by the INSA Lyon / Spie ICS chair on the Internet of Things), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Programming language abstractions for the Internet of Things**.
 
 * Stefan-Gabriel Chitic (Fall 2013 -- March 2018, French Research Ministry Grant), co-supervision with [Olivier Simonin](http://perso.citi-lab.fr/osimonin/). **Middleware and programming models for multi-robot systems**, defended March 15th 2018. Stefan now works at [CERN](https://home.cern/).
-
-## Major open source contributions ✨
-
-* [Eclipse Vert.x](https://vertx.io/): reactive toolkit for the JVM. Developer and modules maintainer.
-* [Eclipse Golo](https://golo-lang.org/): dynamically-typed language for the JVM. Creator.
-* [JooFlux](https://github.com/dynamid/jooflux): Java agent for dynamic aspect injection and method patching. Co-creator.
-* [IzPack](http://izpack.org/): software package installer toolkit. Creator, long retired.
 
 ## Selected publications 📚
 
