@@ -1,7 +1,10 @@
 ---
-title: "(draft) A good terminal experience with iTerm2 and ZSH on macOS"
+title: "A good terminal experience with iTerm2 and ZSH on macOS"
 layout: post
 ---
+
+I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS.
+I use iTerm2, Zsh, and a few cool command-line tools.
 
 ### iTerm2
 
@@ -14,7 +17,7 @@ I especially enjoy the ability to split panes horizontally and vertically, as we
 I use the minimal theme with the tab bar on top and the status bar in the bottom with a few helper icons like CPU usage and current process.
 The color theme is [Dracula](https://draculatheme.com/).
 I like this theme very much also in other tools, notably _Visual Studio Code_ which is my currently preferred editor aside from _IntelliJ IDEA_ for Java projects.
-I also use the [Cascadia font from Microsoft](https://github.com/microsoft/cascadia-code).
+I also use the [Cascadia font from Microsoft](https://github.com/microsoft/cascadia-code) which is my preferred monospace font these days.
 
 ### Dot files
 
@@ -111,3 +114,4 @@ There are a bunch of command-line tools that I use but that not everyone may kno
 - [foreman](https://github.com/ddollar/foreman) is a tool for running multiple processes. You just specify commands in a `Procfile`, and then start them all and check their logs. It is very useful in development when you need to start many processes.
 - [hub](https://hub.github.com/) is the GitHub command-line tool for interacting with repositories. It is especially useful for checking out pull-requests.
 - [plantuml](http://plantuml.com/) is a fantastic tool for generating all sorts of diagrams from... text.
+- [jabba](https://github.com/shyiko/jabba) is a tool for managing Java virtual machines. It is frequently updated with builds of OpenJDK, Azul Zulu, GraalVM, Amazon Corretto, OpenJ9, etc.
