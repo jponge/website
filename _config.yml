@@ -20,8 +20,6 @@ header_pages:
   - publications/index.md
 
 # Build settings
-highlighter: pygments
-markdown: kramdown
 theme: minima
 plugins:
   - jekyll-feed
