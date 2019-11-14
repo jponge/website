@@ -15,9 +15,9 @@ I am currently a **Principal Software Engineer** at [Red Hat](https://www.redhat
 I am primarily working on _reactive_ things and the [Eclipse Vert.x](https://vertx.io/) project.
 I am based in [Lyon, France](https://en.wikipedia.org/wiki/Lyon).
 
-I am _"on leave"_ from [INSA Lyon](http://www.insa-lyon.fr/) (Telecom Department) and the [CITI Laboratory](http://www.citi-lab.fr/) where I was an **Associate Professor** in computer science and engineering and a member of the [Dynamid](https://dynamid.citi-lab.fr/) team.
-
+I am _"on leave"_ from [INSA Lyon](http://www.insa-lyon.fr/) and the [CITI Laboratory](http://www.citi-lab.fr/) where I was an **Associate Professor** in computer science and engineering.
 I have held various teaching, research, managing and executive positions while at INSA.
+
 I have a long history in open source, having participated and created many projects.
 I enjoy being at the frontier between academia and industry.
 

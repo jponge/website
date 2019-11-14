@@ -3,8 +3,6 @@ title: Julien Ponge
 email: julien@ponge.org
 
 description: >- # this means to ignore newlines until "baseurl:"
-  👋 Hi, I'm Julien!
-  I am a long-time software development enthusiast with a career between academia and industry.
   You can call me "Doctor" if you like, but all I can cure is your software, really 😉
 
 baseurl: "" # the subpath of your site, e.g. /blog
