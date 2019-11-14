@@ -65,38 +65,38 @@ I like none of them, so I went with the simple and effective <a href="https://gi
 
 <p>This way I can just type some Markdown, as in:</p>
 
-<pre><code>---
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">---</span>
 
-class: middle, left
+<span class="n">class</span><span class="p">:</span> <span class="n">middle</span><span class="p">,</span> <span class="n">left</span>
 
-# Basic stuff
+<span class="p">#</span> <span class="n">Basic</span> <span class="n">stuff</span>
 
----
+<span class="p">---</span>
 
-# A class...
+<span class="p">#</span> <span class="n">A</span> <span class="n">class</span><span class="p">...</span>
 
-`src/main/java/fr/insa/tc/mid/Hello.java`
+<span class="p">`</span><span class="n">src</span><span class="p">/</span><span class="n">main</span><span class="p">/</span><span class="n">java</span><span class="p">/</span><span class="n">fr</span><span class="p">/</span><span class="n">insa</span><span class="p">/</span><span class="n">tc</span><span class="p">/</span><span class="n">mid</span><span class="p">/</span><span class="n">Hello</span><span class="p">.</span><span class="n">java</span><span class="p">`</span>
 
-```java
-package fr.insa.tc.mid;
+<span class="p">```</span><span class="n">java</span>
+<span class="k">package</span> <span class="n">fr</span><span class="p">.</span><span class="n">insa</span><span class="p">.</span><span class="n">tc</span><span class="p">.</span><span class="n">mid</span><span class="p">;</span>
 
-import java.util.List;
-import java.util.ArrayList;
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="k">List</span><span class="p">;</span>
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="n">util</span><span class="p">.</span><span class="n">ArrayList</span><span class="p">;</span>
 
-public class Hello {
+<span class="k">public</span> <span class="n">class</span> <span class="n">Hello</span> <span class="p">{</span>
 
-    private final List list = new ArrayList();
+    <span class="n">private</span> <span class="n">final</span> <span class="k">List</span> <span class="k">list</span> <span class="p">=</span> <span class="n">new</span> <span class="n">ArrayList</span><span class="p">();</span>
 
-    public void doStuff() {
-        list.add("A");
-        list.add("B");
-        list.add("C");
-    }
-}
-```
-</code></pre>
+    <span class="k">public</span> <span class="n">void</span> <span class="n">doStuff</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">list</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"A"</span><span class="p">);</span>
+        <span class="k">list</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"B"</span><span class="p">);</span>
+        <span class="k">list</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"C"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="p">```</span>
+</code></pre></div></div>
 
-<p>Except for the <code>class</code> attributes that allow some layout and positioning, it’s just Markdown with slides being separated by <code>---</code> rulers.</p>
+<p>Except for the <code class="highlighter-rouge">class</code> attributes that allow some layout and positioning, it’s just Markdown with slides being separated by <code class="highlighter-rouge">---</code> rulers.</p>
 
 <p><img src="/images/posts/2017/md2html.png" alt="Slides in HTML" /></p>
 
@@ -105,9 +105,9 @@ The great thing with markdown-to-html is that it is very easy to customize.</p>
 
 <p>Rendering slides to HTML is done with this quick shell script:</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="ch">#!/bin/bash</span>
-<span class="k">for</span> f in *.md<span class="p">;</span> <span class="k">do</span>
-  markdown-to-slides -s style.css -o <span class="s2">&quot;</span><span class="k">$(</span>basename <span class="nv">$f</span> .md<span class="k">)</span><span class="s2">.html&quot;</span> <span class="nv">$f</span>
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
+<span class="k">for </span>f <span class="k">in</span> <span class="k">*</span>.md<span class="p">;</span> <span class="k">do
+  </span>markdown-to-slides <span class="nt">-s</span> style.css <span class="nt">-o</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">basename</span> <span class="nv">$f</span> .md<span class="si">)</span><span class="s2">.html"</span> <span class="nv">$f</span>
 <span class="k">done</span></code></pre></figure>
 
 <h3 id="pdf-export">PDF export</h3>
@@ -121,17 +121,17 @@ Like most HTML to PDF renderers, it takes control of a web browser engine via Ph
 <p>If you use DeckTape as a one-shot tool just like I do, it is perhaps easier to use the Docker image.
 Again, a shell script does the heavy work:</p>
 
-<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span></span><span class="ch">#!/bin/bash</span>
-<span class="k">for</span> f in *.md<span class="p">;</span> <span class="k">do</span>
-  <span class="nv">deck</span><span class="o">=</span><span class="k">$(</span>basename <span class="nv">$f</span> .md<span class="k">)</span> 
-  docker run --rm -v <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:/slides astefanutti/decktape <span class="nv">$deck</span>.html <span class="nv">$deck</span>.pdf
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
+<span class="k">for </span>f <span class="k">in</span> <span class="k">*</span>.md<span class="p">;</span> <span class="k">do
+  </span><span class="nv">deck</span><span class="o">=</span><span class="si">$(</span><span class="nb">basename</span> <span class="nv">$f</span> .md<span class="si">)</span> 
+  docker run <span class="nt">--rm</span> <span class="nt">-v</span> <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>:/slides astefanutti/decktape <span class="nv">$deck</span>.html <span class="nv">$deck</span>.pdf
 <span class="k">done</span></code></pre></figure>
 
 <p>The way it works is simple:</p>
 
 <ol>
-  <li><code>--rm</code> ensures the container gets erased after execution,</li>
-  <li><code>-v</code> allows mounting the local folder to <code>/slides</code> in the container,</li>
+  <li><code class="highlighter-rouge">--rm</code> ensures the container gets erased after execution,</li>
+  <li><code class="highlighter-rouge">-v</code> allows mounting the local folder to <code class="highlighter-rouge">/slides</code> in the container,</li>
   <li>DeckTape then does the magic.</li>
 </ol>
 
@@ -160,7 +160,7 @@ Again, a shell script does the heavy work:</p>
 </div>
 
       <div class="footer-col footer-col-3">
-        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+        <p>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
       </div>
     </div>
 

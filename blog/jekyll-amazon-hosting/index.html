@@ -72,7 +72,7 @@ keep the HTTPS support.</p>
 needs to be. Jekyll just gets out of the way with minimal fuss.</p>
 
 <p>The produced static website is then stored to a S3 bucket, and delivered using the CloudFront CDN.
-Because I had specific requirements on <em>not</em> using a <code>CNAME</code> DNS entry to point <code>julien.ponge.org</code> to
+Because I had specific requirements on <em>not</em> using a <code class="highlighter-rouge">CNAME</code> DNS entry to point <code class="highlighter-rouge">julien.ponge.org</code> to
 a CloudFront distribution, I also use Route53 to manage the DNS.</p>
 
 <p>This costs me overall about 0.50 / 0.60 euros per month depending on the dollar-euro conversion
@@ -88,7 +88,7 @@ expensive when I exit the free tier.</p>
 
 <p>HTTPS support for CloudFront instances is done via <a href="http://en.wikipedia.org/wiki/Server_Name_Indication">SNI</a>.
 You will need to upload your certificates from the command-line tooling with the
-<a href="http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/SecureConnections.html#CNAMEsAndHTTPS"><code>aws iam upload-server-certificate</code> subcommand</a>.</p>
+<a href="http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/SecureConnections.html#CNAMEsAndHTTPS"><code class="highlighter-rouge">aws iam upload-server-certificate</code> subcommand</a>.</p>
 
 <p>You should also pay attention to the length of your SSL Certificate: it should be no more than 2048 bits.
 I initially had a 4096 bits certificate, and spend some time digging the issue.</p>
@@ -101,42 +101,42 @@ with <a href="https://github.com/laurilehmijoki/s3_website">s3_website</a>.</p>
 <p>It also does the proper configuration of your S3 bucket to server websites over HTTP. It does the
 same with CloudFront, by creating a distribution if need be.</p>
 
-<p>It uses a simple <code>s3_website.yml</code> configuration file. In my case it looks like this:</p>
+<p>It uses a simple <code class="highlighter-rouge">s3_website.yml</code> configuration file. In my case it looks like this:</p>
 
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="l l-Scalar l-Scalar-Plain">s3_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;%= ENV[&#39;S3_ID&#39;] %&gt;</span>
-<span class="l l-Scalar l-Scalar-Plain">s3_secret</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;%= ENV[&#39;S3_SECRET&#39;] %&gt;</span>
-<span class="l l-Scalar l-Scalar-Plain">s3_bucket</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">julien.ponge.org</span>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">s3_id</span><span class="pi">:</span> <span class="s">&lt;%= ENV['S3_ID'] %&gt;</span>
+<span class="na">s3_secret</span><span class="pi">:</span> <span class="s">&lt;%= ENV['S3_SECRET'] %&gt;</span>
+<span class="na">s3_bucket</span><span class="pi">:</span> <span class="s">julien.ponge.org</span>
 
-<span class="l l-Scalar l-Scalar-Plain">max_age</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">300</span>
+<span class="na">max_age</span><span class="pi">:</span> <span class="m">300</span>
 
-<span class="l l-Scalar l-Scalar-Plain">gzip</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="na">gzip</span><span class="pi">:</span> <span class="no">true</span>
 
-<span class="l l-Scalar l-Scalar-Plain">s3_reduced_redundancy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="na">s3_reduced_redundancy</span><span class="pi">:</span> <span class="no">true</span>
 
-<span class="l l-Scalar l-Scalar-Plain">cloudfront_distribution_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;%= ENV[&#39;CLOUDFRONT_ID&#39;] %&gt;</span>
-<span class="l l-Scalar l-Scalar-Plain">cloudfront_invalidate_root</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="l l-Scalar l-Scalar-Plain">cloudfront_distribution_config</span><span class="p p-Indicator">:</span>
-  <span class="l l-Scalar l-Scalar-Plain">default_cache_behavior</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">min_TTL</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;%= 60 * 60 * 24 %&gt;</span>
-  <span class="l l-Scalar l-Scalar-Plain">aliases</span><span class="p p-Indicator">:</span>
-    <span class="l l-Scalar l-Scalar-Plain">quantity</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-    <span class="l l-Scalar l-Scalar-Plain">items</span><span class="p p-Indicator">:</span>
-      <span class="l l-Scalar l-Scalar-Plain">CNAME</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">julien.ponge.org</span>
-  <span class="l l-Scalar l-Scalar-Plain">price_class</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">PriceClass_100</span></code></pre></figure>
+<span class="na">cloudfront_distribution_id</span><span class="pi">:</span> <span class="s">&lt;%= ENV['CLOUDFRONT_ID'] %&gt;</span>
+<span class="na">cloudfront_invalidate_root</span><span class="pi">:</span> <span class="no">true</span>
+<span class="na">cloudfront_distribution_config</span><span class="pi">:</span>
+  <span class="na">default_cache_behavior</span><span class="pi">:</span>
+    <span class="na">min_TTL</span><span class="pi">:</span> <span class="s">&lt;%= 60 * 60 * 24 %&gt;</span>
+  <span class="na">aliases</span><span class="pi">:</span>
+    <span class="na">quantity</span><span class="pi">:</span> <span class="m">1</span>
+    <span class="na">items</span><span class="pi">:</span>
+      <span class="na">CNAME</span><span class="pi">:</span> <span class="s">julien.ponge.org</span>
+  <span class="na">price_class</span><span class="pi">:</span> <span class="s">PriceClass_100</span></code></pre></figure>
 
-<p>Note that I am using <code>PriceClass_100</code>, which means that I chose the cheapest CloudFront price class.
+<p>Note that I am using <code class="highlighter-rouge">PriceClass_100</code>, which means that I chose the cheapest CloudFront price class.
 Most of my traffic comes from the US and Europe anyway, so I can save money by not having broad CDN replicates
 around the globe.</p>
 
 <h3 id="misc">Misc.</h3>
 
-<p><code>s3_website.yml</code> is likely to be in the root of your Jekyll content, so it is a good idea to
-exclude it from the output files in <code>_config.yml</code>:</p>
+<p><code class="highlighter-rouge">s3_website.yml</code> is likely to be in the root of your Jekyll content, so it is a good idea to
+exclude it from the output files in <code class="highlighter-rouge">_config.yml</code>:</p>
 
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="l l-Scalar l-Scalar-Plain">exclude</span><span class="p p-Indicator">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">bower.json</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">s3_website.yml</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">bower_components</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">exclude</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">bower.json</span>
+  <span class="pi">-</span> <span class="s">s3_website.yml</span>
+  <span class="pi">-</span> <span class="s">bower_components</span></code></pre></figure>
 
 
   </div><a class="u-url" href="/blog/jekyll-amazon-hosting/" hidden></a>
@@ -160,7 +160,7 @@ exclude it from the output files in <code>_config.yml</code>:</p>
 </div>
 
       <div class="footer-col footer-col-3">
-        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+        <p>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
       </div>
     </div>
 

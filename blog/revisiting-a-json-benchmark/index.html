@@ -47,7 +47,7 @@
   <div class="post-content e-content" itemprop="articleBody">
     <blockquote>
   <p><strong>Update 2014/04/29:</strong> for the record Boon is the new JSON implementation for Groovy. 
-<code>groovy</code> in the benchmarks actually refers to the old implementation.</p>
+<code class="highlighter-rouge">groovy</code> in the benchmarks actually refers to the old implementation.</p>
 </blockquote>
 
 <p>Rick Hightower recently <a href="http://rick-hightower.blogspot.fr/2014/04/groovy-and-boon-provide-fastest-json.html">published a JSON JVM libraries benchmark</a>
@@ -61,11 +61,11 @@ potential flaws never hurts.</p>
 
 <h2 id="initial-measures">Initial measures</h2>
 
-<p>I started with the <code>master</code> branch of the benchmark suite, and ran the benchmark with the default
+<p>I started with the <code class="highlighter-rouge">master</code> branch of the benchmark suite, and ran the benchmark with the default
 configuration.</p>
 
 <p>The benchmark is written with <a href="http://openjdk.java.net/projects/code-tools/jmh/">OpenJDK JMH</a>, a solid
-harness for writing benchmarks. With the results exported to a <code>.csv</code> file, I was able to plot the
+harness for writing benchmarks. With the results exported to a <code class="highlighter-rouge">.csv</code> file, I was able to plot the
 results:</p>
 
 <p><img src="/images/posts/2014/bad-serialization.png" alt="Serialization" /></p>
@@ -84,26 +84,26 @@ JSON support (Boon is becoming the new Groovy built-in JSON implementation).</p>
 <p>While JMH-built benchmark settings can always be tweaked from the command-line, I thought it would
 be better to improve the default settings:</p>
 
-<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span></span><span class="gd">--- a/src/main/java/org/bura/benchmarks/json/DeserializationBenchmarks.java</span>
-<span class="gi">+++ b/src/main/java/org/bura/benchmarks/json/DeserializationBenchmarks.java</span>
-<span class="gu">@@ -33,6 +25,9 @@ import com.google.gson.reflect.TypeToken;</span>
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="gd">--- a/src/main/java/org/bura/benchmarks/json/DeserializationBenchmarks.java
+</span><span class="gi">+++ b/src/main/java/org/bura/benchmarks/json/DeserializationBenchmarks.java
+</span><span class="p">@@ -33,6 +25,9 @@</span> import com.google.gson.reflect.TypeToken;
  @State(Scope.Benchmark)
  @BenchmarkMode(Mode.Throughput)
  @OutputTimeUnit(TimeUnit.SECONDS)
-<span class="gi">+@Fork(value = 1, jvmArgsAppend = {&quot;-Xmx2048m&quot;, &quot;-server&quot;, &quot;-XX:+AggressiveOpts&quot;})</span>
-<span class="gi">+@Measurement(iterations = 10, time = 3, timeUnit = TimeUnit.SECONDS)</span>
-<span class="gi">+@Warmup(iterations = 20, time = 3, timeUnit = TimeUnit.SECONDS)</span>
- public class DeserializationBenchmarks {
+<span class="gi">+@Fork(value = 1, jvmArgsAppend = {"-Xmx2048m", "-server", "-XX:+AggressiveOpts"})
++@Measurement(iterations = 10, time = 3, timeUnit = TimeUnit.SECONDS)
++@Warmup(iterations = 20, time = 3, timeUnit = TimeUnit.SECONDS)
+</span> public class DeserializationBenchmarks {
 
-     private static final String RESOURCE_CITYS = &quot;citys&quot;;</code></pre></figure>
+     private static final String RESOURCE_CITYS = "citys";</code></pre></figure>
 
-<p><em>(a similar change was made to the <code>SerializationBenchmarks</code> class)</em></p>
+<p><em>(a similar change was made to the <code class="highlighter-rouge">SerializationBenchmarks</code> class)</em></p>
 
 <p>Iterations are now longer than the default 1s, and we have more warmup rounds. I could not observe
-much variation using different JVM instances, so a <code>fork</code> value of <code>1</code> is fine. It would be worth
+much variation using different JVM instances, so a <code class="highlighter-rouge">fork</code> value of <code class="highlighter-rouge">1</code> is fine. It would be worth
 having more forks if the resulting values were less contrasted.</p>
 
-<p>I also set the JVM options and introduced <code>-XX:+AggressiveOpts</code>. Since we are doing flat out
+<p>I also set the JVM options and introduced <code class="highlighter-rouge">-XX:+AggressiveOpts</code>. Since we are doing flat out
 benchmarking, why not just ask the JVM for that extra crazyness?</p>
 
 <h3 id="avoid-potential-dead-code-elimination">Avoid (potential) dead-code elimination</h3>
@@ -116,67 +116,67 @@ on the OpenJDK wiki to get a glimpse of what clever tricks HotSpot employs.</p>
 
 <p>The benchmark code was full of potential dead-code eliminations:</p>
 
-<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span></span><span class="gu">@@ -65,29 +61,29 @@ public class DeserializationBenchmarks {</span>
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span class="p">@@ -65,29 +61,29 @@</span> public class DeserializationBenchmarks {
      private TypeReference&lt;?&gt; jacksonType;
 
      @GenerateMicroBenchmark
-<span class="gd">-    public void jackson() throws JsonParseException, JsonMappingException, IOException {</span>
-<span class="gd">-        jacksonMapper.readValue(resource, jacksonType);</span>
-<span class="gi">+    public Object jackson() throws IOException {</span>
-<span class="gi">+        return jacksonMapper.readValue(resource, jacksonType);</span>
-     }
+<span class="gd">-    public void jackson() throws JsonParseException, JsonMappingException, IOException {
+-        jacksonMapper.readValue(resource, jacksonType);
+</span><span class="gi">+    public Object jackson() throws IOException {
++        return jacksonMapper.readValue(resource, jacksonType);
+</span>     }
 
-     private final Gson gson = new GsonBuilder().setDateFormat(&quot;yyyy-MM-dd&#39;T&#39;HH:mm:ssZ&quot;).create();
+     private final Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").create();
      private java.lang.reflect.Type gsonType;
 
      @GenerateMicroBenchmark
-<span class="gd">-    public void gson() {</span>
-<span class="gd">-        gson.fromJson(resource, gsonType);</span>
-<span class="gi">+    public Object gson() {</span>
-<span class="gi">+        return gson.fromJson(resource, gsonType);</span>
-     }
+<span class="gd">-    public void gson() {
+-        gson.fromJson(resource, gsonType);
+</span><span class="gi">+    public Object gson() {
++        return gson.fromJson(resource, gsonType);
+</span>     }
 
      private final JsonParser boon = new JsonFastParser();
 
      @GenerateMicroBenchmark
-<span class="gd">-    public void boon() {</span>
-<span class="gd">-        boon.parse(resource);</span>
-<span class="gi">+    public Object boon() {</span>
-<span class="gi">+        return boon.parse(resource);</span>
-     }
+<span class="gd">-    public void boon() {
+-        boon.parse(resource);
+</span><span class="gi">+    public Object boon() {
++        return boon.parse(resource);
+</span>     }
 
      private final JsonSlurper groovy = new JsonSlurper();
 
      @GenerateMicroBenchmark
-<span class="gd">-    public void groovy() {</span>
-<span class="gd">-        groovy.parseText(resource);</span>
-<span class="gi">+    public Object groovy() {</span>
-<span class="gi">+        return groovy.parseText(resource);</span>
-     }
+<span class="gd">-    public void groovy() {
+-        groovy.parseText(resource);
+</span><span class="gi">+    public Object groovy() {
++        return groovy.parseText(resource);
+</span>     }
  }</code></pre></figure>
 
-<p>I simply replaced <code>void</code> methods with value-returning methods. This way, JMH consumes the value
+<p>I simply replaced <code class="highlighter-rouge">void</code> methods with value-returning methods. This way, JMH consumes the value
 in a way that prevents HotSpot from thinking that the code in the method is useless. Another way
-to do so is to push values into a JMH-injected <code>Blackhole</code> object.</p>
+to do so is to push values into a JMH-injected <code class="highlighter-rouge">Blackhole</code> object.</p>
 
 <p>Looking at other places in the benchmark source code, you could see that the author actually knew
 about dead-code elimination:</p>
 
-<figure class="highlight"><pre><code class="language-diff" data-lang="diff"><span></span>     @GenerateMicroBenchmark
-<span class="gd">-    public void boon() {</span>
-<span class="gd">-        String json = boon.serialize(data).toString();</span>
-<span class="gd">-        json.charAt(0);</span>
-<span class="gi">+    public String boon() {</span>
-<span class="gi">+        return boon.serialize(data).toString();</span>
-     }</code></pre></figure>
+<figure class="highlight"><pre><code class="language-diff" data-lang="diff">     @GenerateMicroBenchmark
+<span class="gd">-    public void boon() {
+-        String json = boon.serialize(data).toString();
+-        json.charAt(0);
+</span><span class="gi">+    public String boon() {
++        return boon.serialize(data).toString();
+</span>     }</code></pre></figure>
 
-<p>The call to <code>json.charAt(0)</code> was probably meant to ensure that the result value of <code>boon.serialize(...)</code>
+<p>The call to <code class="highlighter-rouge">json.charAt(0)</code> was probably meant to ensure that the result value of <code class="highlighter-rouge">boon.serialize(...)</code>
 was not going to considered as dead-code.</p>
 
 <p>Aside from potential dead-code elimination, what is wrong here is that the benchmark was actually
-not just about benchmarking <code>boon.serialize(...)</code>, but <code>boon.serialize(...)</code> <em>and</em> <code>json.charAt(0)</code>.</p>
+not just about benchmarking <code class="highlighter-rouge">boon.serialize(...)</code>, but <code class="highlighter-rouge">boon.serialize(...)</code> <em>and</em> <code class="highlighter-rouge">json.charAt(0)</code>.</p>
 
-<p>I did not check what native code HotSpot generated, but I suspect that the <code>json.charAt(0)</code> call
+<p>I did not check what native code HotSpot generated, but I suspect that the <code class="highlighter-rouge">json.charAt(0)</code> call
 itself was subject to dead-code elimination: it’s simple and free of side-effects.</p>
 
 <h2 id="new-measures">New measures</h2>
@@ -206,12 +206,12 @@ sure that this will never be the case.</p>
 <p>It is actually very easy to reproduce the effects of dead-code elimination in simple JMH benchmarks.
 As an exercise, try to benchmark the following code:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@State</span><span class="o">(</span><span class="n">Scope</span><span class="o">.</span><span class="na">Benchmark</span><span class="o">)</span>
-<span class="nd">@BenchmarkMode</span><span class="o">(</span><span class="n">Mode</span><span class="o">.</span><span class="na">Throughput</span><span class="o">)</span>
-<span class="nd">@OutputTimeUnit</span><span class="o">(</span><span class="n">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">)</span>
-<span class="nd">@Fork</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="mi">3</span><span class="o">,</span> <span class="n">jvmArgsAppend</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;-Xmx2048m&quot;</span><span class="o">,</span> <span class="s">&quot;-server&quot;</span><span class="o">,</span> <span class="s">&quot;-XX:+AggressiveOpts&quot;</span><span class="o">})</span>
-<span class="nd">@Measurement</span><span class="o">(</span><span class="n">iterations</span> <span class="o">=</span> <span class="mi">10</span><span class="o">,</span> <span class="n">time</span> <span class="o">=</span> <span class="mi">3</span><span class="o">,</span> <span class="n">timeUnit</span> <span class="o">=</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">)</span>
-<span class="nd">@Warmup</span><span class="o">(</span><span class="n">iterations</span> <span class="o">=</span> <span class="mi">20</span><span class="o">,</span> <span class="n">time</span> <span class="o">=</span> <span class="mi">3</span><span class="o">,</span> <span class="n">timeUnit</span> <span class="o">=</span> <span class="n">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">)</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@State</span><span class="o">(</span><span class="nc">Scope</span><span class="o">.</span><span class="na">Benchmark</span><span class="o">)</span>
+<span class="nd">@BenchmarkMode</span><span class="o">(</span><span class="nc">Mode</span><span class="o">.</span><span class="na">Throughput</span><span class="o">)</span>
+<span class="nd">@OutputTimeUnit</span><span class="o">(</span><span class="nc">TimeUnit</span><span class="o">.</span><span class="na">MILLISECONDS</span><span class="o">)</span>
+<span class="nd">@Fork</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="mi">3</span><span class="o">,</span> <span class="n">jvmArgsAppend</span> <span class="o">=</span> <span class="o">{</span><span class="s">"-Xmx2048m"</span><span class="o">,</span> <span class="s">"-server"</span><span class="o">,</span> <span class="s">"-XX:+AggressiveOpts"</span><span class="o">})</span>
+<span class="nd">@Measurement</span><span class="o">(</span><span class="n">iterations</span> <span class="o">=</span> <span class="mi">10</span><span class="o">,</span> <span class="n">time</span> <span class="o">=</span> <span class="mi">3</span><span class="o">,</span> <span class="n">timeUnit</span> <span class="o">=</span> <span class="nc">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">)</span>
+<span class="nd">@Warmup</span><span class="o">(</span><span class="n">iterations</span> <span class="o">=</span> <span class="mi">20</span><span class="o">,</span> <span class="n">time</span> <span class="o">=</span> <span class="mi">3</span><span class="o">,</span> <span class="n">timeUnit</span> <span class="o">=</span> <span class="nc">TimeUnit</span><span class="o">.</span><span class="na">SECONDS</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">DeadcodeBenchmark</span> <span class="o">{</span>
 
   <span class="kd">private</span> <span class="kt">double</span> <span class="n">value</span> <span class="o">=</span> <span class="mf">16.0d</span><span class="o">;</span>
@@ -222,12 +222,12 @@ As an exercise, try to benchmark the following code:</p>
 
   <span class="nd">@GenerateMicroBenchmark</span>
   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">deadcode</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">Math</span><span class="o">.</span><span class="na">sqrt</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+    <span class="nc">Math</span><span class="o">.</span><span class="na">sqrt</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
   <span class="o">}</span>
 
   <span class="nd">@GenerateMicroBenchmark</span>
   <span class="kd">public</span> <span class="kt">double</span> <span class="nf">ok</span><span class="o">()</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="n">Math</span><span class="o">.</span><span class="na">sqrt</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
+    <span class="k">return</span> <span class="nc">Math</span><span class="o">.</span><span class="na">sqrt</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span></code></pre></figure>
 
@@ -265,7 +265,7 @@ values or using a black hole.</p>
 </div>
 
       <div class="footer-col footer-col-3">
-        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+        <p>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
       </div>
     </div>
 

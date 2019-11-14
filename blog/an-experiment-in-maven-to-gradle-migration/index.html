@@ -60,35 +60,35 @@ over the course of the Gradle build development. Thanks Cédric :-)</p>
 
 <h3 id="basics">Basics</h3>
 
-<p>The basics of the build are simple, with the <code>java</code> plugin we have all we need for building Golo.
-It builds on top of the Maven project layout conventions (<code>src/main/java</code>, etc), so there isn’t much
+<p>The basics of the build are simple, with the <code class="highlighter-rouge">java</code> plugin we have all we need for building Golo.
+It builds on top of the Maven project layout conventions (<code class="highlighter-rouge">src/main/java</code>, etc), so there isn’t much
 to do.</p>
 
-<p>I got my initial <code>build.gradle</code> file by using the <code>gradle init</code> command. It picked the dependencies
+<p>I got my initial <code class="highlighter-rouge">build.gradle</code> file by using the <code class="highlighter-rouge">gradle init</code> command. It picked the dependencies
 correctly, and I just had to edit those a little bit:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="c1">// (...)</span>
-<span class="n">group</span> <span class="o">=</span> <span class="s1">&#39;org.eclipse.golo&#39;</span>
-<span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;3.0.0-incubation-SNAPSHOT&#39;</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="c1">// (...)</span>
+<span class="n">group</span> <span class="o">=</span> <span class="s1">'org.eclipse.golo'</span>
+<span class="n">version</span> <span class="o">=</span> <span class="s1">'3.0.0-incubation-SNAPSHOT'</span>
 
 <span class="n">sourceCompatibility</span> <span class="o">=</span> <span class="mf">1.8</span>
 <span class="n">targetCompatibility</span> <span class="o">=</span> <span class="mf">1.8</span>
 
 <span class="n">dependencies</span> <span class="o">{</span>
 
-  <span class="n">compile</span> <span class="s1">&#39;org.ow2.asm:asm:5.0.4&#39;</span>
-  <span class="n">compile</span> <span class="s1">&#39;com.beust:jcommander:1.48&#39;</span>
-  <span class="n">compile</span> <span class="s1">&#39;com.github.rjeschke:txtmark:0.13&#39;</span>
-  <span class="n">compile</span><span class="o">(</span><span class="s1">&#39;com.googlecode.json-simple:json-simple:1.1.1&#39;</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">exclude</span><span class="o">(</span><span class="nl">module:</span> <span class="s1">&#39;junit&#39;</span><span class="o">)</span>
+  <span class="n">compile</span> <span class="s1">'org.ow2.asm:asm:5.0.4'</span>
+  <span class="n">compile</span> <span class="s1">'com.beust:jcommander:1.48'</span>
+  <span class="n">compile</span> <span class="s1">'com.github.rjeschke:txtmark:0.13'</span>
+  <span class="n">compile</span><span class="o">(</span><span class="s1">'com.googlecode.json-simple:json-simple:1.1.1'</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">exclude</span><span class="o">(</span><span class="nl">module:</span> <span class="s1">'junit'</span><span class="o">)</span>
   <span class="o">}</span>
 
-  <span class="n">testCompile</span> <span class="s1">&#39;org.ow2.asm:asm-util:5.0.4&#39;</span>
-  <span class="n">testCompile</span> <span class="s1">&#39;org.ow2.asm:asm-analysis:5.0.4&#39;</span>
-  <span class="n">testCompile</span> <span class="s1">&#39;org.hamcrest:hamcrest-all:1.3&#39;</span>
-  <span class="n">testCompile</span> <span class="s1">&#39;org.skyscreamer:jsonassert:1.2.3&#39;</span>
-  <span class="n">testCompile</span><span class="o">(</span><span class="s1">&#39;org.testng:testng:6.9.4&#39;</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">exclude</span><span class="o">(</span><span class="nl">module:</span> <span class="s1">&#39;junit&#39;</span><span class="o">)</span>
+  <span class="n">testCompile</span> <span class="s1">'org.ow2.asm:asm-util:5.0.4'</span>
+  <span class="n">testCompile</span> <span class="s1">'org.ow2.asm:asm-analysis:5.0.4'</span>
+  <span class="n">testCompile</span> <span class="s1">'org.hamcrest:hamcrest-all:1.3'</span>
+  <span class="n">testCompile</span> <span class="s1">'org.skyscreamer:jsonassert:1.2.3'</span>
+  <span class="n">testCompile</span><span class="o">(</span><span class="s1">'org.testng:testng:6.9.4'</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">exclude</span><span class="o">(</span><span class="nl">module:</span> <span class="s1">'junit'</span><span class="o">)</span>
   <span class="o">}</span>
 <span class="o">}</span>
 <span class="c1">// (...)</span></code></pre></figure>
@@ -99,29 +99,29 @@ correctly, and I just had to edit those a little bit:</p>
 
 <p>Starting a JVM is costly, and compiling then starting Groovy code isn’t… fast to say the least.</p>
 
-<p>Do yourself a favor and enable the daemon mode for all your Gradle invocations. Edit <code>~/.gradle/gradle.properties</code>:</p>
+<p>Do yourself a favor and enable the daemon mode for all your Gradle invocations. Edit <code class="highlighter-rouge">~/.gradle/gradle.properties</code>:</p>
 
-<pre><code>org.gradle.daemon=true
-</code></pre>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>org.gradle.daemon=true
+</code></pre></div></div>
 
 <h3 id="the-wrapper">The wrapper</h3>
 
-<p>While you can install Gradle on your machine and put it in, say, <code>/usr/local/bin</code>, the recommended
+<p>While you can install Gradle on your machine and put it in, say, <code class="highlighter-rouge">/usr/local/bin</code>, the recommended
 way is instead to rely on <em>wrapper scripts</em>.</p>
 
-<p>These are <code>gradlew</code> and <code>gradlew.bat</code> scripts that you put in your project along with a bootstrap Jar.
-The first time you invoke <code>./gradlew someTask</code>, it will fetch Gradle from the Internet.</p>
+<p>These are <code class="highlighter-rouge">gradlew</code> and <code class="highlighter-rouge">gradlew.bat</code> scripts that you put in your project along with a bootstrap Jar.
+The first time you invoke <code class="highlighter-rouge">./gradlew someTask</code>, it will fetch Gradle from the Internet.</p>
 
 <p>I can’t decide whether this is a good or a bad approach, but since it is idiomatic in Gradle I went
-this way. You can define a <code>wrapper</code> task that specifies which version of Gradle you want, and use it
+this way. You can define a <code class="highlighter-rouge">wrapper</code> task that specifies which version of Gradle you want, and use it
 to generate / update these scripts:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="n">task</span> <span class="nf">wrapper</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Wrapper</span><span class="o">)</span> <span class="o">{</span>
-  <span class="n">gradleVersion</span> <span class="o">=</span> <span class="s1">&#39;2.6&#39;</span>
-  <span class="n">description</span> <span class="s1">&#39;Generates the Gradle wrapper scripts&#39;</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="n">task</span> <span class="nf">wrapper</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Wrapper</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">gradleVersion</span> <span class="o">=</span> <span class="s1">'2.6'</span>
+  <span class="n">description</span> <span class="s1">'Generates the Gradle wrapper scripts'</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>You can then call <code>gradle wrapper</code> and put the generated files under version control.</p>
+<p>You can then call <code class="highlighter-rouge">gradle wrapper</code> and put the generated files under version control.</p>
 
 <h3 id="where-the-fun-begins-javacc--jjtree">Where the fun begins: JavaCC / JJTree</h3>
 
@@ -138,12 +138,12 @@ an implementation of your own.</p>
 <p>After reporting the issues, John Martel fixed the plugin. The current releases now work as expected, so
 Gradle can process the Golo JJTree grammar just fine:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="c1">// (...)</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="c1">// (...)</span>
 <span class="n">plugins</span> <span class="o">{</span>
   <span class="c1">// (...)</span>
-  <span class="n">id</span> <span class="s1">&#39;ca.coglinc.javacc&#39;</span> <span class="n">version</span> <span class="s1">&#39;2.2.2&#39;</span>
-  <span class="n">id</span> <span class="s1">&#39;idea&#39;</span>
-  <span class="n">id</span> <span class="s1">&#39;eclipse&#39;</span>
+  <span class="n">id</span> <span class="s1">'ca.coglinc.javacc'</span> <span class="n">version</span> <span class="s1">'2.2.2'</span>
+  <span class="n">id</span> <span class="s1">'idea'</span>
+  <span class="n">id</span> <span class="s1">'eclipse'</span>
 <span class="o">}</span>
 <span class="c1">// (...)</span>
 <span class="n">sourceSets</span> <span class="o">{</span>
@@ -155,10 +155,10 @@ Gradle can process the Golo JJTree grammar just fine:</p>
   <span class="o">}</span>
 <span class="o">}</span>
 
-<span class="n">eclipseClasspath</span><span class="o">.</span><span class="na">dependsOn</span><span class="o">(</span><span class="s2">&quot;compileJavacc&quot;</span><span class="o">)</span>
+<span class="n">eclipseClasspath</span><span class="o">.</span><span class="na">dependsOn</span><span class="o">(</span><span class="s2">"compileJavacc"</span><span class="o">)</span>
 <span class="c1">// (...)</span></code></pre></figure>
 
-<p>The <code>sourceSets</code> and <code>eclipseClasspath</code> tweaks are there to help Eclipse with the generated
+<p>The <code class="highlighter-rouge">sourceSets</code> and <code class="highlighter-rouge">eclipseClasspath</code> tweaks are there to help Eclipse with the generated
 source files. Given that Golo is an Eclipse project now, that is the very least we can do…</p>
 
 <h3 id="even-funnier-when-golo-needs-golo">Even funnier: when Golo needs Golo</h3>
@@ -179,34 +179,34 @@ This is a classic <em>chicken and egg problem</em>).</p>
 
 <p>So yes, that is dirty Maven build with an incomplete produced artifact, followed by a Maven plugin build, to get back to the first build and overwrite the artifact with a correct one.</p>
 
-<p>In Gradle things are simpler: we can just create a <code>JavaExec</code> tasks, set the classpath on the project under build, and call
+<p>In Gradle things are simpler: we can just create a <code class="highlighter-rouge">JavaExec</code> tasks, set the classpath on the project under build, and call
 the Golo compiler class:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="n">ext</span> <span class="o">{</span>
-  <span class="n">goloCliMain</span> <span class="o">=</span> <span class="s1">&#39;fr.insalyon.citi.golo.cli.Main&#39;</span>
-  <span class="n">goloSources</span> <span class="o">=</span> <span class="n">fileTree</span><span class="o">(</span><span class="s1">&#39;src/main/golo&#39;</span><span class="o">).</span><span class="na">include</span><span class="o">(</span><span class="s1">&#39;**/*.golo&#39;</span><span class="o">)</span>
-  <span class="n">goloClasses</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s2">&quot;$buildDir/classes/golo&quot;</span><span class="o">)</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="n">ext</span> <span class="o">{</span>
+  <span class="n">goloCliMain</span> <span class="o">=</span> <span class="s1">'fr.insalyon.citi.golo.cli.Main'</span>
+  <span class="n">goloSources</span> <span class="o">=</span> <span class="n">fileTree</span><span class="o">(</span><span class="s1">'src/main/golo'</span><span class="o">).</span><span class="na">include</span><span class="o">(</span><span class="s1">'**/*.golo'</span><span class="o">)</span>
+  <span class="n">goloClasses</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s2">"$buildDir/classes/golo"</span><span class="o">)</span>
 <span class="o">}</span>
 
 <span class="n">task</span> <span class="nf">goloc</span><span class="o">(</span><span class="nl">type:</span> <span class="n">JavaExec</span><span class="o">,</span> <span class="nl">dependsOn:</span> <span class="n">classes</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">main</span> <span class="o">=</span> <span class="n">goloCliMain</span>
-  <span class="n">args</span> <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;compile&#39;</span><span class="o">,</span> <span class="s1">&#39;--output&#39;</span><span class="o">,</span> <span class="n">goloClasses</span><span class="o">]</span> <span class="o">+</span> <span class="n">goloSources</span>
+  <span class="n">args</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'compile'</span><span class="o">,</span> <span class="s1">'--output'</span><span class="o">,</span> <span class="n">goloClasses</span><span class="o">]</span> <span class="o">+</span> <span class="n">goloSources</span>
   <span class="n">classpath</span> <span class="o">=</span> <span class="n">sourceSets</span><span class="o">.</span><span class="na">main</span><span class="o">.</span><span class="na">runtimeClasspath</span>
   <span class="n">inputs</span><span class="o">.</span><span class="na">files</span> <span class="n">goloSources</span>
   <span class="n">outputs</span><span class="o">.</span><span class="na">dir</span> <span class="n">goloClasses</span>
-  <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Compiles Golo source files&#39;</span>
-  <span class="n">group</span> <span class="o">=</span> <span class="s1">&#39;Build&#39;</span>
+  <span class="n">description</span> <span class="o">=</span> <span class="s1">'Compiles Golo source files'</span>
+  <span class="n">group</span> <span class="o">=</span> <span class="s1">'Build'</span>
 <span class="o">}</span>
 
 <span class="n">jar</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">goloc</span>
 <span class="n">test</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">goloc</span>
 <span class="n">goloc</span><span class="o">.</span><span class="na">shouldRunAfter</span> <span class="n">compileJava</span></code></pre></figure>
 
-<p>Note the <code>inputs</code> and <code>outputs</code> properties: they are used by Gradle to decide whether to call the
+<p>Note the <code class="highlighter-rouge">inputs</code> and <code class="highlighter-rouge">outputs</code> properties: they are used by Gradle to decide whether to call the
 task again or not on subsequent builds. This works for a wide range of custom tasks, so you get
 generic incremental caching for free.</p>
 
-<p>We also give hints to Gradle to when the <code>goloc</code> task shall run.</p>
+<p>We also give hints to Gradle to when the <code class="highlighter-rouge">goloc</code> task shall run.</p>
 
 <h3 id="still-having-a-bootstrap-mode-and-tests-helpers">Still having a bootstrap mode and tests helpers</h3>
 
@@ -219,21 +219,21 @@ the generated bytecode.</p>
 
 <p>We had profiles for that in Maven, and with Gradle we can rely on properties:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="k">if</span> <span class="o">(!</span><span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">&#39;bootstrap&#39;</span><span class="o">))</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="k">if</span> <span class="o">(!</span><span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">'bootstrap'</span><span class="o">))</span> <span class="o">{</span>
   <span class="n">jar</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">goloc</span>
   <span class="n">test</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">goloc</span>
   <span class="n">goloc</span><span class="o">.</span><span class="na">shouldRunAfter</span> <span class="n">compileJava</span>
-  <span class="n">test</span><span class="o">.</span><span class="na">environment</span> <span class="s1">&#39;golo.bootstrapped&#39;</span><span class="o">,</span> <span class="s1">&#39;yes&#39;</span>
+  <span class="n">test</span><span class="o">.</span><span class="na">environment</span> <span class="s1">'golo.bootstrapped'</span><span class="o">,</span> <span class="s1">'yes'</span>
 <span class="o">}</span>
 
 <span class="n">test</span> <span class="o">{</span>
   <span class="n">useTestNG</span><span class="o">()</span>
-  <span class="n">testLogging</span><span class="o">.</span><span class="na">showStandardStreams</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">&#39;consoleTraceTests&#39;</span><span class="o">)</span>
-  <span class="n">systemProperty</span> <span class="s1">&#39;golo.test.trace&#39;</span><span class="o">,</span> <span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">&#39;traceTests&#39;</span><span class="o">)</span> <span class="o">?</span> <span class="s1">&#39;yes&#39;</span> <span class="o">:</span> <span class="s1">&#39;no&#39;</span>
-  <span class="n">systemProperty</span> <span class="s1">&#39;java.awt.headless&#39;</span><span class="o">,</span> <span class="s1">&#39;true&#39;</span>
+  <span class="n">testLogging</span><span class="o">.</span><span class="na">showStandardStreams</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">'consoleTraceTests'</span><span class="o">)</span>
+  <span class="n">systemProperty</span> <span class="s1">'golo.test.trace'</span><span class="o">,</span> <span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">'traceTests'</span><span class="o">)</span> <span class="o">?</span> <span class="s1">'yes'</span> <span class="o">:</span> <span class="s1">'no'</span>
+  <span class="n">systemProperty</span> <span class="s1">'java.awt.headless'</span><span class="o">,</span> <span class="s1">'true'</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>This means that <code>./gradlew test -P traceTests -P consoleTraceTests -P bootstrap</code> will only focus
+<p>This means that <code class="highlighter-rouge">./gradlew test -P traceTests -P consoleTraceTests -P bootstrap</code> will only focus
 on the Java code and print tons of information on the console while running the tests.</p>
 
 <p>Believe me, it is very useful when you develop a language!</p>
@@ -243,19 +243,19 @@ on the Java code and print tons of information on the console while running the 
 <p>Maven users know that resource files can be <em>processed</em> so that variables in files can be replaced
 by values from the build environment.</p>
 
-<p>We have a <code>metadata.properties</code> resource file which is being used by Golo to know which version
+<p>We have a <code class="highlighter-rouge">metadata.properties</code> resource file which is being used by Golo to know which version
 is being run:</p>
 
-<pre><code># Build metadata
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Build metadata
 version=3.0.0-incubation-M1
 timestamp=15-07-27-07:26
-</code></pre>
+</code></pre></div></div>
 
 <p>The values are defined at build-time using simple variables.</p>
 
 <p>This is trivial to activate in Maven:</p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;build&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;build&gt;</span>
 
     <span class="nt">&lt;resources&gt;</span>
       <span class="nt">&lt;resource&gt;</span>
@@ -270,16 +270,16 @@ timestamp=15-07-27-07:26
 
 <p>It took me a while and an email to Cédric to figure out how do that in Gradle.</p>
 
-<p>First I had to change from a <code>${version}</code> to a <code>@version@</code> notation in the properties file:</p>
+<p>First I had to change from a <code class="highlighter-rouge">${version}</code> to a <code class="highlighter-rouge">@version@</code> notation in the properties file:</p>
 
-<pre><code>version=@version@
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>version=@version@
 timestamp=@timestamp@
-</code></pre>
+</code></pre></div></div>
 
 <p>This is a minor change, but the build counterpart is not to my taste and the solution was hidden
 somewhere in a corner of the Gradle documentation:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="n">processResources</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="n">processResources</span> <span class="o">{</span>
   <span class="n">filter</span><span class="o">(</span><span class="n">org</span><span class="o">.</span><span class="na">apache</span><span class="o">.</span><span class="na">tools</span><span class="o">.</span><span class="na">ant</span><span class="o">.</span><span class="na">filters</span><span class="o">.</span><span class="na">ReplaceTokens</span><span class="o">,</span> <span class="nl">tokens:</span> <span class="o">[</span>
     <span class="nl">version:</span> <span class="n">version</span><span class="o">,</span>
     <span class="nl">timestamp:</span> <span class="n">versioning</span><span class="o">.</span><span class="na">info</span><span class="o">.</span><span class="na">full</span>
@@ -298,16 +298,16 @@ And I shouldn’t have had to mention a class from that good old <a href="http:/
 
 <p>It’s as simple as with Maven, and all I had to do was to use the obvious configuration from the instructions:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="n">asciidoctorj</span> <span class="o">{</span>
-  <span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;1.5.2&#39;</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="n">asciidoctorj</span> <span class="o">{</span>
+  <span class="n">version</span> <span class="o">=</span> <span class="s1">'1.5.2'</span>
 <span class="o">}</span>
 
 <span class="n">asciidoctor</span> <span class="o">{</span>
-  <span class="n">sourceDir</span> <span class="s1">&#39;doc&#39;</span>
+  <span class="n">sourceDir</span> <span class="s1">'doc'</span>
   <span class="n">sources</span> <span class="o">{</span>
-    <span class="n">include</span> <span class="s1">&#39;golo-guide.asciidoc&#39;</span>
+    <span class="n">include</span> <span class="s1">'golo-guide.asciidoc'</span>
   <span class="o">}</span>
-  <span class="n">backends</span> <span class="s1">&#39;html5&#39;</span>
+  <span class="n">backends</span> <span class="s1">'html5'</span>
 <span class="o">}</span>
 
 <span class="n">assemble</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">asciidoctor</span></code></pre></figure>
@@ -316,40 +316,40 @@ And I shouldn’t have had to mention a class from that good old <a href="http:/
 
 <h3 id="golodocs">Golodocs</h3>
 
-<p>The generation of <em>Golodocs</em> is similar to creating the <code>goloc</code> task:</p>
+<p>The generation of <em>Golodocs</em> is similar to creating the <code class="highlighter-rouge">goloc</code> task:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="n">ext</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="n">ext</span> <span class="o">{</span>
   <span class="c1">// (...)</span>
-  <span class="n">goloDocs</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s2">&quot;$buildDir/docs/golodoc&quot;</span><span class="o">)</span>
+  <span class="n">goloDocs</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s2">"$buildDir/docs/golodoc"</span><span class="o">)</span>
 <span class="o">}</span>
 
 <span class="n">task</span> <span class="nf">golodoc</span><span class="o">(</span><span class="nl">type:</span> <span class="n">JavaExec</span><span class="o">,</span> <span class="nl">dependsOn:</span> <span class="n">classes</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">main</span> <span class="o">=</span> <span class="n">goloCliMain</span>
-  <span class="n">args</span> <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;doc&#39;</span><span class="o">,</span> <span class="s1">&#39;--format&#39;</span><span class="o">,</span> <span class="s1">&#39;html&#39;</span><span class="o">,</span> <span class="s1">&#39;--output&#39;</span><span class="o">,</span> <span class="n">goloDocs</span><span class="o">]</span> <span class="o">+</span> <span class="n">goloSources</span>
+  <span class="n">args</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'doc'</span><span class="o">,</span> <span class="s1">'--format'</span><span class="o">,</span> <span class="s1">'html'</span><span class="o">,</span> <span class="s1">'--output'</span><span class="o">,</span> <span class="n">goloDocs</span><span class="o">]</span> <span class="o">+</span> <span class="n">goloSources</span>
   <span class="n">classpath</span> <span class="o">=</span> <span class="n">sourceSets</span><span class="o">.</span><span class="na">main</span><span class="o">.</span><span class="na">runtimeClasspath</span>
   <span class="n">inputs</span><span class="o">.</span><span class="na">files</span> <span class="n">goloSources</span>
   <span class="n">outputs</span><span class="o">.</span><span class="na">dir</span> <span class="n">goloDocs</span>
-  <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Generates documentation of the standard Golo modules.&#39;</span>
-  <span class="n">group</span> <span class="o">=</span> <span class="s1">&#39;Documentation&#39;</span>
+  <span class="n">description</span> <span class="o">=</span> <span class="s1">'Generates documentation of the standard Golo modules.'</span>
+  <span class="n">group</span> <span class="o">=</span> <span class="s1">'Documentation'</span>
 <span class="o">}</span>
 
 <span class="n">golodoc</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">goloc</span></code></pre></figure>
 
 <h3 id="generating-shell-scripts">Generating shell scripts</h3>
 
-<p>Golo has a <code>golo</code> shell script, with Unix and Windows variants. It calls our command-line interface
+<p>Golo has a <code class="highlighter-rouge">golo</code> shell script, with Unix and Windows variants. It calls our command-line interface
 main class, and passes a bunch of JVM configuration flags.</p>
 
-<p>Golo also has a <code>vanilla-golo</code> script with no JVM tuning flags. This is useful in certain contexts
+<p>Golo also has a <code class="highlighter-rouge">vanilla-golo</code> script with no JVM tuning flags. This is useful in certain contexts
 like running on a <em>Raspberry Pi</em>.</p>
 
-<p>Gradle has an <code>application</code> plugin that is very similar to the <a href="http://www.mojohaus.org/appassembler/appassembler-maven-plugin/">Codehaus AppAssembler Maven plugin</a>.
-It can help preparing a distribution with the shell scripts in <code>bin/</code>, and the Jar dependencies
-in <code>lib/</code>.</p>
+<p>Gradle has an <code class="highlighter-rouge">application</code> plugin that is very similar to the <a href="http://www.mojohaus.org/appassembler/appassembler-maven-plugin/">Codehaus AppAssembler Maven plugin</a>.
+It can help preparing a distribution with the shell scripts in <code class="highlighter-rouge">bin/</code>, and the Jar dependencies
+in <code class="highlighter-rouge">lib/</code>.</p>
 
 <p>Here is how we roll with Maven:</p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;plugin&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;plugin&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.codehaus.mojo<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>appassembler-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
   <span class="nt">&lt;version&gt;</span>${appassembler-maven-plugin.version}<span class="nt">&lt;/version&gt;</span>
@@ -388,23 +388,23 @@ in <code>lib/</code>.</p>
   <span class="nt">&lt;/configuration&gt;</span>
 <span class="nt">&lt;/plugin&gt;</span></code></pre></figure>
 
-<p>With Gradle things are a bit different. Once the <code>application</code> plugin has been applied, it takes a
-very little amount of configuration to have a <code>golo</code> script (it uses the project name for the script
+<p>With Gradle things are a bit different. Once the <code class="highlighter-rouge">application</code> plugin has been applied, it takes a
+very little amount of configuration to have a <code class="highlighter-rouge">golo</code> script (it uses the project name for the script
 by default):</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="n">mainClassName</span> <span class="o">=</span> <span class="n">goloCliMain</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="n">mainClassName</span> <span class="o">=</span> <span class="n">goloCliMain</span>
 <span class="n">applicationDefaultJvmArgs</span> <span class="o">=</span> <span class="o">[</span>
-  <span class="s1">&#39;-Xms256m&#39;</span><span class="o">,</span> <span class="s1">&#39;-Xmx1024M&#39;</span><span class="o">,</span> <span class="s1">&#39;-Xss1024M&#39;</span><span class="o">,</span> <span class="s1">&#39;-server&#39;</span><span class="o">,</span> <span class="s1">&#39;-XX:-TieredCompilation&#39;</span><span class="o">,</span> <span class="s1">&#39;-XX:+AggressiveOpts&#39;</span>
+  <span class="s1">'-Xms256m'</span><span class="o">,</span> <span class="s1">'-Xmx1024M'</span><span class="o">,</span> <span class="s1">'-Xss1024M'</span><span class="o">,</span> <span class="s1">'-server'</span><span class="o">,</span> <span class="s1">'-XX:-TieredCompilation'</span><span class="o">,</span> <span class="s1">'-XX:+AggressiveOpts'</span>
 <span class="o">]</span></code></pre></figure>
 
 <p>There is a problem, though: the plugin does not support multiple scripts, so it cannot be used
-to generate the <code>vanilla-golo</code> script. The solution lies in defining a <code>CreateStartScripts</code> custom
+to generate the <code class="highlighter-rouge">vanilla-golo</code> script. The solution lies in defining a <code class="highlighter-rouge">CreateStartScripts</code> custom
 task:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="n">task</span> <span class="nf">createVanillaScripts</span><span class="o">(</span><span class="nl">type:</span> <span class="n">CreateStartScripts</span><span class="o">)</span> <span class="o">{</span>
-  <span class="n">outputDir</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s1">&#39;build/vanilla-golo&#39;</span><span class="o">)</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="n">task</span> <span class="nf">createVanillaScripts</span><span class="o">(</span><span class="nl">type:</span> <span class="n">CreateStartScripts</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">outputDir</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s1">'build/vanilla-golo'</span><span class="o">)</span>
   <span class="n">mainClassName</span> <span class="o">=</span> <span class="n">goloCliMain</span>
-  <span class="n">applicationName</span> <span class="o">=</span> <span class="s1">&#39;vanilla-golo&#39;</span>
+  <span class="n">applicationName</span> <span class="o">=</span> <span class="s1">'vanilla-golo'</span>
   <span class="n">classpath</span> <span class="o">=</span> <span class="n">startScripts</span><span class="o">.</span><span class="na">classpath</span>
 <span class="o">}</span>
 
@@ -412,11 +412,11 @@ task:</p>
 
 <h3 id="assembling-a-distribution">Assembling a distribution</h3>
 
-<p>The traditional way to prepare a distribution in Maven is to rely on the <code>assembly</code> plugin.</p>
+<p>The traditional way to prepare a distribution in Maven is to rely on the <code class="highlighter-rouge">assembly</code> plugin.</p>
 
 <p>In the POM:</p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;plugin&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;plugin&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>maven-assembly-plugin<span class="nt">&lt;/artifactId&gt;</span>
   <span class="nt">&lt;version&gt;</span>${maven-assembly-plugin.version}<span class="nt">&lt;/version&gt;</span>
@@ -437,11 +437,11 @@ task:</p>
   <span class="nt">&lt;/executions&gt;</span>
 <span class="nt">&lt;/plugin&gt;</span></code></pre></figure>
 
-<p><code>distribution.xml</code>:</p>
+<p><code class="highlighter-rouge">distribution.xml</code>:</p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;assembly</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0&quot;</span>
-          <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-          <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;assembly</span> <span class="na">xmlns=</span><span class="s">"http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"</span>
+          <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+          <span class="na">xsi:schemaLocation=</span><span class="s">"http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;id&gt;</span>distribution<span class="nt">&lt;/id&gt;</span>
   <span class="nt">&lt;formats&gt;</span>
     <span class="nt">&lt;format&gt;</span>dir<span class="nt">&lt;/format&gt;</span>
@@ -507,52 +507,52 @@ task:</p>
 <p>It’s a bit XML-heavy, but it’s not black magic either: you specify which archive formats you want,
 and the descriptors pick files to put in.</p>
 
-<p>In the Gradle land we prepare distributions in a more concise way. The <code>application</code> plugin already
-defined a <code>main</code> distribution with the <code>bin/</code> and <code>lib/</code> folders. We just need to piggy-back to
+<p>In the Gradle land we prepare distributions in a more concise way. The <code class="highlighter-rouge">application</code> plugin already
+defined a <code class="highlighter-rouge">main</code> distribution with the <code class="highlighter-rouge">bin/</code> and <code class="highlighter-rouge">lib/</code> folders. We just need to piggy-back to
 bring the rest of the files:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="n">distributions</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="n">distributions</span> <span class="o">{</span>
   <span class="n">main</span> <span class="o">{</span>
     <span class="n">contents</span> <span class="o">{</span>
       <span class="n">from</span><span class="o">(</span><span class="n">projectDir</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">include</span> <span class="s1">&#39;README*&#39;</span>
-        <span class="n">include</span> <span class="s1">&#39;CONTRIB*&#39;</span>
-        <span class="n">include</span> <span class="s1">&#39;THIRD-PARTY&#39;</span>
-        <span class="n">include</span> <span class="s1">&#39;notice.html&#39;</span>
-        <span class="n">include</span> <span class="s1">&#39;epl-v10.html&#39;</span>
+        <span class="n">include</span> <span class="s1">'README*'</span>
+        <span class="n">include</span> <span class="s1">'CONTRIB*'</span>
+        <span class="n">include</span> <span class="s1">'THIRD-PARTY'</span>
+        <span class="n">include</span> <span class="s1">'notice.html'</span>
+        <span class="n">include</span> <span class="s1">'epl-v10.html'</span>
       <span class="o">}</span>
-      <span class="n">into</span><span class="o">(</span><span class="s1">&#39;samples&#39;</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">from</span><span class="o">(</span><span class="s1">&#39;samples&#39;</span><span class="o">)</span> <span class="o">{</span>
-          <span class="n">include</span> <span class="s1">&#39;**/*.golo&#39;</span>
+      <span class="n">into</span><span class="o">(</span><span class="s1">'samples'</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">from</span><span class="o">(</span><span class="s1">'samples'</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">include</span> <span class="s1">'**/*.golo'</span>
         <span class="o">}</span>
       <span class="o">}</span>
-      <span class="n">into</span><span class="o">(</span><span class="s1">&#39;share&#39;</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">from</span> <span class="s1">&#39;share&#39;</span>
+      <span class="n">into</span><span class="o">(</span><span class="s1">'share'</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">from</span> <span class="s1">'share'</span>
       <span class="o">}</span>
       <span class="n">from</span><span class="o">(</span><span class="n">asciidoctor</span><span class="o">.</span><span class="na">outputDir</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">into</span> <span class="s1">&#39;docs&#39;</span>
+        <span class="n">into</span> <span class="s1">'docs'</span>
       <span class="o">}</span>
       <span class="n">from</span><span class="o">(</span><span class="n">golodoc</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">into</span> <span class="s1">&#39;docs/golodoc&#39;</span>
+        <span class="n">into</span> <span class="s1">'docs/golodoc'</span>
       <span class="o">}</span>
       <span class="n">from</span><span class="o">(</span><span class="n">createVanillaScripts</span><span class="o">.</span><span class="na">outputDir</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">into</span> <span class="s1">&#39;bin&#39;</span>
+        <span class="n">into</span> <span class="s1">'bin'</span>
       <span class="o">}</span>
     <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>The <code>application</code> plugin already defined the <code>distZip</code> and <code>distTar</code> tasks to wrap the distribution
-in archives. There is also a <code>installDist</code> task to prepare a folder with the distribution.</p>
+<p>The <code class="highlighter-rouge">application</code> plugin already defined the <code class="highlighter-rouge">distZip</code> and <code class="highlighter-rouge">distTar</code> tasks to wrap the distribution
+in archives. There is also a <code class="highlighter-rouge">installDist</code> task to prepare a folder with the distribution.</p>
 
-<p>One of the nice things with Gradle here is that it leverages tasks such as <code>golodoc</code> or <code>createVanillaScripts</code>.
+<p>One of the nice things with Gradle here is that it leverages tasks such as <code class="highlighter-rouge">golodoc</code> or <code class="highlighter-rouge">createVanillaScripts</code>.
 There is no need to explicitly call these tasks to prepare a distribution: they will be called if need be
 when a distribution is being prepared.</p>
 
 <h3 id="publishing-maven-artifacts">Publishing Maven artifacts</h3>
 
-<p>This a part of Gradle where I believe improvements would be welcome, although the new <code>maven-publish</code> plugin
-bundled with Gradle is so much better than the old <code>maven</code> plugin.</p>
+<p>This a part of Gradle where I believe improvements would be welcome, although the new <code class="highlighter-rouge">maven-publish</code> plugin
+bundled with Gradle is so much better than the old <code class="highlighter-rouge">maven</code> plugin.</p>
 
 <p>Golo pushes Maven artifacts to the Eclipse repositories, and release artifacts are also pushed to
 <a href="https://bintray.com/golo-lang">Bintray / jCenter</a>, and then synchronized to Maven Central.
@@ -566,9 +566,9 @@ There are reasons behind doing this:</p>
 </ul>
 
 <p>Maven Central also requires a Jar with the sources as well as a Jar with the Javadocs.
-We do this in Maven with a special <code>release</code> profile:</p>
+We do this in Maven with a special <code class="highlighter-rouge">release</code> profile:</p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;profile&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;profile&gt;</span>
   <span class="nt">&lt;id&gt;</span>release<span class="nt">&lt;/id&gt;</span>
   <span class="nt">&lt;build&gt;</span>
     <span class="nt">&lt;plugins&gt;</span>
@@ -604,11 +604,11 @@ We do this in Maven with a special <code>release</code> profile:</p>
 
 <p>In Gradle we need 2 tasks for that:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="n">task</span> <span class="nf">sourceJar</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Jar</span><span class="o">)</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="n">task</span> <span class="nf">sourceJar</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Jar</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">from</span> <span class="n">sourceSets</span><span class="o">.</span><span class="na">main</span><span class="o">.</span><span class="na">allJava</span>
 <span class="o">}</span>
 
-<span class="n">javadoc</span><span class="o">.</span><span class="na">options</span><span class="o">.</span><span class="na">addStringOption</span><span class="o">(</span><span class="s1">&#39;Xdoclint:none&#39;</span><span class="o">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="o">)</span>
+<span class="n">javadoc</span><span class="o">.</span><span class="na">options</span><span class="o">.</span><span class="na">addStringOption</span><span class="o">(</span><span class="s1">'Xdoclint:none'</span><span class="o">,</span> <span class="s1">'-quiet'</span><span class="o">)</span>
 
 <span class="n">task</span> <span class="nf">javadocJar</span> <span class="o">(</span><span class="nl">type:</span> <span class="n">Jar</span><span class="o">,</span> <span class="nl">dependsOn:</span> <span class="n">javadoc</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">from</span> <span class="n">javadoc</span><span class="o">.</span><span class="na">destinationDir</span>
@@ -617,7 +617,7 @@ We do this in Maven with a special <code>release</code> profile:</p>
 <p>Having flexible repositories to publish to is a matter of using variables in Maven, and having
 a profile to override targets:</p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span>  <span class="nt">&lt;/properties&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml">  <span class="nt">&lt;/properties&gt;</span>
     // (...)
 
     <span class="nt">&lt;distribution.repo.id&gt;</span>repo.eclipse.org<span class="nt">&lt;/distribution.repo.id&gt;</span>
@@ -650,43 +650,43 @@ a profile to override targets:</p>
     <span class="nt">&lt;/properties&gt;</span>
   <span class="nt">&lt;/profile&gt;</span></code></pre></figure>
 
-<p>In Gradle land we can specify how to publish artifacts with the <code>maven-publish</code> plugin as follows:</p>
+<p>In Gradle land we can specify how to publish artifacts with the <code class="highlighter-rouge">maven-publish</code> plugin as follows:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="n">publishing</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="n">publishing</span> <span class="o">{</span>
   <span class="n">publications</span> <span class="o">{</span>
     <span class="n">mavenJava</span><span class="o">(</span><span class="n">MavenPublication</span><span class="o">)</span> <span class="o">{</span>
       <span class="n">pom</span><span class="o">.</span><span class="na">withXml</span> <span class="o">{</span>
         <span class="n">asNode</span><span class="o">().</span><span class="na">children</span><span class="o">().</span><span class="na">last</span><span class="o">()</span> <span class="o">+</span> <span class="o">{</span>
           <span class="n">resolveStrategy</span> <span class="o">=</span> <span class="n">Closure</span><span class="o">.</span><span class="na">DELEGATE_FIRST</span>
-          <span class="n">name</span> <span class="s1">&#39;Golo Programming Language (Incubation)&#39;</span>
-          <span class="n">description</span> <span class="s1">&#39;Golo: a lightweight dynamic language for the JVM.&#39;</span>
-          <span class="n">url</span> <span class="s1">&#39;http://golo-lang.org/&#39;</span>
+          <span class="n">name</span> <span class="s1">'Golo Programming Language (Incubation)'</span>
+          <span class="n">description</span> <span class="s1">'Golo: a lightweight dynamic language for the JVM.'</span>
+          <span class="n">url</span> <span class="s1">'http://golo-lang.org/'</span>
           <span class="n">developers</span> <span class="o">{</span>
             <span class="n">developer</span> <span class="o">{</span>
-              <span class="n">name</span> <span class="s1">&#39;Golo committers&#39;</span>
-              <span class="n">email</span> <span class="s1">&#39;golo-dev@eclipse.org&#39;</span>
+              <span class="n">name</span> <span class="s1">'Golo committers'</span>
+              <span class="n">email</span> <span class="s1">'golo-dev@eclipse.org'</span>
             <span class="o">}</span>
           <span class="o">}</span>
           <span class="n">licenses</span> <span class="o">{</span>
             <span class="n">license</span> <span class="o">{</span>
-              <span class="n">name</span> <span class="s1">&#39;Eclipse Public License - v 1.0&#39;</span>
-              <span class="n">url</span> <span class="s1">&#39;http://www.eclipse.org/legal/epl-v10.html&#39;</span>
-              <span class="n">distribution</span> <span class="s1">&#39;repo&#39;</span>
+              <span class="n">name</span> <span class="s1">'Eclipse Public License - v 1.0'</span>
+              <span class="n">url</span> <span class="s1">'http://www.eclipse.org/legal/epl-v10.html'</span>
+              <span class="n">distribution</span> <span class="s1">'repo'</span>
             <span class="o">}</span>
           <span class="o">}</span>
           <span class="n">scm</span> <span class="o">{</span>
-            <span class="n">url</span> <span class="s1">&#39;https://github.com/eclipse/golo-lang&#39;</span>
-            <span class="n">connection</span> <span class="s1">&#39;scm:git:git@github.com:eclipse/golo-lang.git&#39;</span>
-            <span class="n">developerConnection</span> <span class="s1">&#39;scm:git:ssh:git@github.com:eclipse/golo-lang.git&#39;</span>
+            <span class="n">url</span> <span class="s1">'https://github.com/eclipse/golo-lang'</span>
+            <span class="n">connection</span> <span class="s1">'scm:git:git@github.com:eclipse/golo-lang.git'</span>
+            <span class="n">developerConnection</span> <span class="s1">'scm:git:ssh:git@github.com:eclipse/golo-lang.git'</span>
           <span class="o">}</span>
         <span class="o">}</span>
       <span class="o">}</span>
       <span class="n">from</span> <span class="n">components</span><span class="o">.</span><span class="na">java</span>
       <span class="n">artifact</span> <span class="n">sourceJar</span> <span class="o">{</span>
-        <span class="n">classifier</span> <span class="s1">&#39;sources&#39;</span>
+        <span class="n">classifier</span> <span class="s1">'sources'</span>
       <span class="o">}</span>
       <span class="n">artifact</span> <span class="n">javadocJar</span> <span class="o">{</span>
-        <span class="n">classifier</span> <span class="s1">&#39;javadoc&#39;</span>
+        <span class="n">classifier</span> <span class="s1">'javadoc'</span>
       <span class="o">}</span>
     <span class="o">}</span>
   <span class="o">}</span>
@@ -705,43 +705,43 @@ a profile to override targets:</p>
 <p>There are 2 important things here:</p>
 
 <ol>
-  <li>the POM needs to be completed, as the plugin only fills it with correct <code>groupId:artifactId:version</code>
+  <li>the POM needs to be completed, as the plugin only fills it with correct <code class="highlighter-rouge">groupId:artifactId:version</code>
 plus dependencies metadata, and</li>
   <li>artifacts can be attached in a similar way as doing a distribution, and by taking advantage of tasks.</li>
 </ol>
 
 <p>I believe that the POM customization part is quite ugly there: you need to inject Groovy code to access
 the nodes. The remainder of the builder syntax is fine, but having to figure out that you need to
-<code>asNode().children().last() + { ... }</code> feels wrong. I would have preferred a straightforward builder DSL
-here, <a href="https://github.com/bmuschko/gradle-nexus-plugin/">just like what the <code>gradle-nexus-plugin</code> does</a>.</p>
+<code class="highlighter-rouge">asNode().children().last() + { ... }</code> feels wrong. I would have preferred a straightforward builder DSL
+here, <a href="https://github.com/bmuschko/gradle-nexus-plugin/">just like what the <code class="highlighter-rouge">gradle-nexus-plugin</code> does</a>.</p>
 
 <p>The fun does not stop here: I had to write a small amount of Groovy code to pick up the correct
-target repository. I am using properties to select the good target, so <code>./gradlew publish -PreleaseProfile=bintray</code>
+target repository. I am using properties to select the good target, so <code class="highlighter-rouge">./gradlew publish -PreleaseProfile=bintray</code>
 will attempt publishing to Bintray:</p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="k">if</span> <span class="o">(</span><span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">&#39;releaseProfile&#39;</span><span class="o">))</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="k">if</span> <span class="o">(</span><span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">'releaseProfile'</span><span class="o">))</span> <span class="o">{</span>
   <span class="k">switch</span> <span class="o">(</span><span class="n">releaseProfile</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">case</span> <span class="s1">&#39;eclipse&#39;</span><span class="o">:</span>
-      <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUrl</span> <span class="o">=</span> <span class="s1">&#39;https://repo.eclipse.org/content/repositories/golo-&#39;</span> <span class="o">+</span> <span class="o">((</span><span class="n">version</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s1">&#39;-SNAPSHOT&#39;</span><span class="o">))</span> <span class="o">?</span> <span class="s1">&#39;snapshots/&#39;</span> <span class="o">:</span> <span class="s1">&#39;releases/&#39;</span><span class="o">)</span>
+    <span class="k">case</span> <span class="s1">'eclipse'</span><span class="o">:</span>
+      <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUrl</span> <span class="o">=</span> <span class="s1">'https://repo.eclipse.org/content/repositories/golo-'</span> <span class="o">+</span> <span class="o">((</span><span class="n">version</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s1">'-SNAPSHOT'</span><span class="o">))</span> <span class="o">?</span> <span class="s1">'snapshots/'</span> <span class="o">:</span> <span class="s1">'releases/'</span><span class="o">)</span>
       <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUsername</span> <span class="o">=</span> <span class="n">eclipseRepoUsername</span>
       <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoPassword</span> <span class="o">=</span> <span class="n">eclipseRepoPassword</span>
       <span class="k">break</span>
-    <span class="k">case</span> <span class="s1">&#39;bintray&#39;</span><span class="o">:</span>
-      <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUrl</span> <span class="o">=</span> <span class="s1">&#39;https://api.bintray.com/maven/golo-lang/golo-lang/golo&#39;</span>
+    <span class="k">case</span> <span class="s1">'bintray'</span><span class="o">:</span>
+      <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUrl</span> <span class="o">=</span> <span class="s1">'https://api.bintray.com/maven/golo-lang/golo-lang/golo'</span>
       <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUsername</span> <span class="o">=</span> <span class="n">bintrayRepoUsername</span>
       <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoPassword</span> <span class="o">=</span> <span class="n">bintrayRepoPassword</span>
       <span class="k">break</span>
-    <span class="k">default</span><span class="o">:</span>
-      <span class="k">throw</span> <span class="k">new</span> <span class="nf">GradleException</span><span class="o">(</span><span class="s2">&quot;Unknown release profile: $releaseProfile&quot;</span><span class="o">)</span>
+    <span class="nl">default:</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nf">GradleException</span><span class="o">(</span><span class="s2">"Unknown release profile: $releaseProfile"</span><span class="o">)</span>
   <span class="o">}</span>
 <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-  <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUrl</span> <span class="o">=</span> <span class="s2">&quot;$buildDir/maven-repo&quot;</span>
-  <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUsername</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-  <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoPassword</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUrl</span> <span class="o">=</span> <span class="s2">"$buildDir/maven-repo"</span>
+  <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUsername</span> <span class="o">=</span> <span class="s1">''</span>
+  <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoPassword</span> <span class="o">=</span> <span class="s1">''</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>Note that <code>eclipseRepoUsername</code> or <code>bintrayRepoUsername</code> are properties that need to exists
-in <code>~/.gradle/gradle.properties</code>.</p>
+<p>Note that <code class="highlighter-rouge">eclipseRepoUsername</code> or <code class="highlighter-rouge">bintrayRepoUsername</code> are properties that need to exists
+in <code class="highlighter-rouge">~/.gradle/gradle.properties</code>.</p>
 
 <p>I did some tests and this works just fine, but I feel like Gradle could provide more help here.
 Things are very straightforward in Maven, and it shouldn’t be that hard to replicate the experience
@@ -779,52 +779,52 @@ anticipate how helpful it is.</p>
 
 <p>On my modest aging MacBook Air:</p>
 
-<p><code>time rake special:bootstrap</code> (the full Maven builds):</p>
+<p><code class="highlighter-rouge">time rake special:bootstrap</code> (the full Maven builds):</p>
 
-<pre><code>real	1m50.695s
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>real	1m50.695s
 user	3m50.308s
 sys	0m15.228s
-</code></pre>
+</code></pre></div></div>
 
-<p><code>time rake build</code> (just build again without cleaning):</p>
+<p><code class="highlighter-rouge">time rake build</code> (just build again without cleaning):</p>
 
-<pre><code>real	0m38.168s
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>real	0m38.168s
 user	1m34.288s
 sys	0m6.041s
-</code></pre>
+</code></pre></div></div>
 
-<p><code>time ./gradlew clean build</code> (a full Gradle build):</p>
+<p><code class="highlighter-rouge">time ./gradlew clean build</code> (a full Gradle build):</p>
 
-<pre><code>real	0m40.406s
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>real	0m40.406s
 user	0m2.231s
 sys	0m0.306s
-</code></pre>
+</code></pre></div></div>
 
-<p><code>time ./gradlew build</code> (building again, daemon mode activated):</p>
+<p><code class="highlighter-rouge">time ./gradlew build</code> (building again, daemon mode activated):</p>
 
-<pre><code>real	0m3.456s
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>real	0m3.456s
 user	0m1.922s
 sys	0m0.178s
-</code></pre>
+</code></pre></div></div>
 
 <h4 id="maven-xml-files">Maven XML files</h4>
 
-<p><code>pom.xml</code></p>
+<p><code class="highlighter-rouge">pom.xml</code></p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 
-<span class="c">&lt;!--</span>
-<span class="c">  ~ Copyright (c) 2012-2015 Institut National des Sciences Appliquées de Lyon (INSA-Lyon)</span>
-<span class="c">  ~</span>
-<span class="c">  ~ All rights reserved. This program and the accompanying materials</span>
-<span class="c">  ~ are made available under the terms of the Eclipse Public License v1.0</span>
-<span class="c">  ~ which accompanies this distribution, and is available at</span>
-<span class="c">  ~ http://www.eclipse.org/legal/epl-v10.html</span>
-<span class="c">  --&gt;</span>
+<span class="c">&lt;!--
+  ~ Copyright (c) 2012-2015 Institut National des Sciences Appliquées de Lyon (INSA-Lyon)
+  ~
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the Eclipse Public License v1.0
+  ~ which accompanies this distribution, and is available at
+  ~ http://www.eclipse.org/legal/epl-v10.html
+  --&gt;</span>
 
-<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span>
-         <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-         <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">"http://maven.apache.org/POM/4.0.0"</span>
+         <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
 
   <span class="nt">&lt;groupId&gt;</span>org.eclipse.golo<span class="nt">&lt;/groupId&gt;</span>
@@ -1224,12 +1224,12 @@ sys	0m0.178s
       <span class="nt">&lt;/build&gt;</span>
     <span class="nt">&lt;/profile&gt;</span>
 
-    <span class="c">&lt;!--</span>
-<span class="c">       This allows building Golo without building the .golo files.</span>
+    <span class="c">&lt;!--
+       This allows building Golo without building the .golo files.
 
-<span class="c">       This is required in a clean-room environment, as the Maven plugin needs Golo... and Golo needs</span>
-<span class="c">       the plugin :-)</span>
-<span class="c">    --&gt;</span>
+       This is required in a clean-room environment, as the Maven plugin needs Golo... and Golo needs
+       the plugin :-)
+    --&gt;</span>
     <span class="nt">&lt;profile&gt;</span>
       <span class="nt">&lt;id&gt;</span>bootstrapped<span class="nt">&lt;/id&gt;</span>
       <span class="nt">&lt;activation&gt;</span>
@@ -1410,20 +1410,20 @@ sys	0m0.178s
 
 <span class="nt">&lt;/project&gt;</span></code></pre></figure>
 
-<p><code>distribution.xml</code></p>
+<p><code class="highlighter-rouge">distribution.xml</code></p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="c">&lt;!--</span>
-<span class="c">  ~ Copyright (c) 2012-2015 Institut National des Sciences Appliquées de Lyon (INSA-Lyon)</span>
-<span class="c">  ~</span>
-<span class="c">  ~ All rights reserved. This program and the accompanying materials</span>
-<span class="c">  ~ are made available under the terms of the Eclipse Public License v1.0</span>
-<span class="c">  ~ which accompanies this distribution, and is available at</span>
-<span class="c">  ~ http://www.eclipse.org/legal/epl-v10.html</span>
-<span class="c">  --&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="c">&lt;!--
+  ~ Copyright (c) 2012-2015 Institut National des Sciences Appliquées de Lyon (INSA-Lyon)
+  ~
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the Eclipse Public License v1.0
+  ~ which accompanies this distribution, and is available at
+  ~ http://www.eclipse.org/legal/epl-v10.html
+  --&gt;</span>
 
-<span class="nt">&lt;assembly</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0&quot;</span>
-          <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-          <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;assembly</span> <span class="na">xmlns=</span><span class="s">"http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"</span>
+          <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+          <span class="na">xsi:schemaLocation=</span><span class="s">"http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;id&gt;</span>distribution<span class="nt">&lt;/id&gt;</span>
   <span class="nt">&lt;formats&gt;</span>
     <span class="nt">&lt;format&gt;</span>dir<span class="nt">&lt;/format&gt;</span>
@@ -1486,22 +1486,22 @@ sys	0m0.178s
   <span class="nt">&lt;/fileSets&gt;</span>
 <span class="nt">&lt;/assembly&gt;</span></code></pre></figure>
 
-<p><code>golo-maven-plugin/pom.xml</code>, since we need to compile Golo with… Golo!</p>
+<p><code class="highlighter-rouge">golo-maven-plugin/pom.xml</code>, since we need to compile Golo with… Golo!</p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
 
-<span class="c">&lt;!--</span>
-<span class="c">  ~ Copyright (c) 2012-2015 Institut National des Sciences Appliquées de Lyon (INSA-Lyon)</span>
-<span class="c">  ~</span>
-<span class="c">  ~ All rights reserved. This program and the accompanying materials</span>
-<span class="c">  ~ are made available under the terms of the Eclipse Public License v1.0</span>
-<span class="c">  ~ which accompanies this distribution, and is available at</span>
-<span class="c">  ~ http://www.eclipse.org/legal/epl-v10.html</span>
-<span class="c">  --&gt;</span>
+<span class="c">&lt;!--
+  ~ Copyright (c) 2012-2015 Institut National des Sciences Appliquées de Lyon (INSA-Lyon)
+  ~
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the Eclipse Public License v1.0
+  ~ which accompanies this distribution, and is available at
+  ~ http://www.eclipse.org/legal/epl-v10.html
+  --&gt;</span>
 
-<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0&quot;</span>
-         <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span>
-         <span class="na">xsi:schemaLocation=</span><span class="s">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span><span class="nt">&gt;</span>
+<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">"http://maven.apache.org/POM/4.0.0"</span>
+         <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
 
   <span class="nt">&lt;groupId&gt;</span>org.eclipse.golo<span class="nt">&lt;/groupId&gt;</span>
@@ -1676,27 +1676,27 @@ sys	0m0.178s
 
 <h4 id="gradle-files">Gradle files</h4>
 
-<p><code>build.gradle</code></p>
+<p><code class="highlighter-rouge">build.gradle</code></p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="cm">/*</span>
-<span class="cm"> * Copyright (c) 2012-2015 Institut National des Sciences Appliquées de Lyon (INSA-Lyon)</span>
-<span class="cm"> *</span>
-<span class="cm"> * All rights reserved. This program and the accompanying materials</span>
-<span class="cm"> * are made available under the terms of the Eclipse Public License v1.0</span>
-<span class="cm"> * which accompanies this distribution, and is available at</span>
-<span class="cm"> * http://www.eclipse.org/legal/epl-v10.html</span>
-<span class="cm"> */</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="cm">/*
+ * Copyright (c) 2012-2015 Institut National des Sciences Appliquées de Lyon (INSA-Lyon)
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */</span>
 
 <span class="n">plugins</span> <span class="o">{</span>
-  <span class="n">id</span> <span class="s1">&#39;java&#39;</span>
-  <span class="n">id</span> <span class="s1">&#39;ca.coglinc.javacc&#39;</span> <span class="n">version</span> <span class="s1">&#39;2.2.2&#39;</span>
-  <span class="n">id</span> <span class="s1">&#39;org.asciidoctor.convert&#39;</span> <span class="n">version</span> <span class="s1">&#39;1.5.2&#39;</span>
-  <span class="n">id</span> <span class="s1">&#39;net.nemerosa.versioning&#39;</span> <span class="n">version</span> <span class="s1">&#39;1.5.0&#39;</span>
-  <span class="n">id</span> <span class="s1">&#39;jacoco&#39;</span>
-  <span class="n">id</span> <span class="s1">&#39;application&#39;</span>
-  <span class="n">id</span> <span class="s1">&#39;maven-publish&#39;</span>
-  <span class="n">id</span> <span class="s1">&#39;eclipse&#39;</span>
-  <span class="n">id</span> <span class="s1">&#39;idea&#39;</span>
+  <span class="n">id</span> <span class="s1">'java'</span>
+  <span class="n">id</span> <span class="s1">'ca.coglinc.javacc'</span> <span class="n">version</span> <span class="s1">'2.2.2'</span>
+  <span class="n">id</span> <span class="s1">'org.asciidoctor.convert'</span> <span class="n">version</span> <span class="s1">'1.5.2'</span>
+  <span class="n">id</span> <span class="s1">'net.nemerosa.versioning'</span> <span class="n">version</span> <span class="s1">'1.5.0'</span>
+  <span class="n">id</span> <span class="s1">'jacoco'</span>
+  <span class="n">id</span> <span class="s1">'application'</span>
+  <span class="n">id</span> <span class="s1">'maven-publish'</span>
+  <span class="n">id</span> <span class="s1">'eclipse'</span>
+  <span class="n">id</span> <span class="s1">'idea'</span>
 <span class="o">}</span>
 
 <span class="n">repositories</span> <span class="o">{</span>
@@ -1704,19 +1704,19 @@ sys	0m0.178s
 <span class="o">}</span>
 
 <span class="n">ext</span> <span class="o">{</span>
-  <span class="n">goloCliMain</span> <span class="o">=</span> <span class="s1">&#39;fr.insalyon.citi.golo.cli.Main&#39;</span>
-  <span class="n">goloSources</span> <span class="o">=</span> <span class="n">fileTree</span><span class="o">(</span><span class="s1">&#39;src/main/golo&#39;</span><span class="o">).</span><span class="na">include</span><span class="o">(</span><span class="s1">&#39;**/*.golo&#39;</span><span class="o">)</span>
-  <span class="n">goloClasses</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s2">&quot;$buildDir/classes/golo&quot;</span><span class="o">)</span>
-  <span class="n">goloDocs</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s2">&quot;$buildDir/docs/golodoc&quot;</span><span class="o">)</span>
+  <span class="n">goloCliMain</span> <span class="o">=</span> <span class="s1">'fr.insalyon.citi.golo.cli.Main'</span>
+  <span class="n">goloSources</span> <span class="o">=</span> <span class="n">fileTree</span><span class="o">(</span><span class="s1">'src/main/golo'</span><span class="o">).</span><span class="na">include</span><span class="o">(</span><span class="s1">'**/*.golo'</span><span class="o">)</span>
+  <span class="n">goloClasses</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s2">"$buildDir/classes/golo"</span><span class="o">)</span>
+  <span class="n">goloDocs</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s2">"$buildDir/docs/golodoc"</span><span class="o">)</span>
 <span class="o">}</span>
 
-<span class="n">group</span> <span class="o">=</span> <span class="s1">&#39;org.eclipse.golo&#39;</span>
-<span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;3.0.0-incubation-SNAPSHOT&#39;</span>
+<span class="n">group</span> <span class="o">=</span> <span class="s1">'org.eclipse.golo'</span>
+<span class="n">version</span> <span class="o">=</span> <span class="s1">'3.0.0-incubation-SNAPSHOT'</span>
 
 <span class="n">sourceCompatibility</span> <span class="o">=</span> <span class="mf">1.8</span>
 <span class="n">targetCompatibility</span> <span class="o">=</span> <span class="mf">1.8</span>
 
-<span class="n">apply</span> <span class="nl">from:</span> <span class="s1">&#39;gradle/repo-detection.gradle&#39;</span>
+<span class="n">apply</span> <span class="nl">from:</span> <span class="s1">'gradle/repo-detection.gradle'</span>
 
 <span class="n">sourceSets</span> <span class="o">{</span>
   <span class="n">main</span> <span class="o">{</span>
@@ -1733,52 +1733,52 @@ sys	0m0.178s
 
 <span class="n">dependencies</span> <span class="o">{</span>
 
-  <span class="n">compile</span> <span class="s1">&#39;org.ow2.asm:asm:5.0.4&#39;</span>
-  <span class="n">compile</span> <span class="s1">&#39;com.beust:jcommander:1.48&#39;</span>
-  <span class="n">compile</span> <span class="s1">&#39;com.github.rjeschke:txtmark:0.13&#39;</span>
-  <span class="n">compile</span><span class="o">(</span><span class="s1">&#39;com.googlecode.json-simple:json-simple:1.1.1&#39;</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">exclude</span><span class="o">(</span><span class="nl">module:</span> <span class="s1">&#39;junit&#39;</span><span class="o">)</span>
+  <span class="n">compile</span> <span class="s1">'org.ow2.asm:asm:5.0.4'</span>
+  <span class="n">compile</span> <span class="s1">'com.beust:jcommander:1.48'</span>
+  <span class="n">compile</span> <span class="s1">'com.github.rjeschke:txtmark:0.13'</span>
+  <span class="n">compile</span><span class="o">(</span><span class="s1">'com.googlecode.json-simple:json-simple:1.1.1'</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">exclude</span><span class="o">(</span><span class="nl">module:</span> <span class="s1">'junit'</span><span class="o">)</span>
   <span class="o">}</span>
 
-  <span class="n">testCompile</span> <span class="s1">&#39;org.ow2.asm:asm-util:5.0.4&#39;</span>
-  <span class="n">testCompile</span> <span class="s1">&#39;org.ow2.asm:asm-analysis:5.0.4&#39;</span>
-  <span class="n">testCompile</span> <span class="s1">&#39;org.hamcrest:hamcrest-all:1.3&#39;</span>
-  <span class="n">testCompile</span> <span class="s1">&#39;org.skyscreamer:jsonassert:1.2.3&#39;</span>
-  <span class="n">testCompile</span><span class="o">(</span><span class="s1">&#39;org.testng:testng:6.9.4&#39;</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">exclude</span><span class="o">(</span><span class="nl">module:</span> <span class="s1">&#39;junit&#39;</span><span class="o">)</span>
+  <span class="n">testCompile</span> <span class="s1">'org.ow2.asm:asm-util:5.0.4'</span>
+  <span class="n">testCompile</span> <span class="s1">'org.ow2.asm:asm-analysis:5.0.4'</span>
+  <span class="n">testCompile</span> <span class="s1">'org.hamcrest:hamcrest-all:1.3'</span>
+  <span class="n">testCompile</span> <span class="s1">'org.skyscreamer:jsonassert:1.2.3'</span>
+  <span class="n">testCompile</span><span class="o">(</span><span class="s1">'org.testng:testng:6.9.4'</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">exclude</span><span class="o">(</span><span class="nl">module:</span> <span class="s1">'junit'</span><span class="o">)</span>
   <span class="o">}</span>
 <span class="o">}</span>
 
 <span class="n">eclipse</span> <span class="o">{</span>
   <span class="n">project</span> <span class="o">{</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;golo-lang&#39;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s1">'golo-lang'</span>
   <span class="o">}</span>
 <span class="o">}</span>
 
-<span class="n">eclipseClasspath</span><span class="o">.</span><span class="na">dependsOn</span><span class="o">(</span><span class="s2">&quot;compileJavacc&quot;</span><span class="o">)</span>
+<span class="n">eclipseClasspath</span><span class="o">.</span><span class="na">dependsOn</span><span class="o">(</span><span class="s2">"compileJavacc"</span><span class="o">)</span>
 
 <span class="n">task</span> <span class="nf">goloc</span><span class="o">(</span><span class="nl">type:</span> <span class="n">JavaExec</span><span class="o">,</span> <span class="nl">dependsOn:</span> <span class="n">classes</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">main</span> <span class="o">=</span> <span class="n">goloCliMain</span>
-  <span class="n">args</span> <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;compile&#39;</span><span class="o">,</span> <span class="s1">&#39;--output&#39;</span><span class="o">,</span> <span class="n">goloClasses</span><span class="o">]</span> <span class="o">+</span> <span class="n">goloSources</span>
+  <span class="n">args</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'compile'</span><span class="o">,</span> <span class="s1">'--output'</span><span class="o">,</span> <span class="n">goloClasses</span><span class="o">]</span> <span class="o">+</span> <span class="n">goloSources</span>
   <span class="n">classpath</span> <span class="o">=</span> <span class="n">sourceSets</span><span class="o">.</span><span class="na">main</span><span class="o">.</span><span class="na">runtimeClasspath</span>
   <span class="n">inputs</span><span class="o">.</span><span class="na">files</span> <span class="n">goloSources</span>
   <span class="n">outputs</span><span class="o">.</span><span class="na">dir</span> <span class="n">goloClasses</span>
-  <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Compiles Golo source files.&#39;</span>
-  <span class="n">group</span> <span class="o">=</span> <span class="s1">&#39;Build&#39;</span>
+  <span class="n">description</span> <span class="o">=</span> <span class="s1">'Compiles Golo source files.'</span>
+  <span class="n">group</span> <span class="o">=</span> <span class="s1">'Build'</span>
 <span class="o">}</span>
 
-<span class="k">if</span> <span class="o">(!</span><span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">&#39;bootstrap&#39;</span><span class="o">))</span> <span class="o">{</span>
+<span class="k">if</span> <span class="o">(!</span><span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">'bootstrap'</span><span class="o">))</span> <span class="o">{</span>
   <span class="n">jar</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">goloc</span>
   <span class="n">test</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">goloc</span>
   <span class="n">goloc</span><span class="o">.</span><span class="na">shouldRunAfter</span> <span class="n">compileJava</span>
-  <span class="n">test</span><span class="o">.</span><span class="na">environment</span> <span class="s1">&#39;golo.bootstrapped&#39;</span><span class="o">,</span> <span class="s1">&#39;yes&#39;</span>
+  <span class="n">test</span><span class="o">.</span><span class="na">environment</span> <span class="s1">'golo.bootstrapped'</span><span class="o">,</span> <span class="s1">'yes'</span>
 <span class="o">}</span>
 
 <span class="n">test</span> <span class="o">{</span>
   <span class="n">useTestNG</span><span class="o">()</span>
-  <span class="n">testLogging</span><span class="o">.</span><span class="na">showStandardStreams</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">&#39;consoleTraceTests&#39;</span><span class="o">)</span>
-  <span class="n">systemProperty</span> <span class="s1">&#39;golo.test.trace&#39;</span><span class="o">,</span> <span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">&#39;traceTests&#39;</span><span class="o">)</span> <span class="o">?</span> <span class="s1">&#39;yes&#39;</span> <span class="o">:</span> <span class="s1">&#39;no&#39;</span>
-  <span class="n">systemProperty</span> <span class="s1">&#39;java.awt.headless&#39;</span><span class="o">,</span> <span class="s1">&#39;true&#39;</span>
+  <span class="n">testLogging</span><span class="o">.</span><span class="na">showStandardStreams</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">'consoleTraceTests'</span><span class="o">)</span>
+  <span class="n">systemProperty</span> <span class="s1">'golo.test.trace'</span><span class="o">,</span> <span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">'traceTests'</span><span class="o">)</span> <span class="o">?</span> <span class="s1">'yes'</span> <span class="o">:</span> <span class="s1">'no'</span>
+  <span class="n">systemProperty</span> <span class="s1">'java.awt.headless'</span><span class="o">,</span> <span class="s1">'true'</span>
 <span class="o">}</span>
 
 <span class="n">processResources</span> <span class="o">{</span>
@@ -1789,41 +1789,41 @@ sys	0m0.178s
 <span class="o">}</span>
 
 <span class="n">asciidoctorj</span> <span class="o">{</span>
-  <span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;1.5.2&#39;</span>
+  <span class="n">version</span> <span class="o">=</span> <span class="s1">'1.5.2'</span>
 <span class="o">}</span>
 
 <span class="n">asciidoctor</span> <span class="o">{</span>
-  <span class="n">sourceDir</span> <span class="s1">&#39;doc&#39;</span>
+  <span class="n">sourceDir</span> <span class="s1">'doc'</span>
   <span class="n">sources</span> <span class="o">{</span>
-    <span class="n">include</span> <span class="s1">&#39;golo-guide.asciidoc&#39;</span>
+    <span class="n">include</span> <span class="s1">'golo-guide.asciidoc'</span>
   <span class="o">}</span>
-  <span class="n">backends</span> <span class="s1">&#39;html5&#39;</span>
+  <span class="n">backends</span> <span class="s1">'html5'</span>
 <span class="o">}</span>
 
 <span class="n">assemble</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">asciidoctor</span>
 
 <span class="n">task</span> <span class="nf">golodoc</span><span class="o">(</span><span class="nl">type:</span> <span class="n">JavaExec</span><span class="o">,</span> <span class="nl">dependsOn:</span> <span class="n">classes</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">main</span> <span class="o">=</span> <span class="n">goloCliMain</span>
-  <span class="n">args</span> <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;doc&#39;</span><span class="o">,</span> <span class="s1">&#39;--format&#39;</span><span class="o">,</span> <span class="s1">&#39;html&#39;</span><span class="o">,</span> <span class="s1">&#39;--output&#39;</span><span class="o">,</span> <span class="n">goloDocs</span><span class="o">]</span> <span class="o">+</span> <span class="n">goloSources</span>
+  <span class="n">args</span> <span class="o">=</span> <span class="o">[</span><span class="s1">'doc'</span><span class="o">,</span> <span class="s1">'--format'</span><span class="o">,</span> <span class="s1">'html'</span><span class="o">,</span> <span class="s1">'--output'</span><span class="o">,</span> <span class="n">goloDocs</span><span class="o">]</span> <span class="o">+</span> <span class="n">goloSources</span>
   <span class="n">classpath</span> <span class="o">=</span> <span class="n">sourceSets</span><span class="o">.</span><span class="na">main</span><span class="o">.</span><span class="na">runtimeClasspath</span>
   <span class="n">inputs</span><span class="o">.</span><span class="na">files</span> <span class="n">goloSources</span>
   <span class="n">outputs</span><span class="o">.</span><span class="na">dir</span> <span class="n">goloDocs</span>
-  <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Generates documentation of the standard Golo modules.&#39;</span>
-  <span class="n">group</span> <span class="o">=</span> <span class="s1">&#39;Documentation&#39;</span>
+  <span class="n">description</span> <span class="o">=</span> <span class="s1">'Generates documentation of the standard Golo modules.'</span>
+  <span class="n">group</span> <span class="o">=</span> <span class="s1">'Documentation'</span>
 <span class="o">}</span>
 
 <span class="n">golodoc</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">goloc</span>
 
 <span class="n">task</span> <span class="nf">createVanillaScripts</span><span class="o">(</span><span class="nl">type:</span> <span class="n">CreateStartScripts</span><span class="o">)</span> <span class="o">{</span>
-  <span class="n">outputDir</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s1">&#39;build/vanilla-golo&#39;</span><span class="o">)</span>
+  <span class="n">outputDir</span> <span class="o">=</span> <span class="n">file</span><span class="o">(</span><span class="s1">'build/vanilla-golo'</span><span class="o">)</span>
   <span class="n">mainClassName</span> <span class="o">=</span> <span class="n">goloCliMain</span>
-  <span class="n">applicationName</span> <span class="o">=</span> <span class="s1">&#39;vanilla-golo&#39;</span>
+  <span class="n">applicationName</span> <span class="o">=</span> <span class="s1">'vanilla-golo'</span>
   <span class="n">classpath</span> <span class="o">=</span> <span class="n">startScripts</span><span class="o">.</span><span class="na">classpath</span>
 <span class="o">}</span>
 
 <span class="n">mainClassName</span> <span class="o">=</span> <span class="n">goloCliMain</span>
 <span class="n">applicationDefaultJvmArgs</span> <span class="o">=</span> <span class="o">[</span>
-  <span class="s1">&#39;-Xms256m&#39;</span><span class="o">,</span> <span class="s1">&#39;-Xmx1024M&#39;</span><span class="o">,</span> <span class="s1">&#39;-Xss1024M&#39;</span><span class="o">,</span> <span class="s1">&#39;-server&#39;</span><span class="o">,</span> <span class="s1">&#39;-XX:-TieredCompilation&#39;</span><span class="o">,</span> <span class="s1">&#39;-XX:+AggressiveOpts&#39;</span>
+  <span class="s1">'-Xms256m'</span><span class="o">,</span> <span class="s1">'-Xmx1024M'</span><span class="o">,</span> <span class="s1">'-Xss1024M'</span><span class="o">,</span> <span class="s1">'-server'</span><span class="o">,</span> <span class="s1">'-XX:-TieredCompilation'</span><span class="o">,</span> <span class="s1">'-XX:+AggressiveOpts'</span>
 <span class="o">]</span>
 
 <span class="n">startScripts</span><span class="o">.</span><span class="na">dependsOn</span> <span class="n">createVanillaScripts</span>
@@ -1832,28 +1832,28 @@ sys	0m0.178s
   <span class="n">main</span> <span class="o">{</span>
     <span class="n">contents</span> <span class="o">{</span>
       <span class="n">from</span><span class="o">(</span><span class="n">projectDir</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">include</span> <span class="s1">&#39;README*&#39;</span>
-        <span class="n">include</span> <span class="s1">&#39;CONTRIB*&#39;</span>
-        <span class="n">include</span> <span class="s1">&#39;THIRD-PARTY&#39;</span>
-        <span class="n">include</span> <span class="s1">&#39;notice.html&#39;</span>
-        <span class="n">include</span> <span class="s1">&#39;epl-v10.html&#39;</span>
+        <span class="n">include</span> <span class="s1">'README*'</span>
+        <span class="n">include</span> <span class="s1">'CONTRIB*'</span>
+        <span class="n">include</span> <span class="s1">'THIRD-PARTY'</span>
+        <span class="n">include</span> <span class="s1">'notice.html'</span>
+        <span class="n">include</span> <span class="s1">'epl-v10.html'</span>
       <span class="o">}</span>
-      <span class="n">into</span><span class="o">(</span><span class="s1">&#39;samples&#39;</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">from</span><span class="o">(</span><span class="s1">&#39;samples&#39;</span><span class="o">)</span> <span class="o">{</span>
-          <span class="n">include</span> <span class="s1">&#39;**/*.golo&#39;</span>
+      <span class="n">into</span><span class="o">(</span><span class="s1">'samples'</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">from</span><span class="o">(</span><span class="s1">'samples'</span><span class="o">)</span> <span class="o">{</span>
+          <span class="n">include</span> <span class="s1">'**/*.golo'</span>
         <span class="o">}</span>
       <span class="o">}</span>
-      <span class="n">into</span><span class="o">(</span><span class="s1">&#39;share&#39;</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">from</span> <span class="s1">&#39;share&#39;</span>
+      <span class="n">into</span><span class="o">(</span><span class="s1">'share'</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">from</span> <span class="s1">'share'</span>
       <span class="o">}</span>
       <span class="n">from</span><span class="o">(</span><span class="n">asciidoctor</span><span class="o">.</span><span class="na">outputDir</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">into</span> <span class="s1">&#39;docs&#39;</span>
+        <span class="n">into</span> <span class="s1">'docs'</span>
       <span class="o">}</span>
       <span class="n">from</span><span class="o">(</span><span class="n">golodoc</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">into</span> <span class="s1">&#39;docs/golodoc&#39;</span>
+        <span class="n">into</span> <span class="s1">'docs/golodoc'</span>
       <span class="o">}</span>
       <span class="n">from</span><span class="o">(</span><span class="n">createVanillaScripts</span><span class="o">.</span><span class="na">outputDir</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">into</span> <span class="s1">&#39;bin&#39;</span>
+        <span class="n">into</span> <span class="s1">'bin'</span>
       <span class="o">}</span>
     <span class="o">}</span>
   <span class="o">}</span>
@@ -1865,35 +1865,35 @@ sys	0m0.178s
       <span class="n">pom</span><span class="o">.</span><span class="na">withXml</span> <span class="o">{</span>
         <span class="n">asNode</span><span class="o">().</span><span class="na">children</span><span class="o">().</span><span class="na">last</span><span class="o">()</span> <span class="o">+</span> <span class="o">{</span>
           <span class="n">resolveStrategy</span> <span class="o">=</span> <span class="n">Closure</span><span class="o">.</span><span class="na">DELEGATE_FIRST</span>
-          <span class="n">name</span> <span class="s1">&#39;Golo Programming Language (Incubation)&#39;</span>
-          <span class="n">description</span> <span class="s1">&#39;Golo: a lightweight dynamic language for the JVM.&#39;</span>
-          <span class="n">url</span> <span class="s1">&#39;http://golo-lang.org/&#39;</span>
+          <span class="n">name</span> <span class="s1">'Golo Programming Language (Incubation)'</span>
+          <span class="n">description</span> <span class="s1">'Golo: a lightweight dynamic language for the JVM.'</span>
+          <span class="n">url</span> <span class="s1">'http://golo-lang.org/'</span>
           <span class="n">developers</span> <span class="o">{</span>
             <span class="n">developer</span> <span class="o">{</span>
-              <span class="n">name</span> <span class="s1">&#39;Golo committers&#39;</span>
-              <span class="n">email</span> <span class="s1">&#39;golo-dev@eclipse.org&#39;</span>
+              <span class="n">name</span> <span class="s1">'Golo committers'</span>
+              <span class="n">email</span> <span class="s1">'golo-dev@eclipse.org'</span>
             <span class="o">}</span>
           <span class="o">}</span>
           <span class="n">licenses</span> <span class="o">{</span>
             <span class="n">license</span> <span class="o">{</span>
-              <span class="n">name</span> <span class="s1">&#39;Eclipse Public License - v 1.0&#39;</span>
-              <span class="n">url</span> <span class="s1">&#39;http://www.eclipse.org/legal/epl-v10.html&#39;</span>
-              <span class="n">distribution</span> <span class="s1">&#39;repo&#39;</span>
+              <span class="n">name</span> <span class="s1">'Eclipse Public License - v 1.0'</span>
+              <span class="n">url</span> <span class="s1">'http://www.eclipse.org/legal/epl-v10.html'</span>
+              <span class="n">distribution</span> <span class="s1">'repo'</span>
             <span class="o">}</span>
           <span class="o">}</span>
           <span class="n">scm</span> <span class="o">{</span>
-            <span class="n">url</span> <span class="s1">&#39;https://github.com/eclipse/golo-lang&#39;</span>
-            <span class="n">connection</span> <span class="s1">&#39;scm:git:git@github.com:eclipse/golo-lang.git&#39;</span>
-            <span class="n">developerConnection</span> <span class="s1">&#39;scm:git:ssh:git@github.com:eclipse/golo-lang.git&#39;</span>
+            <span class="n">url</span> <span class="s1">'https://github.com/eclipse/golo-lang'</span>
+            <span class="n">connection</span> <span class="s1">'scm:git:git@github.com:eclipse/golo-lang.git'</span>
+            <span class="n">developerConnection</span> <span class="s1">'scm:git:ssh:git@github.com:eclipse/golo-lang.git'</span>
           <span class="o">}</span>
         <span class="o">}</span>
       <span class="o">}</span>
       <span class="n">from</span> <span class="n">components</span><span class="o">.</span><span class="na">java</span>
       <span class="n">artifact</span> <span class="n">sourceJar</span> <span class="o">{</span>
-        <span class="n">classifier</span> <span class="s1">&#39;sources&#39;</span>
+        <span class="n">classifier</span> <span class="s1">'sources'</span>
       <span class="o">}</span>
       <span class="n">artifact</span> <span class="n">javadocJar</span> <span class="o">{</span>
-        <span class="n">classifier</span> <span class="s1">&#39;javadoc&#39;</span>
+        <span class="n">classifier</span> <span class="s1">'javadoc'</span>
       <span class="o">}</span>
     <span class="o">}</span>
   <span class="o">}</span>
@@ -1913,60 +1913,60 @@ sys	0m0.178s
   <span class="n">from</span> <span class="n">sourceSets</span><span class="o">.</span><span class="na">main</span><span class="o">.</span><span class="na">allJava</span>
 <span class="o">}</span>
 
-<span class="n">javadoc</span><span class="o">.</span><span class="na">options</span><span class="o">.</span><span class="na">addStringOption</span><span class="o">(</span><span class="s1">&#39;Xdoclint:none&#39;</span><span class="o">,</span> <span class="s1">&#39;-quiet&#39;</span><span class="o">)</span>
+<span class="n">javadoc</span><span class="o">.</span><span class="na">options</span><span class="o">.</span><span class="na">addStringOption</span><span class="o">(</span><span class="s1">'Xdoclint:none'</span><span class="o">,</span> <span class="s1">'-quiet'</span><span class="o">)</span>
 
 <span class="n">task</span> <span class="nf">javadocJar</span> <span class="o">(</span><span class="nl">type:</span> <span class="n">Jar</span><span class="o">,</span> <span class="nl">dependsOn:</span> <span class="n">javadoc</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">from</span> <span class="n">javadoc</span><span class="o">.</span><span class="na">destinationDir</span>
 <span class="o">}</span>
 
 <span class="n">task</span> <span class="nf">wrapper</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Wrapper</span><span class="o">)</span> <span class="o">{</span>
-  <span class="n">gradleVersion</span> <span class="o">=</span> <span class="s1">&#39;2.6&#39;</span>
-  <span class="n">description</span> <span class="s1">&#39;Generates the Gradle wrapper scripts.&#39;</span>
+  <span class="n">gradleVersion</span> <span class="o">=</span> <span class="s1">'2.6'</span>
+  <span class="n">description</span> <span class="s1">'Generates the Gradle wrapper scripts.'</span>
 <span class="o">}</span></code></pre></figure>
 
-<p><code>settings.gradle</code></p>
+<p><code class="highlighter-rouge">settings.gradle</code></p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="cm">/*</span>
-<span class="cm"> * Copyright (c) 2012-2015 Institut National des Sciences Appliquées de Lyon (INSA-Lyon)</span>
-<span class="cm"> *</span>
-<span class="cm"> * All rights reserved. This program and the accompanying materials</span>
-<span class="cm"> * are made available under the terms of the Eclipse Public License v1.0</span>
-<span class="cm"> * which accompanies this distribution, and is available at</span>
-<span class="cm"> * http://www.eclipse.org/legal/epl-v10.html</span>
-<span class="cm"> */</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="cm">/*
+ * Copyright (c) 2012-2015 Institut National des Sciences Appliquées de Lyon (INSA-Lyon)
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */</span>
 
-<span class="n">rootProject</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="s1">&#39;golo&#39;</span></code></pre></figure>
+<span class="n">rootProject</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="s1">'golo'</span></code></pre></figure>
 
-<p><code>gradle/repo-detection.gradle</code></p>
+<p><code class="highlighter-rouge">gradle/repo-detection.gradle</code></p>
 
-<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="cm">/*</span>
-<span class="cm"> * Copyright (c) 2012-2015 Institut National des Sciences Appliquées de Lyon (INSA-Lyon)</span>
-<span class="cm"> *</span>
-<span class="cm"> * All rights reserved. This program and the accompanying materials</span>
-<span class="cm"> * are made available under the terms of the Eclipse Public License v1.0</span>
-<span class="cm"> * which accompanies this distribution, and is available at</span>
-<span class="cm"> * http://www.eclipse.org/legal/epl-v10.html</span>
-<span class="cm"> */</span>
+<figure class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span class="cm">/*
+ * Copyright (c) 2012-2015 Institut National des Sciences Appliquées de Lyon (INSA-Lyon)
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */</span>
 
-<span class="k">if</span> <span class="o">(</span><span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">&#39;releaseProfile&#39;</span><span class="o">))</span> <span class="o">{</span>
+<span class="k">if</span> <span class="o">(</span><span class="n">project</span><span class="o">.</span><span class="na">hasProperty</span><span class="o">(</span><span class="s1">'releaseProfile'</span><span class="o">))</span> <span class="o">{</span>
   <span class="k">switch</span> <span class="o">(</span><span class="n">releaseProfile</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">case</span> <span class="s1">&#39;eclipse&#39;</span><span class="o">:</span>
-      <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUrl</span> <span class="o">=</span> <span class="s1">&#39;https://repo.eclipse.org/content/repositories/golo-&#39;</span> <span class="o">+</span> <span class="o">((</span><span class="n">version</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s1">&#39;-SNAPSHOT&#39;</span><span class="o">))</span> <span class="o">?</span> <span class="s1">&#39;snapshots/&#39;</span> <span class="o">:</span> <span class="s1">&#39;releases/&#39;</span><span class="o">)</span>
+    <span class="k">case</span> <span class="s1">'eclipse'</span><span class="o">:</span>
+      <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUrl</span> <span class="o">=</span> <span class="s1">'https://repo.eclipse.org/content/repositories/golo-'</span> <span class="o">+</span> <span class="o">((</span><span class="n">version</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s1">'-SNAPSHOT'</span><span class="o">))</span> <span class="o">?</span> <span class="s1">'snapshots/'</span> <span class="o">:</span> <span class="s1">'releases/'</span><span class="o">)</span>
       <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUsername</span> <span class="o">=</span> <span class="n">eclipseRepoUsername</span>
       <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoPassword</span> <span class="o">=</span> <span class="n">eclipseRepoPassword</span>
       <span class="k">break</span>
-    <span class="k">case</span> <span class="s1">&#39;bintray&#39;</span><span class="o">:</span>
-      <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUrl</span> <span class="o">=</span> <span class="s1">&#39;https://api.bintray.com/maven/golo-lang/golo-lang/golo&#39;</span>
+    <span class="k">case</span> <span class="s1">'bintray'</span><span class="o">:</span>
+      <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUrl</span> <span class="o">=</span> <span class="s1">'https://api.bintray.com/maven/golo-lang/golo-lang/golo'</span>
       <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUsername</span> <span class="o">=</span> <span class="n">bintrayRepoUsername</span>
       <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoPassword</span> <span class="o">=</span> <span class="n">bintrayRepoPassword</span>
       <span class="k">break</span>
-    <span class="k">default</span><span class="o">:</span>
-      <span class="k">throw</span> <span class="k">new</span> <span class="nf">GradleException</span><span class="o">(</span><span class="s2">&quot;Unknown release profile: $releaseProfile&quot;</span><span class="o">)</span>
+    <span class="nl">default:</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nf">GradleException</span><span class="o">(</span><span class="s2">"Unknown release profile: $releaseProfile"</span><span class="o">)</span>
   <span class="o">}</span>
 <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-  <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUrl</span> <span class="o">=</span> <span class="s2">&quot;$buildDir/maven-repo&quot;</span>
-  <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUsername</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-  <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoPassword</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUrl</span> <span class="o">=</span> <span class="s2">"$buildDir/maven-repo"</span>
+  <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoUsername</span> <span class="o">=</span> <span class="s1">''</span>
+  <span class="n">ext</span><span class="o">.</span><span class="na">goloMavenRepoPassword</span> <span class="o">=</span> <span class="s1">''</span>
 <span class="o">}</span></code></pre></figure>
 
 
@@ -1991,7 +1991,7 @@ sys	0m0.178s
 </div>
 
       <div class="footer-col footer-col-3">
-        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+        <p>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
       </div>
     </div>
 

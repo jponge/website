@@ -65,7 +65,7 @@
 
 <p>Here is how to make the release plugin behave as one would expect with a DVCS:</p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;plugin&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;plugin&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>maven-release-plugin<span class="nt">&lt;/artifactId&gt;</span>
     <span class="nt">&lt;configuration&gt;</span>
@@ -80,7 +80,7 @@
 
 <p>The solution is to force it not to deploy the website. Just upload the artifacts as part of the build, and latter run a “mvn site:deploy” if you like.</p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;plugin&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;plugin&gt;</span>
     <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
     <span class="nt">&lt;artifactId&gt;</span>maven-release-plugin<span class="nt">&lt;/artifactId&gt;</span>
     <span class="nt">&lt;configuration&gt;</span>
@@ -98,7 +98,7 @@
 
 <p>The solution is to attach the plugin to the “install” phase, and only when releases are being made:</p>
 
-<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;profile&gt;</span>
+<figure class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;profile&gt;</span>
     <span class="nt">&lt;id&gt;</span>release-sign-artifacts<span class="nt">&lt;/id&gt;</span>
     <span class="nt">&lt;activation&gt;</span>
         <span class="nt">&lt;property&gt;</span>
@@ -148,7 +148,7 @@
 </div>
 
       <div class="footer-col footer-col-3">
-        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+        <p>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
       </div>
     </div>
 

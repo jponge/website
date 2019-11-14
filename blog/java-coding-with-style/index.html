@@ -128,7 +128,7 @@ maintains an awesome tool called <a href="http://infinitest.github.com">Infinite
 whenever you save a file. It intelligently guesses which tests have been impacted and launches them again
 on changes, giving you instant feedback.</p>
 
-<p>I rarely launch tests from my IDE and prefer going to the terminal console to launch <code>mvn test</code>. It
+<p>I rarely launch tests from my IDE and prefer going to the terminal console to launch <code class="highlighter-rouge">mvn test</code>. It
 is somehow faster for me to simply switch applications. I also have less friction navigating through
 console outputs in a terminal application rather than in a view of my IDE. Maybe I am just strange.</p>
 
@@ -138,7 +138,7 @@ tool can be!</p>
 <h2 id="wrapping-rake-around-maven">Wrapping Rake around Maven</h2>
 
 <p><a href="http://rake.rubyforge.org">Rake</a> is a build tool written in Ruby. It defines tasks just like
-a <code>Makefile</code>, except that it comes in the form of a nice Ruby domain-specific language.</p>
+a <code class="highlighter-rouge">Makefile</code>, except that it comes in the form of a nice Ruby domain-specific language.</p>
 
 <p>I use Rake for anything that does not fit into Maven. Ruby launches fast, and Rake just does what it
 is supposed to do with lots of elegance.</p>
@@ -147,7 +147,7 @@ is supposed to do with lots of elegance.</p>
 test case with extra verbosity. In such cases, I use Rake to launch Maven, giving me a range of
 easy-to-remember tasks such as:</p>
 
-<pre><code>$ rake -T
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ rake -T
 rake all                      # Build a complete distribution (packages + documentation)
 rake build                    # Build and install
 rake clean                    # Clean
@@ -161,13 +161,13 @@ rake test:bytecode            # Bytecode compilation output tests (verbose)
 rake test:parser              # Parser tests (verbose)
 rake test:run                 # Samples running tests (verbose)
 rake test:visitors            # IR tests (verbose)
-</code></pre>
+</code></pre></div></div>
 
-<p>As an example, the definition of the <code>test:run</code> task wraps Maven as follows:</p>
+<p>As an example, the definition of the <code class="highlighter-rouge">test:run</code> task wraps Maven as follows:</p>
 
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="n">desc</span> <span class="s2">&quot;Samples running tests (verbose)&quot;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">desc</span> <span class="s2">"Samples running tests (verbose)"</span>
 <span class="n">task</span> <span class="ss">:run</span> <span class="k">do</span>
-  <span class="n">sh</span> <span class="s2">&quot;mvn test -Dtest=CompileAndRunTest -P verbose-tests&quot;</span>
+  <span class="n">sh</span> <span class="s2">"mvn test -Dtest=CompileAndRunTest -P verbose-tests"</span>
 <span class="k">end</span></code></pre></figure>
 
 <p>The combination of Rake and Maven works great for me, and I encourage you to give it a try.</p>
@@ -226,7 +226,7 @@ depending on your own tastes and work context.</p>
 </div>
 
       <div class="footer-col footer-col-3">
-        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+        <p>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
       </div>
     </div>
 

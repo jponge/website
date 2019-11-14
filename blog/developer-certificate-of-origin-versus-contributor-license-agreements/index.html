@@ -57,7 +57,7 @@ Indeed, you will need to adapt a CLA <a href="https://www.apache.org/licenses/ic
 
 <p>From <a href="http://developercertificate.org/">http://developercertificate.org/</a>:</p>
 
-<pre><code>Developer Certificate of Origin
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Developer Certificate of Origin
 Version 1.1
 
 Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
@@ -93,9 +93,9 @@ are public and that a record of the contribution (including all
 personal information I submit with it, including my sign-off) is
 maintained indefinitely and may be redistributed consistent with
 this project or the open source license(s) involved.
-</code></pre>
+</code></pre></div></div>
 
-<p>The idea is pretty simple: you certify that you adhere to these requirements by <em>signing-off</em> your commits (<code>git commit -s</code>), and it essentially means that:</p>
+<p>The idea is pretty simple: you certify that you adhere to these requirements by <em>signing-off</em> your commits (<code class="highlighter-rouge">git commit -s</code>), and it essentially means that:</p>
 
 <ol>
   <li>you offer the changes under the same license agreement as the project, and</li>
@@ -113,29 +113,29 @@ this project or the open source license(s) involved.
 
 <p>Apache does it with clause 2:</p>
 
-<pre><code>2. Grant of Copyright License. Subject to the terms and conditions of
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2. Grant of Copyright License. Subject to the terms and conditions of
 this Agreement, You hereby grant to the Foundation and to
 recipients of software distributed by the Foundation a perpetual,
 worldwide, non-exclusive, no-charge, royalty-free, irrevocable
 copyright license to reproduce, prepare derivative works of,
 publicly display, publicly perform, sublicense, and distribute Your
 Contributions and such derivative works.
-</code></pre>
+</code></pre></div></div>
 
 <p>and Eclipse has a mention in the preambule:</p>
 
-<pre><code>This CLA, and the license(s) associated with the particular Eclipse Foundation
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This CLA, and the license(s) associated with the particular Eclipse Foundation
 projects You are contributing to, provides a license to Your Contributions to
 the Eclipse Foundation and downstream consumers, but You still own Your Contributions,
 and except for the licenses provided for in this CLA, You reserve all right, title and
 interest in Your Contributions.
-</code></pre>
+</code></pre></div></div>
 
 <p>The remainder of the Eclipse CLA is quite similar to the Linux DCO, and very short. My guess is that it mostly defers to the <em>Eclipse Public License</em>, especially for patent issues.</p>
 
 <p>The Apache CLA is more lengthy than the one from Eclipse, and it adds a few more clauses, but in effect they are more or less redundant with what the <em>Apache Software License</em> provides. Still, there is one clause that is interesting:</p>
 
-<pre><code> 6. You are not expected to provide support for Your Contributions,
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> 6. You are not expected to provide support for Your Contributions,
  except to the extent You desire to provide support. You may provide
  support for free, for a fee, or not at all. Unless required by
  applicable law or agreed to in writing, You provide Your
@@ -143,15 +143,15 @@ interest in Your Contributions.
  OF ANY KIND, either express or implied, including, without
  limitation, any warranties or conditions of TITLE, NON-
  INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.
-</code></pre>
+</code></pre></div></div>
 
 <p>This lifts any requirement for supporting the contributions. This may come as a surprise, but in some countries this <em>could</em> be the case that by default one has to support its work.</p>
 
 <h3 id="a-warning-on-trust">A warning on trust</h3>
 
-<p>The DCO is very Git-centric, and it only relies on commit metadata. Indeed, signing-off a commit is just about appending a <code>Signed-off-by:</code> line in the commit comment as in:</p>
+<p>The DCO is very Git-centric, and it only relies on commit metadata. Indeed, signing-off a commit is just about appending a <code class="highlighter-rouge">Signed-off-by:</code> line in the commit comment as in:</p>
 
-<pre><code>commit 0909d26f5de9e7e67fabcc94bab55f82fd33a1d3
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>commit 0909d26f5de9e7e67fabcc94bab55f82fd33a1d3
 Author: Julien Ponge &lt;julien.ponge@insa-lyon.fr&gt;
 Date:   Tue Nov 17 10:29:19 2015 +0100
 
@@ -166,7 +166,7 @@ Gradle sample rework
 * The application code has been made verbose to know if the listen() operation succeeded or not.
 
 Signed-off-by: Julien Ponge &lt;julien.ponge@insa-lyon.fr&gt;
-</code></pre>
+</code></pre></div></div>
 
 <p>It is very easy to use <em>whatever</em> email address you want for a commit, and the sign-off is just text.</p>
 
@@ -177,12 +177,12 @@ Signed-off-by: Julien Ponge &lt;julien.ponge@insa-lyon.fr&gt;
 <p>Still, the issue of trust is important. What can be done to mitigate that is using GnuPG signatures in Git commits:</p>
 
 <ul>
-  <li><code>git commit -s -S</code> makes GnuPG-signed commits, and</li>
-  <li><code>git log --show-signature</code> shows GnuPG signatures in the log history, and</li>
-  <li><code>git merge --verify-signatures branch</code> ensures that all commits are signed <em>and</em> valid before performing a merge.</li>
+  <li><code class="highlighter-rouge">git commit -s -S</code> makes GnuPG-signed commits, and</li>
+  <li><code class="highlighter-rouge">git log --show-signature</code> shows GnuPG signatures in the log history, and</li>
+  <li><code class="highlighter-rouge">git merge --verify-signatures branch</code> ensures that all commits are signed <em>and</em> valid before performing a merge.</li>
 </ul>
 
-<p>Now having to use GnuPG for <em>all</em> commits can be a bit daunting. Perhaps a simple alternative can be to require that contributors add their name and email to a file (e.g., <code>CONTRIBUTORS</code>), and do so with a GnuPG + signed-off commit, and later at least sign-off commits. This is especially doable with services like <a href="https://keybase.io/">keybase.io</a> that can link several public profiles to a key, and especially GitHub (although yes, GitHub shall not be the center of the universe in opensource!).</p>
+<p>Now having to use GnuPG for <em>all</em> commits can be a bit daunting. Perhaps a simple alternative can be to require that contributors add their name and email to a file (e.g., <code class="highlighter-rouge">CONTRIBUTORS</code>), and do so with a GnuPG + signed-off commit, and later at least sign-off commits. This is especially doable with services like <a href="https://keybase.io/">keybase.io</a> that can link several public profiles to a key, and especially GitHub (although yes, GitHub shall not be the center of the universe in opensource!).</p>
 
 <p>I think many variants can work out here, the most important thing is to have GnuPG in the loop at some point.</p>
 
@@ -207,7 +207,7 @@ Signed-off-by: Julien Ponge &lt;julien.ponge@insa-lyon.fr&gt;
 </div>
 
       <div class="footer-col footer-col-3">
-        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+        <p>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
       </div>
     </div>
 

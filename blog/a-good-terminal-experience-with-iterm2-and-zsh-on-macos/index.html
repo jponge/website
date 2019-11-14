@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>A good terminal experience with iTerm2 and ZSH on macOS | Julien Ponge</title>
+<meta name="generator" content="Jekyll v3.8.6" />
+<meta property="og:title" content="A good terminal experience with iTerm2 and ZSH on macOS" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS. I use iTerm2, Zsh, and a few cool command-line tools." />
+<meta property="og:description" content="I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS. I use iTerm2, Zsh, and a few cool command-line tools." />
+<link rel="canonical" href="https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-11-14T00:00:00+01:00" />
+<script type="application/ld+json">
+{"headline":"A good terminal experience with iTerm2 and ZSH on macOS","dateModified":"2019-11-14T00:00:00+01:00","datePublished":"2019-11-14T00:00:00+01:00","url":"https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/"},"description":"I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS. I use iTerm2, Zsh, and a few cool command-line tools.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">A good terminal experience with iTerm2 and ZSH on macOS</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2019-11-14T00:00:00+01:00" itemprop="datePublished">Nov 14, 2019
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS.
+I use iTerm2, Zsh, and a few cool command-line tools.</p>
+
+<h3 id="iterm2">iTerm2</h3>
+
+<p>I am working on macOS, and I prefer the <a href="https://iterm2.com/">iTerm2</a> terminal emulator over the macOS <em>Terminal</em> application:</p>
+
+<p><img src="/images/posts/2019/iterm2.png" alt="iTerm2 in Action" /></p>
+
+<p>I especially enjoy the ability to split panes horizontally and vertically, as well as the keyboard shortcuts to move around.</p>
+
+<p>I use the minimal theme with the tab bar on top and the status bar in the bottom with a few helper icons like CPU usage and current process.
+The color theme is <a href="https://draculatheme.com/">Dracula</a>.
+I like this theme very much also in other tools, notably <em>Visual Studio Code</em> which is my currently preferred editor aside from <em>IntelliJ IDEA</em> for Java projects.
+I also use the <a href="https://github.com/microsoft/cascadia-code">Cascadia font from Microsoft</a> which is my preferred monospace font these days.</p>
+
+<h3 id="dot-files">Dot files</h3>
+
+<p>Everyone has their preferences for managing dot files.</p>
+
+<p>I am using a simple repository for that, with a bill-of-materials for applications to install automatically: <a href="https://github.com/jponge/dotfiles/tree/2019">https://github.com/jponge/dotfiles/tree/2019</a> (the 2019 edition, switch to another branch if you want).</p>
+
+<p>The dot files get sym-linked using <a href="https://www.gnu.org/software/stow/">GNU Stow</a>.
+For instance <code class="highlighter-rouge">~/.zshrc</code> points to <code class="highlighter-rouge">~/dotfiles/home/.zshrc</code>.</p>
+
+<p>There are various environment variables and shell functions that I rely on.
+They can be found in <code class="highlighter-rouge">~/dotfiles/env</code>, and they get loaded from <code class="highlighter-rouge">~/.zshrc</code> (or <code class="highlighter-rouge">~/.bash_profile</code> if you prefer Bash) using a simple for-loop:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>envfile <span class="k">in</span> ~/dotfiles/env/<span class="k">*</span>.sh<span class="p">;</span> <span class="k">do
+  </span><span class="nb">source</span> <span class="k">${</span><span class="nv">envfile</span><span class="k">}</span>
+<span class="k">done</span>
+</code></pre></div></div>
+
+<h3 id="oh-my-zsh">Oh My Zsh</h3>
+
+<p>There exist several Zsh plugin managers, but if you want something with sensible defaults and batteries included then <a href="https://ohmyz.sh/">Oh My Zsh</a> is a no-brainer.</p>
+
+<p>Once you have it installed, you will like open <code class="highlighter-rouge">~/.zshrc</code> and start changing the configuration.
+It is very likely that you will start with the theme 😉</p>
+
+<p>I personally like the default <code class="highlighter-rouge">robbyrussell</code>, but you can also use a random theme and eventually find something you like better:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># (...)</span>
+<span class="nv">ZSH_THEME</span><span class="o">=</span><span class="s2">"random"</span>
+<span class="c"># (...)</span>
+</code></pre></div></div>
+
+<p>Next come the plugins, and this is all about the tools that you need to use on daily basis.
+Check <code class="highlighter-rouge">~/.oh-my-zsh/plugins/</code> to see all the plugins that come with <em>Oh My Zsh</em>.</p>
+
+<p>I personally have the following plugins in use, more on them in the next sections:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">plugins</span><span class="o">=(</span>
+  git
+  docker
+  fzf
+  httpie
+  minikube
+  zsh-syntax-highlighting
+  zsh-autosuggestions
+<span class="o">)</span>
+</code></pre></div></div>
+
+<p>I’d recommend not having too many plugins in use.
+You can often replace a plugin with loading a Zsh completion from the tool.</p>
+
+<h3 id="fzf-a-command-line-fuzzy-finder">fzf, a command-line fuzzy finder</h3>
+
+<p>You will have to install the tool for the corresponding <em>Oh My Zsh</em> plugin to work, so go to <a href="https://github.com/junegunn/fzf">https://github.com/junegunn/fzf</a>.</p>
+
+<p>This tool will help your for completions. A lot 😉</p>
+
+<h3 id="syntax-highlighting">Syntax highlighting</h3>
+
+<p>This external plugin provides syntax highlighting as you type shell commands, much like the <a href="http://www.fishshell.com/">Fish shell</a> would do.
+This is very useful, especially since you get instant feedback on non-existing commands, etc.</p>
+
+<p>Head over to <a href="https://github.com/zsh-users/zsh-syntax-highlighting">https://github.com/zsh-users/zsh-syntax-highlighting</a> for installation instructions, aka:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/zsh-users/zsh-syntax-highlighting.git <span class="se">\</span>
+    <span class="k">${</span><span class="nv">ZSH_CUSTOM</span><span class="k">:-</span><span class="p">~/.oh-my-zsh/custom</span><span class="k">}</span>/plugins/zsh-syntax-highlighting
+</code></pre></div></div>
+
+<h3 id="auto-suggestions">Auto-suggestions</h3>
+
+<p>There is another useful plugin for having a Fish-like experience with completion suggestions based on past history.</p>
+
+<p>Go to <a href="https://github.com/zsh-users/zsh-autosuggestions">https://github.com/zsh-users/zsh-autosuggestions</a> for more details, or simply run:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/zsh-users/zsh-autosuggestions <span class="se">\</span>
+    <span class="k">${</span><span class="nv">ZSH_CUSTOM</span><span class="k">:-</span><span class="p">~/.oh-my-zsh/custom</span><span class="k">}</span>/plugins/zsh-autosuggestions
+</code></pre></div></div>
+
+<h3 id="misc-useful-command-line-tools">Misc. useful command-line tools</h3>
+
+<p>There are a bunch of command-line tools that I use but that not everyone may know.</p>
+
+<ul>
+  <li><a href="https://httpie.org/">HTTPie</a> is great for doing HTTP requests. It comes with syntax highlighting and sensible ways to pass form fields, JSON data, files, etc. It is much better that <code class="highlighter-rouge">cURL</code> in a development context.</li>
+  <li><code class="highlighter-rouge">pstree</code> to list processes as a parent-child tree. This is not installed by default on macOS.</li>
+  <li><a href="https://github.com/sharkdp/bat">bat</a> is similar to <code class="highlighter-rouge">cat</code>, except it offers syntax highlighting (and other goodies).</li>
+  <li><a href="https://github.com/watchexec/watchexec">watchexec</a> is a general-purpose tool to watch files and trigger a command in response to changes.</li>
+  <li><a href="https://github.com/wagoodman/dive">dive</a> is a tool for exploring Docker images, and especially see what each layer brings to the filesystem.</li>
+  <li><a href="https://github.com/ddollar/foreman">foreman</a> is a tool for running multiple processes. You just specify commands in a <code class="highlighter-rouge">Procfile</code>, and then start them all and check their logs. It is very useful in development when you need to start many processes.</li>
+  <li><a href="https://hub.github.com/">hub</a> is the GitHub command-line tool for interacting with repositories. It is especially useful for checking out pull-requests.</li>
+  <li><a href="http://plantuml.com/">plantuml</a> is a fantastic tool for generating all sorts of diagrams from… text.</li>
+  <li><a href="https://github.com/shyiko/jabba">jabba</a> is a tool for managing Java virtual machines. It is frequently updated with builds of OpenJDK, Azul Zulu, GraalVM, Amazon Corretto, OpenJ9, etc.</li>
+</ul>
+
+  </div><a class="u-url" href="/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

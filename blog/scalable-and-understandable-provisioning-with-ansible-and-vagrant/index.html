@@ -99,7 +99,7 @@ but the <code>ansible-pull</code> command can be used as follows:</p>
 inventory.</p>
 <p>Now is the good time to define an inventory file. If you know how to write Windows-style <code>.ini</code><br />
 files then you have basically won:</p>
-<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>[web]
+<figure class="highlight"><pre><code class="language-text" data-lang="text">[web]
 192.168.100.10
 192.168.100.11
 
@@ -110,9 +110,9 @@ db.private.foo-bar.org</code></pre></figure><p>This would define 2 groups <code>
 than one group, too.</p>
 <p>Now for testing purposes let&#8217;s just consider the case of a single host with the content of a <code>hosts</code><br />
 file:</p>
-<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>[main]
+<figure class="highlight"><pre><code class="language-text" data-lang="text">[main]
 192.168.100.10</code></pre></figure><p>We can now run the <code>ansible</code> tool to execute a command (<code>ls -lsa /usr</code>) over the <code>main</code> group:</p>
-<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ ansible main -i hosts -a &quot;ls -lsa /usr&quot;
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ ansible main -i hosts -a "ls -lsa /usr"
 192.168.100.10 | success | rc=0 &gt;&gt;
 total 56
  4 drwxr-xr-x 10 root root   4096 Apr 10  2012 .
@@ -140,111 +140,111 @@ be used to construct powerful playbooks. I encourage you to look at the list.</p
 <h3>What&#8217;s in a playbook</h3>
 <p>Because a sample is always better than anything else, here is the <code>playbook.yml</code> file that I am<br />
 using for a server that I manage internally:</p>
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="nn">---</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">hosts</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">main</span>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="nn">---</span>
+<span class="pi">-</span> <span class="na">hosts</span><span class="pi">:</span> <span class="s">main</span>
 
-  <span class="l l-Scalar l-Scalar-Plain">tasks</span><span class="p p-Indicator">:</span>
+  <span class="na">tasks</span><span class="pi">:</span>
 
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell whoami</span>
-      <span class="l l-Scalar l-Scalar-Plain">register</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">whoami</span>
+    <span class="pi">-</span> <span class="na">action</span><span class="pi">:</span> <span class="s">shell whoami</span>
+      <span class="na">register</span><span class="pi">:</span> <span class="s">whoami</span>
 
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">update apt cache</span>
-      <span class="l l-Scalar l-Scalar-Plain">apt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">update_cache=yes cache_valid_time=3600</span>
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">update apt cache</span>
+      <span class="na">apt</span><span class="pi">:</span> <span class="s">update_cache=yes cache_valid_time=3600</span>
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
 
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">upgrade the distro</span>
-      <span class="l l-Scalar l-Scalar-Plain">apt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">upgrade=yes</span>
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">upgrade the distro</span>
+      <span class="na">apt</span><span class="pi">:</span> <span class="s">upgrade=yes</span>
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
 
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">install packages</span>
-      <span class="l l-Scalar l-Scalar-Plain">apt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pkg={{ item }} state=latest</span>
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-      <span class="l l-Scalar l-Scalar-Plain">with_items</span><span class="p p-Indicator">:</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">build-essential</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">git</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">tree</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">vim</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">psmisc</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">fail2ban</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">chkrootkit</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ufw</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">nginx</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">curl</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">gnupg</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">zip</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">rsync</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">wget</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">unattended-upgrades</span>
-      <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">restart nginx</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">install packages</span>
+      <span class="na">apt</span><span class="pi">:</span> <span class="s">pkg={{ item }} state=latest</span>
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+      <span class="na">with_items</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">build-essential</span>
+        <span class="pi">-</span> <span class="s">git</span>
+        <span class="pi">-</span> <span class="s">tree</span>
+        <span class="pi">-</span> <span class="s">vim</span>
+        <span class="pi">-</span> <span class="s">psmisc</span>
+        <span class="pi">-</span> <span class="s">fail2ban</span>
+        <span class="pi">-</span> <span class="s">chkrootkit</span>
+        <span class="pi">-</span> <span class="s">ufw</span>
+        <span class="pi">-</span> <span class="s">nginx</span>
+        <span class="pi">-</span> <span class="s">curl</span>
+        <span class="pi">-</span> <span class="s">gnupg</span>
+        <span class="pi">-</span> <span class="s">zip</span>
+        <span class="pi">-</span> <span class="s">rsync</span>
+        <span class="pi">-</span> <span class="s">wget</span>
+        <span class="pi">-</span> <span class="s">unattended-upgrades</span>
+      <span class="na">notify</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">restart nginx</span>
 
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ensure fail2ban is running</span>
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-      <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">service name=fail2ban state=restarted enabled=yes</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">ensure fail2ban is running</span>
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+      <span class="na">action</span><span class="pi">:</span> <span class="s">service name=fail2ban state=restarted enabled=yes</span>
     
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">forbid SSH root login</span>
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-      <span class="l l-Scalar l-Scalar-Plain">lineinfile</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">destfile=/etc/ssh/sshd_config regexp=&quot;^PermitRootLogin&quot; line=&quot;PermitRootLogin no&quot; state=present</span>
-      <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">restart ssh</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">forbid SSH root login</span>
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+      <span class="na">lineinfile</span><span class="pi">:</span> <span class="s">destfile=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present</span>
+      <span class="na">notify</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="s">restart ssh</span>
     
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">reset firewall</span>
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-      <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell ufw --force reset</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">reset firewall</span>
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+      <span class="na">action</span><span class="pi">:</span> <span class="s">shell ufw --force reset</span>
     
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">allow firewall authorized ports</span>
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-      <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell ufw allow {{ item }}</span> 
-      <span class="l l-Scalar l-Scalar-Plain">with_items</span><span class="p p-Indicator">:</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">22</span>
-        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">allow firewall authorized ports</span>
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+      <span class="na">action</span><span class="pi">:</span> <span class="s">shell ufw allow {{ item }}</span> 
+      <span class="na">with_items</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="m">22</span>
+        <span class="pi">-</span> <span class="m">80</span>
     
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">enable firewall</span>
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-      <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell ufw --force enable</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">enable firewall</span>
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+      <span class="na">action</span><span class="pi">:</span> <span class="s">shell ufw --force enable</span>
     
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">configure nginx default site</span>
-      <span class="l l-Scalar l-Scalar-Plain">copy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">src=files/nginx-default dest=/etc/nginx/sites-available/default</span>
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-      <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">restart nginx</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">configure nginx default site</span>
+      <span class="na">copy</span><span class="pi">:</span> <span class="s">src=files/nginx-default dest=/etc/nginx/sites-available/default</span>
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+      <span class="na">notify</span><span class="pi">:</span> <span class="s">restart nginx</span>
 
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ensure /srv/data/websites/ exists</span>
-      <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">path=/srv/data/websites state=directory recurse=yes owner=${whoami.stdout} group=www-data</span> 
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">ensure /srv/data/websites/ exists</span>
+      <span class="na">file</span><span class="pi">:</span> <span class="s">path=/srv/data/websites state=directory recurse=yes owner=${whoami.stdout} group=www-data</span> 
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
 
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ensure /srv/data/websites/samplesite.internal.tld exists</span>
-      <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">path=/srv/data/websites/samplesite.internal.tld state=directory recurse=yes owner=${whoami.stdout} group=www-data</span> 
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">ensure /srv/data/websites/samplesite.internal.tld exists</span>
+      <span class="na">file</span><span class="pi">:</span> <span class="s">path=/srv/data/websites/samplesite.internal.tld state=directory recurse=yes owner=${whoami.stdout} group=www-data</span> 
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
 
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ensure /srv/data/git/ exists</span>
-      <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">path=/srv/data/git state=directory recurse=yes owner=${whoami.stdout} group=${whoami.stdout}</span>
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">ensure /srv/data/git/ exists</span>
+      <span class="na">file</span><span class="pi">:</span> <span class="s">path=/srv/data/git state=directory recurse=yes owner=${whoami.stdout} group=${whoami.stdout}</span>
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
 
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ensure ~/git is a symlink to /srv/data/git</span>
-      <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">path=~/git state=link src=/srv/data/git</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">ensure ~/git is a symlink to /srv/data/git</span>
+      <span class="na">file</span><span class="pi">:</span> <span class="s">path=~/git state=link src=/srv/data/git</span>
 
-  <span class="l l-Scalar l-Scalar-Plain">handlers</span><span class="p p-Indicator">:</span>
+  <span class="na">handlers</span><span class="pi">:</span>
 
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">restart nginx</span>
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-      <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">service name=nginx state=restarted enabled=yes</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">restart nginx</span>
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+      <span class="na">action</span><span class="pi">:</span> <span class="s">service name=nginx state=restarted enabled=yes</span>
     
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">restart ssh</span>
-      <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-      <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">service name=ssh state=restarted enabled=yes</span></code></pre></figure><p>While it is quite easy to understand, there are a few points worth detailing.</p>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">restart ssh</span>
+      <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+      <span class="na">action</span><span class="pi">:</span> <span class="s">service name=ssh state=restarted enabled=yes</span></code></pre></figure><p>While it is quite easy to understand, there are a few points worth detailing.</p>
 <h4>Hosts definition</h4>
 <p>The <code>hosts</code> key does what you would expect: it specifies what groups shall the playbook be aimed at.</p>
 <h4><code>sudo</code>-ing</h4>
 <p>Many actions require you to be run through <code>sudo</code>, in that case you simply add a <code>sudo</code> attribute.<br />
 This is the case of upgrading the system though <code>apt</code> (or any other similar package management<br />
 tool):</p>
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">update apt cache</span>
-  <span class="l l-Scalar l-Scalar-Plain">apt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">update_cache=yes cache_valid_time=3600</span>
-  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">update apt cache</span>
+  <span class="na">apt</span><span class="pi">:</span> <span class="s">update_cache=yes cache_valid_time=3600</span>
+  <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
 
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">upgrade the distro</span>
-  <span class="l l-Scalar l-Scalar-Plain">apt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">upgrade=yes</span>
-  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span></code></pre></figure><p>Note that running <code>sudo</code> <em>may</em> require typing a password, which is a sure way of blocking Ansible<br />
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">upgrade the distro</span>
+  <span class="na">apt</span><span class="pi">:</span> <span class="s">upgrade=yes</span>
+  <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span></code></pre></figure><p>Note that running <code>sudo</code> <em>may</em> require typing a password, which is a sure way of blocking Ansible<br />
 forever. A simple fix is to run <code>visudo</code> on the target host, and make sure that the user Ansible<br />
 will use to login does not have to type a password:</p>
 <pre><code>@username ALL=(ALL) NOPASSWD: ALL@</code></pre>
@@ -253,72 +253,72 @@ will use to login does not have to type a password:</p>
 server configuration is a good one.</p>
 <p>First, we copy a local file from the relative path <code>files/niginx-default</code> to the host at path<br />
 <code>/etc/nginx/sites-available/default</code>. Once this is done, the <code>restart nginx</code> notification is fired:</p>
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">configure nginx default site</span>
-  <span class="l l-Scalar l-Scalar-Plain">copy</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">src=files/nginx-default dest=/etc/nginx/sites-available/default</span>
-  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-  <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">restart nginx</span></code></pre></figure><p>The notification handler can then restart the Nginx service:</p>
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">restart nginx</span>
-  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-  <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">service name=nginx state=restarted enabled=yes</span></code></pre></figure><p>Note the <code>enabled</code> attribute: it ensures that the service is run as part of the system init scripts.<br />
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">configure nginx default site</span>
+  <span class="na">copy</span><span class="pi">:</span> <span class="s">src=files/nginx-default dest=/etc/nginx/sites-available/default</span>
+  <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+  <span class="na">notify</span><span class="pi">:</span> <span class="s">restart nginx</span></code></pre></figure><p>The notification handler can then restart the Nginx service:</p>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">restart nginx</span>
+  <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+  <span class="na">action</span><span class="pi">:</span> <span class="s">service name=nginx state=restarted enabled=yes</span></code></pre></figure><p>Note the <code>enabled</code> attribute: it ensures that the service is run as part of the system init scripts.<br />
 The details of how to do that is managed by the <code>service</code> module that knows how to do so on each<br />
 operating system.</p>
 <h4>Loops</h4>
 <p>A good example for loops is the installation of packages:</p>
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">install packages</span>
-  <span class="l l-Scalar l-Scalar-Plain">apt</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">pkg={{ item }} state=latest</span>
-  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-  <span class="l l-Scalar l-Scalar-Plain">with_items</span><span class="p p-Indicator">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">build-essential</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">git</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">tree</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">vim</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">psmisc</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">fail2ban</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">chkrootkit</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ufw</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">nginx</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">curl</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">gnupg</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">zip</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">rsync</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">wget</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">unattended-upgrades</span>
-  <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">restart nginx</span></code></pre></figure><p>This simply repeats the action for many items, and eventually fires a <code>restart nginx</code> notification.</p>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">install packages</span>
+  <span class="na">apt</span><span class="pi">:</span> <span class="s">pkg={{ item }} state=latest</span>
+  <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+  <span class="na">with_items</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">build-essential</span>
+    <span class="pi">-</span> <span class="s">git</span>
+    <span class="pi">-</span> <span class="s">tree</span>
+    <span class="pi">-</span> <span class="s">vim</span>
+    <span class="pi">-</span> <span class="s">psmisc</span>
+    <span class="pi">-</span> <span class="s">fail2ban</span>
+    <span class="pi">-</span> <span class="s">chkrootkit</span>
+    <span class="pi">-</span> <span class="s">ufw</span>
+    <span class="pi">-</span> <span class="s">nginx</span>
+    <span class="pi">-</span> <span class="s">curl</span>
+    <span class="pi">-</span> <span class="s">gnupg</span>
+    <span class="pi">-</span> <span class="s">zip</span>
+    <span class="pi">-</span> <span class="s">rsync</span>
+    <span class="pi">-</span> <span class="s">wget</span>
+    <span class="pi">-</span> <span class="s">unattended-upgrades</span>
+  <span class="na">notify</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">restart nginx</span></code></pre></figure><p>This simply repeats the action for many items, and eventually fires a <code>restart nginx</code> notification.</p>
 <h4>Touching file contents</h4>
 <p>There are many ways to edit files instead of copying them from your control host. One of these is<br />
 the <code>lineinfile</code> action:</p>
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">forbid SSH root login</span>
-  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-  <span class="l l-Scalar l-Scalar-Plain">lineinfile</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">destfile=/etc/ssh/sshd_config regexp=&quot;^PermitRootLogin&quot; line=&quot;PermitRootLogin no&quot; state=present</span>
-  <span class="l l-Scalar l-Scalar-Plain">notify</span><span class="p p-Indicator">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">restart ssh</span></code></pre></figure><p>No matter what the rest of the <code>sshd_config</code> file is, this ensure that a line contains the<br />
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">forbid SSH root login</span>
+  <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+  <span class="na">lineinfile</span><span class="pi">:</span> <span class="s">destfile=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present</span>
+  <span class="na">notify</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="s">restart ssh</span></code></pre></figure><p>No matter what the rest of the <code>sshd_config</code> file is, this ensure that a line contains the<br />
 instruction to disable root logins over <span class="caps">SSH</span>.</p>
 <h4>Shell actions</h4>
 <p>Not everything is captured by an Ansible module. While you can develop your own actions, you may<br />
 simply issue shell commands, too.</p>
 <p>The following example manipulates the <code>ufw</code> firewall to ensure that only ports 22 and 80 are open<br />
 from the hostile Internet:</p>
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">reset firewall</span>
-  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-  <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell ufw --force reset</span>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">reset firewall</span>
+  <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+  <span class="na">action</span><span class="pi">:</span> <span class="s">shell ufw --force reset</span>
 
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">allow firewall authorized ports</span>
-  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span>
-  <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell ufw allow {{ item }}</span>
-  <span class="l l-Scalar l-Scalar-Plain">with_items</span><span class="p p-Indicator">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">22</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80</span></code></pre></figure><h4>Using console output</h4>
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">allow firewall authorized ports</span>
+  <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span>
+  <span class="na">action</span><span class="pi">:</span> <span class="s">shell ufw allow {{ item }}</span>
+  <span class="na">with_items</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="m">22</span>
+    <span class="pi">-</span> <span class="s">80</span></code></pre></figure><h4>Using console output</h4>
 <p>We can register the console output of an action:</p>
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">action</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">shell whoami</span>
-  <span class="l l-Scalar l-Scalar-Plain">register</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">whoami</span></code></pre></figure><p>This runs the <code>whoami</code> command to know what login is being used on the target host. This makes a<br />
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="pi">-</span> <span class="na">action</span><span class="pi">:</span> <span class="s">shell whoami</span>
+  <span class="na">register</span><span class="pi">:</span> <span class="s">whoami</span></code></pre></figure><p>This runs the <code>whoami</code> command to know what login is being used on the target host. This makes a<br />
 playbook flexible for, say, update permissions without having a hard-coded login:</p>
-<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ensure /srv/data/websites/samplesite.internal.tld exists</span>
-  <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">path=/srv/data/websites/samplesite.internal.tld state=directory recurse=yes owner=${whoami.stdout} group=www-data</span> 
-  <span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">yes</span></code></pre></figure><h3>Running a playbook</h3>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">ensure /srv/data/websites/samplesite.internal.tld exists</span>
+  <span class="na">file</span><span class="pi">:</span> <span class="s">path=/srv/data/websites/samplesite.internal.tld state=directory recurse=yes owner=${whoami.stdout} group=www-data</span> 
+  <span class="na">sudo</span><span class="pi">:</span> <span class="s">yes</span></code></pre></figure><h3>Running a playbook</h3>
 <p>By now you should have a good understanding of what a playbook is like.</p>
 <p>Running a playbook is equally simple:</p>
-<figure class="highlight"><pre><code class="language-text" data-lang="text"><span></span>$ ansible-playbook -i hosts playbook.yml
+<figure class="highlight"><pre><code class="language-text" data-lang="text">$ ansible-playbook -i hosts playbook.yml
 
 PLAY [main] *******************************************************************
 
@@ -410,13 +410,13 @@ including:</p>
 	<li>which local folder shall be synchronized with a folder in the virtual machine, etc.</li>
 </ul>
 <p>For the Ansible configuration above, my testing <code>Vagrantfile</code> looks as follows:</p>
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Vagrant</span><span class="p">.</span><span class="nf">configure</span><span class="p">(</span><span class="s2">"2"</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
   
-  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;base&quot;</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box_url</span> <span class="o">=</span> <span class="s2">&quot;http://files.vagrantup.com/precise32.box&quot;</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box</span> <span class="o">=</span> <span class="s2">"base"</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">box_url</span> <span class="o">=</span> <span class="s2">"http://files.vagrantup.com/precise32.box"</span>
   
-  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:forwarded_port</span><span class="p">,</span> <span class="ss">guest</span><span class="p">:</span> <span class="mi">80</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="mi">8080</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:private_network</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.100.10&quot;</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">network</span> <span class="ss">:forwarded_port</span><span class="p">,</span> <span class="ss">guest: </span><span class="mi">80</span><span class="p">,</span> <span class="ss">host: </span><span class="mi">8080</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">network</span> <span class="ss">:private_network</span><span class="p">,</span> <span class="ss">ip: </span><span class="s2">"192.168.100.10"</span>
 
 <span class="k">end</span></code></pre></figure><p>This single-machine configuration is quite simple. It boots a Ubuntu-based box. There are many more<br />
 community-contributed boxes, and you can create your own ones. Next, the machine is being put in a<br />
@@ -437,12 +437,12 @@ VMs for you.</p>
 <p>Vagrant supports different types of <strong>provisioning</strong> methods, including shells scripts, Puppet and<br />
 your new best friend Ansible.</p>
 <p>Configuration is easy by adding the following to your <code>Vagrantfile</code>:</p>
-<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span></span><span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="ss">:ansible</span> <span class="k">do</span> <span class="o">|</span><span class="n">ansible</span><span class="o">|</span>
-  <span class="n">ansible</span><span class="o">.</span><span class="n">playbook</span> <span class="o">=</span> <span class="s2">&quot;provisioning/playbook.yml&quot;</span>
-  <span class="n">ansible</span><span class="o">.</span><span class="n">inventory_path</span> <span class="o">=</span> <span class="s2">&quot;provisioning/hosts-vagrant&quot;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">config</span><span class="p">.</span><span class="nf">vm</span><span class="p">.</span><span class="nf">provision</span> <span class="ss">:ansible</span> <span class="k">do</span> <span class="o">|</span><span class="n">ansible</span><span class="o">|</span>
+  <span class="n">ansible</span><span class="p">.</span><span class="nf">playbook</span> <span class="o">=</span> <span class="s2">"provisioning/playbook.yml"</span>
+  <span class="n">ansible</span><span class="p">.</span><span class="nf">inventory_path</span> <span class="o">=</span> <span class="s2">"provisioning/hosts-vagrant"</span>
   <span class="c1"># On Vagrant &lt; 1.3 this used to be `inventory_file`...</span>
-  <span class="c1"># ansible.inventory_file = &quot;provisioning/hosts-vagrant&quot;</span>
-  <span class="n">ansible</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="kp">false</span>
+  <span class="c1"># ansible.inventory_file = "provisioning/hosts-vagrant"</span>
+  <span class="n">ansible</span><span class="p">.</span><span class="nf">verbose</span> <span class="o">=</span> <span class="kp">false</span>
 <span class="k">end</span></code></pre></figure><p>I suggest having a specific inventory file that matches the IP addresses of your Vagrant<br />
 configuration.</p>
 <p>Once this is done, Vagrant calls Ansible to provision the VM. There are a few extra commands that<br />
@@ -495,7 +495,7 @@ image.</p>
 </div>
 
       <div class="footer-col footer-col-3">
-        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+        <p>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
       </div>
     </div>
 

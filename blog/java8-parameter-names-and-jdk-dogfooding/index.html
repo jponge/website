@@ -53,24 +53,24 @@ developers certainly rejoiced that the JVM now <strong>finally</strong> supports
 <p>Many frameworks try to take advantage of conventions to ease the programming models,
 which translates to something like this with, say, Spring MVC:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/login&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
-<span class="kd">public</span> <span class="n">String</span> <span class="nf">login</span><span class="o">(</span>
-    <span class="n">HttpSession</span> <span class="n">session</span><span class="o">,</span>
-    <span class="nd">@RequestParam</span><span class="o">(</span><span class="s">&quot;login&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="n">login</span><span class="o">,</span>
-    <span class="nd">@RequestParam</span><span class="o">(</span><span class="s">&quot;password&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="n">password</span><span class="o">)</span> <span class="o">{</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/login"</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="nc">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+<span class="kd">public</span> <span class="nc">String</span> <span class="nf">login</span><span class="o">(</span>
+    <span class="nc">HttpSession</span> <span class="n">session</span><span class="o">,</span>
+    <span class="nd">@RequestParam</span><span class="o">(</span><span class="s">"login"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">login</span><span class="o">,</span>
+    <span class="nd">@RequestParam</span><span class="o">(</span><span class="s">"password"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">password</span><span class="o">)</span> <span class="o">{</span>
   <span class="c1">// (...)</span>
-  <span class="k">return</span> <span class="s">&quot;redirect:/&quot;</span><span class="o">;</span>
+  <span class="k">return</span> <span class="s">"redirect:/"</span><span class="o">;</span>
 <span class="o">}</span></code></pre></figure>
 
-<p>The <code>@RequestParam</code> annotation is inherently inelegant: in an ideal world it should only be used
+<p>The <code class="highlighter-rouge">@RequestParam</code> annotation is inherently inelegant: in an ideal world it should only be used
 when a parameter name does not match a request parameter. In practice the annotation value is most
 always the same as the parameter name, but going through the annotation is the only reliable way to
 pass a name to the framework.</p>
 
 <h3 id="whats-in-a-parameter-before-java-8">What’s in a parameter? (before Java 8)</h3>
 
-<p>On the JVM, a parameter or a local variable is simply a 0-indexed number. In the <code>login</code> method
-example above, <code>this</code> is at index 0, <code>login</code> at index 1 and <code>password</code> at index 2. There is simply
+<p>On the JVM, a parameter or a local variable is simply a 0-indexed number. In the <code class="highlighter-rouge">login</code> method
+example above, <code class="highlighter-rouge">this</code> is at index 0, <code class="highlighter-rouge">login</code> at index 1 and <code class="highlighter-rouge">password</code> at index 2. There is simply
 no name encoded in the bytecode to be accessed through reflection.</p>
 
 <p>This is not 100% true as compiling Java code with debug symbols (which one should always do) gives
@@ -81,36 +81,36 @@ the names for debuggers.
 
 <p>Now that <a href="https://docs.oracle.com/javase/tutorial/reflect/member/methodparameterreflection.html">Java 8 supports parameter names to be accessible though reflection</a>, the problem is supposed to be solved.</p>
 
-<p>There is just one <em>little</em> problem: one needs to compile with <code>javac -parameters</code>, and the <code>-parameters</code> flag is off by default. And guess what? <strong>The JDK is not compiled with that flag!</strong></p>
+<p>There is just one <em>little</em> problem: one needs to compile with <code class="highlighter-rouge">javac -parameters</code>, and the <code class="highlighter-rouge">-parameters</code> flag is off by default. And guess what? <strong>The JDK is not compiled with that flag!</strong></p>
 
 <p>Here is a simple showcase:</p>
 
-<figure class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>
+<figure class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.ArrayList</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.Arrays</span><span class="o">;</span>
 
 <span class="c1">// Requires `javac -parameters`</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
 
-  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="n">String</span> <span class="n">bar</span><span class="o">,</span> <span class="kt">int</span> <span class="n">baz</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">(</span><span class="nc">String</span> <span class="n">bar</span><span class="o">,</span> <span class="kt">int</span> <span class="n">baz</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
 
-  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">...</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Throwable</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">...</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Throwable</span> <span class="o">{</span>
 
-    <span class="n">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="n">ArrayList</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&quot;add&quot;</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">Object</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-    <span class="n">Arrays</span><span class="o">.</span><span class="na">stream</span><span class="o">(</span><span class="n">method</span><span class="o">.</span><span class="na">getParameters</span><span class="o">()).</span><span class="na">forEach</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">);</span>
+    <span class="nc">Method</span> <span class="n">method</span> <span class="o">=</span> <span class="nc">ArrayList</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">"add"</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="nc">Object</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="nc">Arrays</span><span class="o">.</span><span class="na">stream</span><span class="o">(</span><span class="n">method</span><span class="o">.</span><span class="na">getParameters</span><span class="o">()).</span><span class="na">forEach</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">);</span>
 
-    <span class="n">method</span> <span class="o">=</span> <span class="n">Main</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">&quot;foo&quot;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-    <span class="n">Arrays</span><span class="o">.</span><span class="na">stream</span><span class="o">(</span><span class="n">method</span><span class="o">.</span><span class="na">getParameters</span><span class="o">()).</span><span class="na">forEach</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">);</span>
+    <span class="n">method</span> <span class="o">=</span> <span class="nc">Main</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getMethod</span><span class="o">(</span><span class="s">"foo"</span><span class="o">,</span> <span class="nc">String</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="kt">int</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="nc">Arrays</span><span class="o">.</span><span class="na">stream</span><span class="o">(</span><span class="n">method</span><span class="o">.</span><span class="na">getParameters</span><span class="o">()).</span><span class="na">forEach</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">::</span><span class="n">println</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span></code></pre></figure>
 
 <p>Running that code prints:</p>
 
-<pre><code>int arg0
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int arg0
 E arg1
 java.lang.String bar
 int baz
-</code></pre>
+</code></pre></div></div>
 
 <p>How can the JDK classes be compiled without parameter names is just beyond me…</p>
 
@@ -118,21 +118,21 @@ int baz
 
 <p>The next versions of Golo will support <a href="https://github.com/golo-lang/golo-lang/pull/250">parameter names</a>:</p>
 
-<figure class="highlight"><pre><code class="language-golo" data-lang="golo"><span></span><span class="kd">struct</span> <span class="nc">Foo</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">}</span>
+<figure class="highlight"><pre><code class="language-golo" data-lang="golo">struct Foo = {x, y}
 
-<span class="c"># (...)</span>
+# (...)
 
-<span class="kd">let</span> <span class="nv">f</span> <span class="o">=</span> <span class="p">|</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">|</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span>
-<span class="kd">let</span> <span class="nv">r_1</span> <span class="o">=</span> <span class="nf">f</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="kd">let</span> <span class="nv">r_2</span> <span class="o">=</span> <span class="nf">f</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="kd">let</span> <span class="nv">foo</span> <span class="o">=</span> <span class="nf">Foo</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="s">&quot;b</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s">&quot;a</span><span class="s2">&quot;</span><span class="p">)</span></code></pre></figure>
+let f = |x, y| -&gt; x - y
+let r_1 = f(x=10, y=2)
+let r_2 = f(y=10, x=2)
+let foo = Foo(y="b", x="a")</code></pre></figure>
 
 <p>We had lots of discussions with Daniel on how to properly do that. Initial experiments used an
 annotation to encode parameter names, but as we shifted to Java SE 8 as a requirement we opted for
 using the parameter name support in the bytecode.</p>
 
 <p>This works marvelously well for Golo, and we can even take advantage of Java libraries compiled with
-<code>javac -parameters</code> to call methods using parameter names, just like Golo functions.</p>
+<code class="highlighter-rouge">javac -parameters</code> to call methods using parameter names, just like Golo functions.</p>
 
 <h3 id="conclusion">Conclusion</h3>
 
@@ -159,7 +159,7 @@ using the parameter name support in the bytecode.</p>
 </div>
 
       <div class="footer-col footer-col-3">
-        <p>👋 Hi, I&#39;m Julien! I am a long-time software development enthusiast with a career between academia and industry. You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
+        <p>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</p>
       </div>
     </div>
 
