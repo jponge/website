@@ -115,3 +115,40 @@ There are a bunch of command-line tools that I use but that not everyone may kno
 - [hub](https://hub.github.com/) is the GitHub command-line tool for interacting with repositories. It is especially useful for checking out pull-requests.
 - [plantuml](http://plantuml.com/) is a fantastic tool for generating all sorts of diagrams from... text.
 - [jabba](https://github.com/shyiko/jabba) is a tool for managing Java virtual machines. It is frequently updated with builds of OpenJDK, Azul Zulu, GraalVM, Amazon Corretto, OpenJ9, etc.
+
+#### Edited: December 3rd 2019
+
+Since I wrote that post I came across further great command-line tools and tips 😉
+
+* [kube-ps1](https://github.com/jonmosco/kube-ps1) adds current Kubernetes context and namespace to the shell prompt.
+  I do not enable it by default and I have a function ready when I need to enable it:
+
+```bash
+use_kube_ps1() {
+    source "/usr/local/opt/kube-ps1/share/kube-ps1.sh"
+    PS1='$(kube_ps1)'$PS1
+}
+```
+
+* [htop](https://hisham.hm/htop/) is a replacement for `top` with a much much improved user interface.
+* [fd](https://github.com/sharkdp/fd) is a modern alternative to `find`.
+* [noti](https://github.com/variadico/noti) executes a command and sends a notification when done.
+  This is very useful when running a long build, an upload, etc.
+* [ag](https://github.com/ggreer/the_silver_searcher) is a code search tool that can replace `grep` in many situations.
+
+I also added some aliases to simplify my `kubectl` usage:
+
+```bash
+alias k="kubectl"
+alias ka="kubectl apply -f"
+alias kd="kubectl delete -f"
+alias kgp="kubectl get pods"
+alias kgs="kubectl get services"
+```
+
+Finally my growing usage of `bat` instead of `cat` has prompted me to define the following environment variables to have more sensible defaults:
+
+```bash
+export BAT_THEME="ansi-dark"
+export BAT_STYLE="plain"
+```
