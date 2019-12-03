@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2019-11-14T15:12:04+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</subtitle><entry><title type="html">A good terminal experience with iTerm2 and ZSH on macOS</title><link href="https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/" rel="alternate" type="text/html" title="A good terminal experience with iTerm2 and ZSH on macOS" /><published>2019-11-14T00:00:00+01:00</published><updated>2019-11-14T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos</id><content type="html" xml:base="https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/">&lt;p&gt;I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2019-12-03T21:08:20+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</subtitle><entry><title type="html">A good terminal experience with iTerm2 and ZSH on macOS</title><link href="https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/" rel="alternate" type="text/html" title="A good terminal experience with iTerm2 and ZSH on macOS" /><published>2019-11-14T00:00:00+01:00</published><updated>2019-11-14T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos</id><content type="html" xml:base="https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/">&lt;p&gt;I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS.
 I use iTerm2, Zsh, and a few cool command-line tools.&lt;/p&gt;
 
 &lt;h3 id=&quot;iterm2&quot;&gt;iTerm2&lt;/h3&gt;
@@ -105,7 +105,45 @@ This is very useful, especially since you get instant feedback on non-existing c
   &lt;li&gt;&lt;a href=&quot;https://hub.github.com/&quot;&gt;hub&lt;/a&gt; is the GitHub command-line tool for interacting with repositories. It is especially useful for checking out pull-requests.&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;http://plantuml.com/&quot;&gt;plantuml&lt;/a&gt; is a fantastic tool for generating all sorts of diagrams from… text.&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://github.com/shyiko/jabba&quot;&gt;jabba&lt;/a&gt; is a tool for managing Java virtual machines. It is frequently updated with builds of OpenJDK, Azul Zulu, GraalVM, Amazon Corretto, OpenJ9, etc.&lt;/li&gt;
-&lt;/ul&gt;</content><author><name></name></author><summary type="html">I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS. I use iTerm2, Zsh, and a few cool command-line tools.</summary></entry><entry><title type="html">Vert.x in Action MEAP</title><link href="https://julien.ponge.org/blog/vertx-in-action-meap/" rel="alternate" type="text/html" title="Vert.x in Action MEAP" /><published>2018-10-23T00:00:00+02:00</published><updated>2018-10-23T00:00:00+02:00</updated><id>https://julien.ponge.org/blog/vertx-in-action-meap</id><content type="html" xml:base="https://julien.ponge.org/blog/vertx-in-action-meap/">&lt;p&gt;&lt;a href=&quot;https://www.manning.com/books/vertx-in-action?a_aid=vertx-in-action&amp;amp;a_bid=22152024&quot;&gt;&lt;img src=&quot;/images/MEAP-cover.png&quot; alt=&quot;Cover of Vert.x in Action&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&quot;edited-december-3rd-2019&quot;&gt;Edited: December 3rd 2019&lt;/h4&gt;
+
+&lt;p&gt;Since I wrote that post I came across further great command-line tools and tips 😉&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/jonmosco/kube-ps1&quot;&gt;kube-ps1&lt;/a&gt; adds current Kubernetes context and namespace to the shell prompt.
+I do not enable it by default and I have a function ready when I need to enable it:&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;use_kube_ps1&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;/usr/local/opt/kube-ps1/share/kube-ps1.sh&quot;&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;PS1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'$(kube_ps1)'&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$PS1&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://hisham.hm/htop/&quot;&gt;htop&lt;/a&gt; is a replacement for &lt;code class=&quot;highlighter-rouge&quot;&gt;top&lt;/code&gt; with a much much improved user interface.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/sharkdp/fd&quot;&gt;fd&lt;/a&gt; is a modern alternative to &lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/variadico/noti&quot;&gt;noti&lt;/a&gt; executes a command and sends a notification when done.
+This is very useful when running a long build, an upload, etc.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/ggreer/the_silver_searcher&quot;&gt;ag&lt;/a&gt; is a code search tool that can replace &lt;code class=&quot;highlighter-rouge&quot;&gt;grep&lt;/code&gt; in many situations.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I also added some aliases to simplify my &lt;code class=&quot;highlighter-rouge&quot;&gt;kubectl&lt;/code&gt; usage:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;kubectl&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ka&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;kubectl apply -f&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;kd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;kubectl delete -f&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;kgp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;kubectl get pods&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;kgs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;kubectl get services&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Finally my growing usage of &lt;code class=&quot;highlighter-rouge&quot;&gt;bat&lt;/code&gt; instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;cat&lt;/code&gt; has prompted me to define the following environment variables to have more sensible defaults:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;BAT_THEME&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ansi-dark&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;BAT_STYLE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;plain&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;</content><author><name></name></author><summary type="html">I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS. I use iTerm2, Zsh, and a few cool command-line tools.</summary></entry><entry><title type="html">Vert.x in Action MEAP</title><link href="https://julien.ponge.org/blog/vertx-in-action-meap/" rel="alternate" type="text/html" title="Vert.x in Action MEAP" /><published>2018-10-23T00:00:00+02:00</published><updated>2018-10-23T00:00:00+02:00</updated><id>https://julien.ponge.org/blog/vertx-in-action-meap</id><content type="html" xml:base="https://julien.ponge.org/blog/vertx-in-action-meap/">&lt;p&gt;&lt;a href=&quot;https://www.manning.com/books/vertx-in-action?a_aid=vertx-in-action&amp;amp;a_bid=22152024&quot;&gt;&lt;img src=&quot;/images/MEAP-cover.png&quot; alt=&quot;Cover of Vert.x in Action&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;I am happy to announce that my upcoming book &lt;a href=&quot;https://www.manning.com/books/vertx-in-action?a_aid=vertx-in-action&amp;amp;a_bid=22152024&quot;&gt;Vert.x in Action: Asynchronous and Reactive Applications in Java&lt;/a&gt; is now available in early access at Manning!&lt;/p&gt;
 

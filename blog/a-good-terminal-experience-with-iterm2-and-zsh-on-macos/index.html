@@ -154,6 +154,44 @@ This is very useful, especially since you get instant feedback on non-existing c
   <li><a href="https://github.com/shyiko/jabba">jabba</a> is a tool for managing Java virtual machines. It is frequently updated with builds of OpenJDK, Azul Zulu, GraalVM, Amazon Corretto, OpenJ9, etc.</li>
 </ul>
 
+<h4 id="edited-december-3rd-2019">Edited: December 3rd 2019</h4>
+
+<p>Since I wrote that post I came across further great command-line tools and tips 😉</p>
+
+<ul>
+  <li><a href="https://github.com/jonmosco/kube-ps1">kube-ps1</a> adds current Kubernetes context and namespace to the shell prompt.
+I do not enable it by default and I have a function ready when I need to enable it:</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>use_kube_ps1<span class="o">()</span> <span class="o">{</span>
+    <span class="nb">source</span> <span class="s2">"/usr/local/opt/kube-ps1/share/kube-ps1.sh"</span>
+    <span class="nv">PS1</span><span class="o">=</span><span class="s1">'$(kube_ps1)'</span><span class="nv">$PS1</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li><a href="https://hisham.hm/htop/">htop</a> is a replacement for <code class="highlighter-rouge">top</code> with a much much improved user interface.</li>
+  <li><a href="https://github.com/sharkdp/fd">fd</a> is a modern alternative to <code class="highlighter-rouge">find</code>.</li>
+  <li><a href="https://github.com/variadico/noti">noti</a> executes a command and sends a notification when done.
+This is very useful when running a long build, an upload, etc.</li>
+  <li><a href="https://github.com/ggreer/the_silver_searcher">ag</a> is a code search tool that can replace <code class="highlighter-rouge">grep</code> in many situations.</li>
+</ul>
+
+<p>I also added some aliases to simplify my <code class="highlighter-rouge">kubectl</code> usage:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">alias </span><span class="nv">k</span><span class="o">=</span><span class="s2">"kubectl"</span>
+<span class="nb">alias </span><span class="nv">ka</span><span class="o">=</span><span class="s2">"kubectl apply -f"</span>
+<span class="nb">alias </span><span class="nv">kd</span><span class="o">=</span><span class="s2">"kubectl delete -f"</span>
+<span class="nb">alias </span><span class="nv">kgp</span><span class="o">=</span><span class="s2">"kubectl get pods"</span>
+<span class="nb">alias </span><span class="nv">kgs</span><span class="o">=</span><span class="s2">"kubectl get services"</span>
+</code></pre></div></div>
+
+<p>Finally my growing usage of <code class="highlighter-rouge">bat</code> instead of <code class="highlighter-rouge">cat</code> has prompted me to define the following environment variables to have more sensible defaults:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">BAT_THEME</span><span class="o">=</span><span class="s2">"ansi-dark"</span>
+<span class="nb">export </span><span class="nv">BAT_STYLE</span><span class="o">=</span><span class="s2">"plain"</span>
+</code></pre></div></div>
+
   </div><a class="u-url" href="/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/" hidden></a>
 </article>
 
