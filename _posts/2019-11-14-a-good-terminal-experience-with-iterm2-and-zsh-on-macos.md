@@ -41,7 +41,7 @@ done
 
 There exist several Zsh plugin managers, but if you want something with sensible defaults and batteries included then [Oh My Zsh](https://ohmyz.sh/) is a no-brainer.
 
-Once you have it installed, you will like open `~/.zshrc` and start changing the configuration.
+Once you have it installed, you will open `~/.zshrc` and start tweaking the configuration.
 It is very likely that you will start with the theme 😉
 
 I personally like the default `robbyrussell`, but you can also use a random theme and eventually find something you like better:
