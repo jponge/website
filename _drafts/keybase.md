@@ -1,5 +1,5 @@
 ---
-title: "(keybase post in progress)"
+title: "Simpler GnuPG with another look at Keybase"
 layout: post
 ---
 
