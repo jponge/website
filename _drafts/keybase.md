@@ -209,8 +209,7 @@ keybase pgp export --secret -q IDENTIFIER | gpg --import --allow-secret-key-impo
 Encryption experts _will_ complain, especially if you let Keybase store your private keys, but:
 
 1. storing your private key on a plain USB drive or unencrypted cloud storage is also dangerous, and
-2. if you really need to communicate sensible data to someone else then you will learn GnuPG in-depth, you will be very strict regarding key validation, trust and exchange, and you will not use email.
-
+2. if you really need to communicate sensible data to someone else then you will learn GnuPG in-depth, you will be very strict regarding key generation, validation, trust, storage and exchange. Also you will probably hide your real identity, so Keybase  will not be useful here.
 
 ### Conclusion
 
