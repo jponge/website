@@ -187,7 +187,7 @@ The `secring.gpg` file may not exist if this is a first install, so run this com
 gpg --keyring secring.gpg --export-secret-keys > ~/.gnupg/secring.gpg
 ```
 
-### Enter a new machine
+### Enter a new machine 💡
 
 What happens if you have another machine to provision, be it as a replacement or as a complement?
 
