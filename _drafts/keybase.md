@@ -7,7 +7,7 @@ I recently decided to revoke a 10 years old GnuPG key pair that I was using acro
 I wanted to ensure I could continue using GnuPG to sign opensource release materials, but also sign public Git commits.
 Until then all I used to sign were Git tags.
 
-As I wanted to find a better solution than just using plain GnuPG and its numerous flaws, I gained renewed interest in [Keybase](https://keybase.io), especially as it now provides more than just a streamlined experience with encryption tools.
+As I wanted to find a better solution than just using plain GnuPG and its numerous practicability flaws, I gained renewed interest in [Keybase](https://keybase.io), especially as it now provides more than just a streamlined experience with encryption tools.
 
 The configuration steps are adapted from [Patrick Stadler's instructions on GitHub](https://github.com/pstadler/keybase-gpg-github).
 There is a macOS bias in some of the commands which you can easily adapt to other Unix systems 😉
@@ -41,7 +41,8 @@ One can do so by posting Keybase-signed messages to these social networks and pl
 This is a good idea, because from social networks and Keybase accounts linked to those social networks, you can build a trust network on Keybase.
 
 Keybase also offered streamlined web and command line user interfaces for managing Keybase, following people and encrypting / decrypting content.
-While Keybase is GnuPG-powered, it provides a simplified workflow for common tasks including key management (e.g., fetching keys of your contacts).
+Keybase provides a simplified workflow for common tasks including key management (e.g., fetching keys of your contacts), and it has GnuPG interoperability.
+You may even make the _devilish_ (read: _convenient_) choice of having your keys stored on Keybase, or just attach existing GnuPG keys that you will still manage locally.
 
 Like many people I on-boarded when the service opened and it went viral on Twitter.
 But then like many people I never really used it because, well, I'm not using GnuPG everyday anyway.
@@ -186,13 +187,34 @@ The `secring.gpg` file may not exist if this is a first install, so run this com
 gpg --keyring secring.gpg --export-secret-keys > ~/.gnupg/secring.gpg
 ```
 
+### Enter a new machine
+
+What happens if you have another machine to provision, be it as a replacement or as a complement?
+
+Assuming that you created your GnuPG key from Keybase, it is stored and managed by Keybase.
+All you need to do is login on the new machine with your Keybase account, then:
+
+```
+keybase pgp list
+```
+
+should give your GnuPG key identifier.
+You can then import the public and private keys as follows:
+
+```
+keybase pgp export -q IDENTIFIER | gpg --import
+keybase pgp export --secret -q IDENTIFIER | gpg --import --allow-secret-key-import
+```
+
+Encryption experts _will_ complain, especially if you let Keybase store your private keys, but:
+
+1. storing your private key on a plain USB drive or unencrypted cloud storage is also dangerous, and
+2. if you really need to communicate sensible data to someone else then you will learn GnuPG in-depth, you will be very strict regarding key validation, trust and exchange, and you will not use email.
+
+
 ### Conclusion
 
 Keybase + GnuPG sounds like a nice combo.
-
-I did not cover moving your GnuPG keys to another machine, please check [Patrick Stadler's repository](https://github.com/pstadler/keybase-gpg-github#import-key-to-gpg-on-another-host) on how to do that with `keybase pgp export` (public key) and `keybase pgp export --secret` (private key).
-
-Even if you loose your GnuPG key you can always recreate a new one that is linked to your Keybase profile, so you don't break the trust network side of things.
 
 👋 By the way you can find me on Keybase at [https://keybase.io/jponge](https://keybase.io/jponge).
 
