@@ -1,4 +1,217 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.6">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2020-01-10T20:28:36+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle>You can call me &quot;Doctor&quot; if you like, but all I can cure is your software, really 😉</subtitle><entry><title type="html">A good terminal experience with iTerm2 and ZSH on macOS</title><link href="https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/" rel="alternate" type="text/html" title="A good terminal experience with iTerm2 and ZSH on macOS" /><published>2019-11-14T00:00:00+01:00</published><updated>2019-11-14T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos</id><content type="html" xml:base="https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/">&lt;p&gt;I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2020-01-31T12:19:15+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle>Software engineer, doctor, researcher, lecturer, manager, enthusiast, maker, speaker, (and first and foremost) whatever.</subtitle><entry><title type="html">Simpler GnuPG with another look at Keybase</title><link href="https://julien.ponge.org/blog/simpler-gnupg-with-another-look-at-keybase/" rel="alternate" type="text/html" title="Simpler GnuPG with another look at Keybase" /><published>2020-01-31T00:00:00+01:00</published><updated>2020-01-31T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/simpler-gnupg-with-another-look-at-keybase</id><content type="html" xml:base="https://julien.ponge.org/blog/simpler-gnupg-with-another-look-at-keybase/">&lt;p&gt;I recently decided to revoke a 10 years old GnuPG key pair that I was using across machines, and decided to start from a clean sheet.
+I wanted to ensure I could continue using GnuPG to sign opensource release materials, but also sign public Git commits.
+Until then all I used to sign were Git tags.&lt;/p&gt;
+
+&lt;p&gt;As I wanted to find a better solution than just using plain GnuPG and its numerous practicability flaws, I gained renewed interest in &lt;a href=&quot;https://keybase.io&quot;&gt;Keybase&lt;/a&gt;, especially as it now provides more than just a streamlined experience with encryption tools.&lt;/p&gt;
+
+&lt;p&gt;The configuration steps are adapted from &lt;a href=&quot;https://github.com/pstadler/keybase-gpg-github&quot;&gt;Patrick Stadler’s instructions on GitHub&lt;/a&gt;.
+There is a macOS bias in some of the commands which you can easily adapt to other Unix systems 😉&lt;/p&gt;
+
+&lt;h3 id=&quot;the-gnupg-experience-&quot;&gt;The GnuPG experience 😟&lt;/h3&gt;
+
+&lt;p&gt;I have a &lt;em&gt;“love - hate - hate - love - hate - hate - hate”&lt;/em&gt; relation with GnuPG.&lt;/p&gt;
+
+&lt;p&gt;This tool has a horrible user interface, and I have never really found it useful for communications.
+Over 15 years I have had a few GnuPG-encrypted email communications with colleagues or friends, but it has always been a hindrance.
+Also while it did encrypt communication content, there is enough meta-data in plain text with email (title, recipients, etc) to make GnuPG email encryption a half-baked solution to a real problem.&lt;/p&gt;
+
+&lt;p&gt;Still, GnuPG is useful because we may have files to encrypt so their content can only be read by ourselves and maybe a few people.
+We may also want to sign files for integrity checks.
+This is especially important with opensource development where signing source and release artifacts is a plus, and often a necessity.&lt;/p&gt;
+
+&lt;p&gt;Generating a key pair with GnuPG is not very difficult, and under 2 minutes you can have one and push it to some public key servers.
+The problem is that once you have a key pair then no one really knows if the identity claimed is real or not.
+So you can get to your friends or at so-called “key signing parties” and sign other people key to claim that you have verified that some public key does belong to the person it claims to be.
+By doing so keys form trust networks, which helps recognizing plausibly authentic versus fake keys.&lt;/p&gt;
+
+&lt;p&gt;In practice no one but a few geeks or activists will want to do that seriously.
+You will likely do it with a few friends and colleagues once in a while, and… that will be it.
+And of course people will loose their keys and they will not even have a revocation key 😇&lt;/p&gt;
+
+&lt;h3 id=&quot;enter-keybase-&quot;&gt;Enter Keybase 🤔&lt;/h3&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://keybase.io&quot;&gt;Keybase&lt;/a&gt; service was introduced a few years back with the interesting idea of mapping social / public identities to encryption keys.
+Keybase essentially introduced a modern way to build trust networks, because people can check that &lt;code class=&quot;highlighter-rouge&quot;&gt;user123&lt;/code&gt; on Keybase is also &lt;code class=&quot;highlighter-rouge&quot;&gt;user123_coder&lt;/code&gt; on GitHub, &lt;code class=&quot;highlighter-rouge&quot;&gt;user123&lt;/code&gt; on Twitter, and that the user owns the &lt;code class=&quot;highlighter-rouge&quot;&gt;iamuser123.org&lt;/code&gt; domain.
+One can do so by posting Keybase-signed messages to these social networks and places.
+This is a good idea, because from social networks and Keybase accounts linked to those social networks, you can build a trust network on Keybase.&lt;/p&gt;
+
+&lt;p&gt;Keybase also offered streamlined web and command line user interfaces for managing Keybase, following people and encrypting / decrypting content.
+Keybase provides a simplified workflow for common tasks including key management (e.g., fetching keys of your contacts), and it has GnuPG interoperability.
+You may even make the &lt;em&gt;devilish&lt;/em&gt; (read: &lt;em&gt;convenient&lt;/em&gt;) choice of having your keys stored on Keybase, or just attach existing GnuPG keys that you will still manage locally.&lt;/p&gt;
+
+&lt;p&gt;Like many people I on-boarded when the service opened and it went viral on Twitter.
+But then like many people I never really used it because, well, I’m not using GnuPG everyday anyway.&lt;/p&gt;
+
+&lt;h3 id=&quot;fast-forward-keybase-today-&quot;&gt;Fast-forward Keybase today 🤔&lt;/h3&gt;
+
+&lt;p&gt;I believe that Keybase deserves a second wave of interest, because the modern Keybase is way more interesting than just mapping identities to encryption keys.&lt;/p&gt;
+
+&lt;p&gt;Indeed Keybase now offers:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;a chat system for individuals,&lt;/li&gt;
+  &lt;li&gt;a nicely-done Slack-like chat for teams,&lt;/li&gt;
+  &lt;li&gt;private, group and public file sharing (e.g., folder &lt;code class=&quot;highlighter-rouge&quot;&gt;me,other&lt;/code&gt; is shared between 2 users),&lt;/li&gt;
+  &lt;li&gt;Git repositories for yourself and teams,&lt;/li&gt;
+  &lt;li&gt;some crypto-currency thing which I don’t care about.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This is interesting as everything is encrypted.
+There are many contexts where using Keybase makes sense, such as research groups in Universities.
+This is a context where institutions will typically provide you with bad tools and services, refrain you from using well-known tools, and the boundaries of who you work with are quite malleable since you work with people at other institutions and companies.
+Here Keybase can be a secure replacement for chat, file sharing and (unpublished) source code management tools.&lt;/p&gt;
+
+&lt;p&gt;So how can we we use Keybase and also make GnuPG friendly to other tools like Git?&lt;/p&gt;
+
+&lt;h3 id=&quot;setup-keybase-&quot;&gt;Setup Keybase 💡&lt;/h3&gt;
+
+&lt;p&gt;On macOS with &lt;em&gt;Homebrew&lt;/em&gt; all you need is:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;gnupg
+brew cask &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;keybase
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For other types of installation please refer to &lt;a href=&quot;https://keybase.io/download&quot;&gt;the Keybase website download section&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;You will then want to use &lt;code class=&quot;highlighter-rouge&quot;&gt;keybase login&lt;/code&gt; to either register your machine or create a new account.
+You can also use the desktop client for a friendlier experience.&lt;/p&gt;
+
+&lt;p&gt;You will want to claim identity proofs in various places and services: Twitter, GitHub, your website, your domain name, etc.
+You can do so with &lt;code class=&quot;highlighter-rouge&quot;&gt;keybase prove&lt;/code&gt; or the desktop client.&lt;/p&gt;
+
+&lt;p&gt;Last but not least, you will want to &lt;em&gt;follow&lt;/em&gt; people: &lt;code class=&quot;highlighter-rouge&quot;&gt;keybase follow&lt;/code&gt; is your friend 😉&lt;/p&gt;
+
+&lt;h3 id=&quot;generate-a-gnupg-key-&quot;&gt;Generate a GnuPG key 💡&lt;/h3&gt;
+
+&lt;p&gt;Now you need Keybase to generate a GnuPG key for you:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;keybase pgp gen &lt;span class=&quot;nt&quot;&gt;--multi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;--multi&lt;/code&gt; flag will allow you to generate a key with multiple name / email addresses.
+In my case I have 2 personal email addresses and my Red Hat work email that I’m also using for opensource contributions.&lt;/p&gt;
+
+&lt;p&gt;Once this is done you run the following command to know the identifier of your secret key:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gpg &lt;span class=&quot;nt&quot;&gt;--list-secret-keys&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--keyid-format&lt;/span&gt; LONG
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;And of course note the identifier for your public key, here in another format:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gpg &lt;span class=&quot;nt&quot;&gt;--list-keys&lt;/span&gt;  &lt;span class=&quot;nt&quot;&gt;--keyid-format&lt;/span&gt; 0xshort
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;publicize-your-gnupg-public-key-&quot;&gt;Publicize your GnuPG public key 🎙&lt;/h3&gt;
+
+&lt;p&gt;Various services like Maven Central will want your public key to be available from a trusty key server.&lt;/p&gt;
+
+&lt;p&gt;You can use &lt;code class=&quot;highlighter-rouge&quot;&gt;gpg&lt;/code&gt; to send your key to various key servers, as in:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gpg &lt;span class=&quot;nt&quot;&gt;--keyserver&lt;/span&gt; pgp.mit.edu &lt;span class=&quot;nt&quot;&gt;--send-keys&lt;/span&gt; IDENTIFIER_OF_YOUR_PUBLIC_KEY
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You may find it equally useful to use the web interfaces of a few popular key servers to paste and upload your public key.
+In that case first copy your public key to the clipboard (&lt;code class=&quot;highlighter-rouge&quot;&gt;pbcopy&lt;/code&gt; is macOS specific):&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gpg &lt;span class=&quot;nt&quot;&gt;--armor&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--export&lt;/span&gt; ONE_OF_YOUR_EMAIL_ADDRESS | pbcopy -
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;then go to a few places:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://keyserver.2ndquadrant.com&quot;&gt;https://keyserver.2ndquadrant.com&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://pgp.mit.edu&quot;&gt;https://pgp.mit.edu&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://keyserver.ubuntu.com&quot;&gt;https://keyserver.ubuntu.com&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Your key will quickly be synchronized between a network of public key servers.&lt;/p&gt;
+
+&lt;h3 id=&quot;git-and-github-gitlab-etc-commit-signing-&quot;&gt;Git (and GitHub, GitLab, etc) commit signing ✅&lt;/h3&gt;
+
+&lt;p&gt;Your signing key is your private key identifier.
+With that information, enable commit signing globally:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git config &lt;span class=&quot;nt&quot;&gt;--global&lt;/span&gt; user.signingkey PRIVATE_KEY_IDENTIFIER
+git config &lt;span class=&quot;nt&quot;&gt;--global&lt;/span&gt; commit.gpgsign &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;If you are on macOS you will need to install &lt;code class=&quot;highlighter-rouge&quot;&gt;pinentry-mac&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;pinentry-mac
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;and then edit &lt;code class=&quot;highlighter-rouge&quot;&gt;~/.gnupg/gpg-agent.conf&lt;/code&gt; so it contains the following line:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pinentry-program /usr/local/bin/pinentry-mac
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The first time you do a signed commit you will be prompted to enter your secret key passphrase, and you will be offered to save it in your macOS user keychain.
+If you do so then you will automatically sign commits and tags without having to worry about the passphrase.&lt;/p&gt;
+
+&lt;p&gt;You can now tell your Git repository hosting services about your key, so it can show that your commits have been signed and that the signature is yours:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;get your key in your clipboard (&lt;code class=&quot;highlighter-rouge&quot;&gt;gpg --armor --export ONE_OF_YOUR_EMAIL_ADDRESS | pbcopy -&lt;/code&gt;),&lt;/li&gt;
+  &lt;li&gt;in the case of GitHub go to &lt;a href=&quot;https://github.com/settings/keys&quot;&gt;https://github.com/settings/keys&lt;/a&gt;,&lt;/li&gt;
+  &lt;li&gt;for other providers like GitLab, check in your profile / settings.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;gradle-and-key-signing-️&quot;&gt;Gradle and key signing 🤦‍♂️&lt;/h3&gt;
+
+&lt;p&gt;I encountered a few issues with the &lt;a href=&quot;https://docs.gradle.org/current/userguide/signing_plugin.html&quot;&gt;Gradle signing plugin&lt;/a&gt;.
+I could not make it use the GnuPG agent, and I had to let it use the default which is to use a secret key ring file.&lt;/p&gt;
+
+&lt;p&gt;Edit &lt;code class=&quot;highlighter-rouge&quot;&gt;~/.gradle/gradle.properties&lt;/code&gt; so all your projects share the same configuration.
+You will need 3 signing-specific entries:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;signing.keyId=0x1234
+signing.password=my-secret-password
+signing.secretKeyRingFile=/Users/user123/.gnupg/secring.gpg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Replace &lt;code class=&quot;highlighter-rouge&quot;&gt;signing.keyId&lt;/code&gt; with your private key identifier, &lt;code class=&quot;highlighter-rouge&quot;&gt;signing.password&lt;/code&gt; with the key password, and replace &lt;code class=&quot;highlighter-rouge&quot;&gt;/Users/user123/&lt;/code&gt; with the path to your user account.
+You may also want to lock down the file permissions with &lt;code class=&quot;highlighter-rouge&quot;&gt;chmod&lt;/code&gt; so only your account can read it (remember, your passphrase is in plain text).&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;secring.gpg&lt;/code&gt; file may not exist if this is a first install, so run this command:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gpg &lt;span class=&quot;nt&quot;&gt;--keyring&lt;/span&gt; secring.gpg &lt;span class=&quot;nt&quot;&gt;--export-secret-keys&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; ~/.gnupg/secring.gpg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;enter-a-new-machine-&quot;&gt;Enter a new machine 💡&lt;/h3&gt;
+
+&lt;p&gt;What happens if you have another machine to provision, be it as a replacement or as a complement?&lt;/p&gt;
+
+&lt;p&gt;Assuming that you created your GnuPG key from Keybase, it is stored and managed by Keybase.
+All you need to do is login on the new machine with your Keybase account, then:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;keybase pgp list
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;should give your GnuPG key identifier.
+You can then import the public and private keys as follows:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;keybase pgp export -q IDENTIFIER | gpg --import
+keybase pgp export --secret -q IDENTIFIER | gpg --import --allow-secret-key-import
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Encryption experts &lt;em&gt;will&lt;/em&gt; complain, especially if you let Keybase store your private keys, but:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;storing your private key on a plain USB drive or unencrypted cloud storage is also dangerous, and&lt;/li&gt;
+  &lt;li&gt;if you really need to communicate sensible data to someone else then you will learn GnuPG in-depth, you will be very strict regarding key generation, validation, trust, storage and exchange. Also you will probably hide your real identity, so Keybase  will not be useful here.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;Keybase + GnuPG sounds like a nice combo.&lt;/p&gt;
+
+&lt;p&gt;👋 By the way you can find me on Keybase at &lt;a href=&quot;https://keybase.io/jponge&quot;&gt;https://keybase.io/jponge&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Ping me there and let me know if this was useful to you 😎&lt;/p&gt;
+
+&lt;p&gt;Thanks again to &lt;a href=&quot;https://github.com/pstadler/keybase-gpg-github&quot;&gt;Patrick Stadler&lt;/a&gt; for the original instructions.&lt;/p&gt;
+
+&lt;p&gt;Have fun!&lt;/p&gt;</content><author><name></name></author><summary type="html">I recently decided to revoke a 10 years old GnuPG key pair that I was using across machines, and decided to start from a clean sheet. I wanted to ensure I could continue using GnuPG to sign opensource release materials, but also sign public Git commits. Until then all I used to sign were Git tags.</summary></entry><entry><title type="html">A good terminal experience with iTerm2 and ZSH on macOS</title><link href="https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/" rel="alternate" type="text/html" title="A good terminal experience with iTerm2 and ZSH on macOS" /><published>2019-11-14T00:00:00+01:00</published><updated>2019-11-14T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos</id><content type="html" xml:base="https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/">&lt;p&gt;I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS.
 I use iTerm2, Zsh, and a few cool command-line tools.&lt;/p&gt;
 
 &lt;h3 id=&quot;iterm2&quot;&gt;iTerm2&lt;/h3&gt;
@@ -2534,95 +2747,4 @@ sys	0m0.178s
   &lt;span class=&quot;n&quot;&gt;ext&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;goloMavenRepoUrl&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;$buildDir/maven-repo&quot;&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;ext&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;goloMavenRepoUsername&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;ext&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;goloMavenRepoPassword&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;</content><author><name></name></author><summary type="html">I have been using Gradle recently on small-scale private / experimental code bases. Having been in the Maven camp for some time, I have always been reticent in joining the Gradle enthusiasts wagon. The fast pace of releases of Gradle, the stagnancy and the politics around Maven have prompted me in giving Gradle another look over the past few months, and I have to say that it has matured in a very compelling way.</summary></entry><entry><title type="html">Java 8 Parameter Names and Dogfooding</title><link href="https://julien.ponge.org/blog/java8-parameter-names-and-jdk-dogfooding/" rel="alternate" type="text/html" title="Java 8 Parameter Names and Dogfooding" /><published>2015-05-22T00:00:00+02:00</published><updated>2015-05-22T00:00:00+02:00</updated><id>https://julien.ponge.org/blog/java8-parameter-names-and-jdk-dogfooding</id><content type="html" xml:base="https://julien.ponge.org/blog/java8-parameter-names-and-jdk-dogfooding/">&lt;p&gt;Java 8 received most of its praise for the support of &lt;em&gt;lambdas&lt;/em&gt; and &lt;em&gt;streams&lt;/em&gt;, but many framework
-developers certainly rejoiced that the JVM now &lt;strong&gt;finally&lt;/strong&gt; supports parameter names.&lt;/p&gt;
-
-&lt;h3 id=&quot;do-not-repeat-yourself&quot;&gt;Do not repeat yourself&lt;/h3&gt;
-
-&lt;p&gt;Many frameworks try to take advantage of conventions to ease the programming models,
-which translates to something like this with, say, Spring MVC:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;nd&quot;&gt;@RequestMapping&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;/login&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RequestMethod&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;POST&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
-    &lt;span class=&quot;nc&quot;&gt;HttpSession&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;session&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;nd&quot;&gt;@RequestParam&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;login&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;login&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
-    &lt;span class=&quot;nd&quot;&gt;@RequestParam&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;password&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;// (...)&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;redirect:/&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;@RequestParam&lt;/code&gt; annotation is inherently inelegant: in an ideal world it should only be used
-when a parameter name does not match a request parameter. In practice the annotation value is most
-always the same as the parameter name, but going through the annotation is the only reliable way to
-pass a name to the framework.&lt;/p&gt;
-
-&lt;h3 id=&quot;whats-in-a-parameter-before-java-8&quot;&gt;What’s in a parameter? (before Java 8)&lt;/h3&gt;
-
-&lt;p&gt;On the JVM, a parameter or a local variable is simply a 0-indexed number. In the &lt;code class=&quot;highlighter-rouge&quot;&gt;login&lt;/code&gt; method
-example above, &lt;code class=&quot;highlighter-rouge&quot;&gt;this&lt;/code&gt; is at index 0, &lt;code class=&quot;highlighter-rouge&quot;&gt;login&lt;/code&gt; at index 1 and &lt;code class=&quot;highlighter-rouge&quot;&gt;password&lt;/code&gt; at index 2. There is simply
-no name encoded in the bytecode to be accessed through reflection.&lt;/p&gt;
-
-&lt;p&gt;This is not 100% true as compiling Java code with debug symbols (which one should always do) gives
-the names for debuggers.
-&lt;a href=&quot;https://github.com/paul-hammant/paranamer&quot;&gt;There are hacks to get parameter names through debug symbols&lt;/a&gt;, including reading bytecode, but it’s never perfect to rely on something that may or may not be present.&lt;/p&gt;
-
-&lt;h3 id=&quot;do-as-i-say-not-as-i-do-java-8&quot;&gt;“Do as I say, not as I do” (Java 8)&lt;/h3&gt;
-
-&lt;p&gt;Now that &lt;a href=&quot;https://docs.oracle.com/javase/tutorial/reflect/member/methodparameterreflection.html&quot;&gt;Java 8 supports parameter names to be accessible though reflection&lt;/a&gt;, the problem is supposed to be solved.&lt;/p&gt;
-
-&lt;p&gt;There is just one &lt;em&gt;little&lt;/em&gt; problem: one needs to compile with &lt;code class=&quot;highlighter-rouge&quot;&gt;javac -parameters&lt;/code&gt;, and the &lt;code class=&quot;highlighter-rouge&quot;&gt;-parameters&lt;/code&gt; flag is off by default. And guess what? &lt;strong&gt;The JDK is not compiled with that flag!&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;Here is a simple showcase:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-java&quot; data-lang=&quot;java&quot;&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;java.lang.reflect.Method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;java.util.ArrayList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;java.util.Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;// Requires `javac -parameters`&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Main&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;baz&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-  &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Throwable&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;nc&quot;&gt;Method&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ArrayList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getMethod&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;add&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;nc&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getParameters&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;method&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getMethod&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;nc&quot;&gt;Arrays&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getParameters&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()).&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;forEach&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Running that code prints:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;int arg0
-E arg1
-java.lang.String bar
-int baz
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;How can the JDK classes be compiled without parameter names is just beyond me…&lt;/p&gt;
-
-&lt;h3 id=&quot;parameter-names-in-golo&quot;&gt;Parameter names in Golo&lt;/h3&gt;
-
-&lt;p&gt;The next versions of Golo will support &lt;a href=&quot;https://github.com/golo-lang/golo-lang/pull/250&quot;&gt;parameter names&lt;/a&gt;:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-golo&quot; data-lang=&quot;golo&quot;&gt;struct Foo = {x, y}
-
-# (...)
-
-let f = |x, y| -&amp;gt; x - y
-let r_1 = f(x=10, y=2)
-let r_2 = f(y=10, x=2)
-let foo = Foo(y=&quot;b&quot;, x=&quot;a&quot;)&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;We had lots of discussions with Daniel on how to properly do that. Initial experiments used an
-annotation to encode parameter names, but as we shifted to Java SE 8 as a requirement we opted for
-using the parameter name support in the bytecode.&lt;/p&gt;
-
-&lt;p&gt;This works marvelously well for Golo, and we can even take advantage of Java libraries compiled with
-&lt;code class=&quot;highlighter-rouge&quot;&gt;javac -parameters&lt;/code&gt; to call methods using parameter names, just like Golo functions.&lt;/p&gt;
-
-&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/2015/lvigg.jpg&quot; alt=&quot;Y U NO&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Java 8 received most of its praise for the support of lambdas and streams, but many framework developers certainly rejoiced that the JVM now finally supports parameter names.</summary></entry></feed>
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;</content><author><name></name></author><summary type="html">I have been using Gradle recently on small-scale private / experimental code bases. Having been in the Maven camp for some time, I have always been reticent in joining the Gradle enthusiasts wagon. The fast pace of releases of Gradle, the stagnancy and the politics around Maven have prompted me in giving Gradle another look over the past few months, and I have to say that it has matured in a very compelling way.</summary></entry></feed>

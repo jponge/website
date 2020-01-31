@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Simpler GnuPG with another look at Keybase | Julien Ponge</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="Simpler GnuPG with another look at Keybase" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I recently decided to revoke a 10 years old GnuPG key pair that I was using across machines, and decided to start from a clean sheet. I wanted to ensure I could continue using GnuPG to sign opensource release materials, but also sign public Git commits. Until then all I used to sign were Git tags." />
+<meta property="og:description" content="I recently decided to revoke a 10 years old GnuPG key pair that I was using across machines, and decided to start from a clean sheet. I wanted to ensure I could continue using GnuPG to sign opensource release materials, but also sign public Git commits. Until then all I used to sign were Git tags." />
+<link rel="canonical" href="https://julien.ponge.org/blog/simpler-gnupg-with-another-look-at-keybase/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/simpler-gnupg-with-another-look-at-keybase/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-01-31T00:00:00+01:00" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/simpler-gnupg-with-another-look-at-keybase/"},"url":"https://julien.ponge.org/blog/simpler-gnupg-with-another-look-at-keybase/","headline":"Simpler GnuPG with another look at Keybase","dateModified":"2020-01-31T00:00:00+01:00","datePublished":"2020-01-31T00:00:00+01:00","description":"I recently decided to revoke a 10 years old GnuPG key pair that I was using across machines, and decided to start from a clean sheet. I wanted to ensure I could continue using GnuPG to sign opensource release materials, but also sign public Git commits. Until then all I used to sign were Git tags.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Simpler GnuPG with another look at Keybase</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-01-31T00:00:00+01:00" itemprop="datePublished">Jan 31, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>I recently decided to revoke a 10 years old GnuPG key pair that I was using across machines, and decided to start from a clean sheet.
+I wanted to ensure I could continue using GnuPG to sign opensource release materials, but also sign public Git commits.
+Until then all I used to sign were Git tags.</p>
+
+<p>As I wanted to find a better solution than just using plain GnuPG and its numerous practicability flaws, I gained renewed interest in <a href="https://keybase.io">Keybase</a>, especially as it now provides more than just a streamlined experience with encryption tools.</p>
+
+<p>The configuration steps are adapted from <a href="https://github.com/pstadler/keybase-gpg-github">Patrick Stadler’s instructions on GitHub</a>.
+There is a macOS bias in some of the commands which you can easily adapt to other Unix systems 😉</p>
+
+<h3 id="the-gnupg-experience-">The GnuPG experience 😟</h3>
+
+<p>I have a <em>“love - hate - hate - love - hate - hate - hate”</em> relation with GnuPG.</p>
+
+<p>This tool has a horrible user interface, and I have never really found it useful for communications.
+Over 15 years I have had a few GnuPG-encrypted email communications with colleagues or friends, but it has always been a hindrance.
+Also while it did encrypt communication content, there is enough meta-data in plain text with email (title, recipients, etc) to make GnuPG email encryption a half-baked solution to a real problem.</p>
+
+<p>Still, GnuPG is useful because we may have files to encrypt so their content can only be read by ourselves and maybe a few people.
+We may also want to sign files for integrity checks.
+This is especially important with opensource development where signing source and release artifacts is a plus, and often a necessity.</p>
+
+<p>Generating a key pair with GnuPG is not very difficult, and under 2 minutes you can have one and push it to some public key servers.
+The problem is that once you have a key pair then no one really knows if the identity claimed is real or not.
+So you can get to your friends or at so-called “key signing parties” and sign other people key to claim that you have verified that some public key does belong to the person it claims to be.
+By doing so keys form trust networks, which helps recognizing plausibly authentic versus fake keys.</p>
+
+<p>In practice no one but a few geeks or activists will want to do that seriously.
+You will likely do it with a few friends and colleagues once in a while, and… that will be it.
+And of course people will loose their keys and they will not even have a revocation key 😇</p>
+
+<h3 id="enter-keybase-">Enter Keybase 🤔</h3>
+
+<p>The <a href="https://keybase.io">Keybase</a> service was introduced a few years back with the interesting idea of mapping social / public identities to encryption keys.
+Keybase essentially introduced a modern way to build trust networks, because people can check that <code class="highlighter-rouge">user123</code> on Keybase is also <code class="highlighter-rouge">user123_coder</code> on GitHub, <code class="highlighter-rouge">user123</code> on Twitter, and that the user owns the <code class="highlighter-rouge">iamuser123.org</code> domain.
+One can do so by posting Keybase-signed messages to these social networks and places.
+This is a good idea, because from social networks and Keybase accounts linked to those social networks, you can build a trust network on Keybase.</p>
+
+<p>Keybase also offered streamlined web and command line user interfaces for managing Keybase, following people and encrypting / decrypting content.
+Keybase provides a simplified workflow for common tasks including key management (e.g., fetching keys of your contacts), and it has GnuPG interoperability.
+You may even make the <em>devilish</em> (read: <em>convenient</em>) choice of having your keys stored on Keybase, or just attach existing GnuPG keys that you will still manage locally.</p>
+
+<p>Like many people I on-boarded when the service opened and it went viral on Twitter.
+But then like many people I never really used it because, well, I’m not using GnuPG everyday anyway.</p>
+
+<h3 id="fast-forward-keybase-today-">Fast-forward Keybase today 🤔</h3>
+
+<p>I believe that Keybase deserves a second wave of interest, because the modern Keybase is way more interesting than just mapping identities to encryption keys.</p>
+
+<p>Indeed Keybase now offers:</p>
+
+<ul>
+  <li>a chat system for individuals,</li>
+  <li>a nicely-done Slack-like chat for teams,</li>
+  <li>private, group and public file sharing (e.g., folder <code class="highlighter-rouge">me,other</code> is shared between 2 users),</li>
+  <li>Git repositories for yourself and teams,</li>
+  <li>some crypto-currency thing which I don’t care about.</li>
+</ul>
+
+<p>This is interesting as everything is encrypted.
+There are many contexts where using Keybase makes sense, such as research groups in Universities.
+This is a context where institutions will typically provide you with bad tools and services, refrain you from using well-known tools, and the boundaries of who you work with are quite malleable since you work with people at other institutions and companies.
+Here Keybase can be a secure replacement for chat, file sharing and (unpublished) source code management tools.</p>
+
+<p>So how can we we use Keybase and also make GnuPG friendly to other tools like Git?</p>
+
+<h3 id="setup-keybase-">Setup Keybase 💡</h3>
+
+<p>On macOS with <em>Homebrew</em> all you need is:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>gnupg
+brew cask <span class="nb">install </span>keybase
+</code></pre></div></div>
+
+<p>For other types of installation please refer to <a href="https://keybase.io/download">the Keybase website download section</a>.</p>
+
+<p>You will then want to use <code class="highlighter-rouge">keybase login</code> to either register your machine or create a new account.
+You can also use the desktop client for a friendlier experience.</p>
+
+<p>You will want to claim identity proofs in various places and services: Twitter, GitHub, your website, your domain name, etc.
+You can do so with <code class="highlighter-rouge">keybase prove</code> or the desktop client.</p>
+
+<p>Last but not least, you will want to <em>follow</em> people: <code class="highlighter-rouge">keybase follow</code> is your friend 😉</p>
+
+<h3 id="generate-a-gnupg-key-">Generate a GnuPG key 💡</h3>
+
+<p>Now you need Keybase to generate a GnuPG key for you:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keybase pgp gen <span class="nt">--multi</span>
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">--multi</code> flag will allow you to generate a key with multiple name / email addresses.
+In my case I have 2 personal email addresses and my Red Hat work email that I’m also using for opensource contributions.</p>
+
+<p>Once this is done you run the following command to know the identifier of your secret key:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--list-secret-keys</span> <span class="nt">--keyid-format</span> LONG
+</code></pre></div></div>
+
+<p>And of course note the identifier for your public key, here in another format:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--list-keys</span>  <span class="nt">--keyid-format</span> 0xshort
+</code></pre></div></div>
+
+<h3 id="publicize-your-gnupg-public-key-">Publicize your GnuPG public key 🎙</h3>
+
+<p>Various services like Maven Central will want your public key to be available from a trusty key server.</p>
+
+<p>You can use <code class="highlighter-rouge">gpg</code> to send your key to various key servers, as in:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--keyserver</span> pgp.mit.edu <span class="nt">--send-keys</span> IDENTIFIER_OF_YOUR_PUBLIC_KEY
+</code></pre></div></div>
+
+<p>You may find it equally useful to use the web interfaces of a few popular key servers to paste and upload your public key.
+In that case first copy your public key to the clipboard (<code class="highlighter-rouge">pbcopy</code> is macOS specific):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--armor</span> <span class="nt">--export</span> ONE_OF_YOUR_EMAIL_ADDRESS | pbcopy -
+</code></pre></div></div>
+
+<p>then go to a few places:</p>
+
+<ul>
+  <li><a href="https://keyserver.2ndquadrant.com">https://keyserver.2ndquadrant.com</a></li>
+  <li><a href="https://pgp.mit.edu">https://pgp.mit.edu</a></li>
+  <li><a href="https://keyserver.ubuntu.com">https://keyserver.ubuntu.com</a></li>
+</ul>
+
+<p>Your key will quickly be synchronized between a network of public key servers.</p>
+
+<h3 id="git-and-github-gitlab-etc-commit-signing-">Git (and GitHub, GitLab, etc) commit signing ✅</h3>
+
+<p>Your signing key is your private key identifier.
+With that information, enable commit signing globally:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config <span class="nt">--global</span> user.signingkey PRIVATE_KEY_IDENTIFIER
+git config <span class="nt">--global</span> commit.gpgsign <span class="nb">true</span>
+</code></pre></div></div>
+
+<p>If you are on macOS you will need to install <code class="highlighter-rouge">pinentry-mac</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>pinentry-mac
+</code></pre></div></div>
+
+<p>and then edit <code class="highlighter-rouge">~/.gnupg/gpg-agent.conf</code> so it contains the following line:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pinentry-program /usr/local/bin/pinentry-mac
+</code></pre></div></div>
+
+<p>The first time you do a signed commit you will be prompted to enter your secret key passphrase, and you will be offered to save it in your macOS user keychain.
+If you do so then you will automatically sign commits and tags without having to worry about the passphrase.</p>
+
+<p>You can now tell your Git repository hosting services about your key, so it can show that your commits have been signed and that the signature is yours:</p>
+
+<ul>
+  <li>get your key in your clipboard (<code class="highlighter-rouge">gpg --armor --export ONE_OF_YOUR_EMAIL_ADDRESS | pbcopy -</code>),</li>
+  <li>in the case of GitHub go to <a href="https://github.com/settings/keys">https://github.com/settings/keys</a>,</li>
+  <li>for other providers like GitLab, check in your profile / settings.</li>
+</ul>
+
+<h3 id="gradle-and-key-signing-️">Gradle and key signing 🤦‍♂️</h3>
+
+<p>I encountered a few issues with the <a href="https://docs.gradle.org/current/userguide/signing_plugin.html">Gradle signing plugin</a>.
+I could not make it use the GnuPG agent, and I had to let it use the default which is to use a secret key ring file.</p>
+
+<p>Edit <code class="highlighter-rouge">~/.gradle/gradle.properties</code> so all your projects share the same configuration.
+You will need 3 signing-specific entries:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>signing.keyId=0x1234
+signing.password=my-secret-password
+signing.secretKeyRingFile=/Users/user123/.gnupg/secring.gpg
+</code></pre></div></div>
+
+<p>Replace <code class="highlighter-rouge">signing.keyId</code> with your private key identifier, <code class="highlighter-rouge">signing.password</code> with the key password, and replace <code class="highlighter-rouge">/Users/user123/</code> with the path to your user account.
+You may also want to lock down the file permissions with <code class="highlighter-rouge">chmod</code> so only your account can read it (remember, your passphrase is in plain text).</p>
+
+<p>The <code class="highlighter-rouge">secring.gpg</code> file may not exist if this is a first install, so run this command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--keyring</span> secring.gpg <span class="nt">--export-secret-keys</span> <span class="o">&gt;</span> ~/.gnupg/secring.gpg
+</code></pre></div></div>
+
+<h3 id="enter-a-new-machine-">Enter a new machine 💡</h3>
+
+<p>What happens if you have another machine to provision, be it as a replacement or as a complement?</p>
+
+<p>Assuming that you created your GnuPG key from Keybase, it is stored and managed by Keybase.
+All you need to do is login on the new machine with your Keybase account, then:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keybase pgp list
+</code></pre></div></div>
+
+<p>should give your GnuPG key identifier.
+You can then import the public and private keys as follows:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keybase pgp export -q IDENTIFIER | gpg --import
+keybase pgp export --secret -q IDENTIFIER | gpg --import --allow-secret-key-import
+</code></pre></div></div>
+
+<p>Encryption experts <em>will</em> complain, especially if you let Keybase store your private keys, but:</p>
+
+<ol>
+  <li>storing your private key on a plain USB drive or unencrypted cloud storage is also dangerous, and</li>
+  <li>if you really need to communicate sensible data to someone else then you will learn GnuPG in-depth, you will be very strict regarding key generation, validation, trust, storage and exchange. Also you will probably hide your real identity, so Keybase  will not be useful here.</li>
+</ol>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Keybase + GnuPG sounds like a nice combo.</p>
+
+<p>👋 By the way you can find me on Keybase at <a href="https://keybase.io/jponge">https://keybase.io/jponge</a>.</p>
+
+<p>Ping me there and let me know if this was useful to you 😎</p>
+
+<p>Thanks again to <a href="https://github.com/pstadler/keybase-gpg-github">Patrick Stadler</a> for the original instructions.</p>
+
+<p>Have fun!</p>
+
+
+  </div><a class="u-url" href="/blog/simpler-gnupg-with-another-look-at-keybase/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Software engineer, doctor, researcher, lecturer, manager, enthusiast, maker, speaker, (and first and foremost) whatever.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
