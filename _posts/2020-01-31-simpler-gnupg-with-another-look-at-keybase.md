@@ -3,6 +3,12 @@ title: "Simpler GnuPG with another look at Keybase"
 layout: post
 ---
 
+**Edit 2020/05/15**
+> [Keybase has been acqui-hired by Zoom](https://keybase.io/blog/keybase-joins-zoom).
+> Time will tell if Keybase will remain actively developed and secured, but perhaps it will be better to just go back to plain GnuPG with the pains if you need a key pair.
+
+--
+
 I recently decided to revoke a 10 years old GnuPG key pair that I was using across machines, and decided to start from a clean sheet.
 I wanted to ensure I could continue using GnuPG to sign opensource release materials, but also sign public Git commits.
 Until then all I used to sign were Git tags.
