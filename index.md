@@ -9,7 +9,7 @@ redirect_from:
 ---
 
 ![Me](/images/me.png) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-[![Cover of Vert.x in Action](/images/MEAP-cover.png)](https://www.manning.com/books/vertx-in-action?a_aid=vertx-in-action&a_bid=22152024)
+[![Cover of Vert.x in Action](/images/vertx-in-action-cover.png)](https://www.manning.com/books/vertx-in-action?a_aid=vertx-in-action&a_bid=22152024)
 
 I am a **Principal Software Engineer** at [Red Hat](https://www.redhat.com/).
 I am primarily working on _reactive_ things and the [Eclipse Vert.x](https://vertx.io/) project.
