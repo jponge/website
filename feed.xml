@@ -1,4 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2020-10-30T19:51:07+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle>Software engineer, doctor, researcher, lecturer, manager, enthusiast, maker, speaker, (and first and foremost) whatever.</subtitle><entry><title type="html">Vert.x in Action has been published!</title><link href="https://julien.ponge.org/blog/vertx-in-action-has-been-published/" rel="alternate" type="text/html" title="Vert.x in Action has been published!" /><published>2020-10-30T00:00:00+01:00</published><updated>2020-10-30T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/vertx-in-action-has-been-published</id><content type="html" xml:base="https://julien.ponge.org/blog/vertx-in-action-has-been-published/">&lt;p&gt;After:&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2020-11-22T19:10:07+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle>Software engineer, doctor, researcher, lecturer, manager, enthusiast, maker, speaker, (and first and foremost) whatever.</subtitle><entry><title type="html">Using exa as a modern replacement to the venerable Unix ls command</title><link href="https://julien.ponge.org/blog/using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command/" rel="alternate" type="text/html" title="Using exa as a modern replacement to the venerable Unix ls command" /><published>2020-11-22T00:00:00+01:00</published><updated>2020-11-22T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command</id><content type="html" xml:base="https://julien.ponge.org/blog/using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command/">&lt;h1 id=&quot;using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command&quot;&gt;Using exa as a modern replacement to the venerable Unix ls command&lt;/h1&gt;
+
+&lt;p&gt;So you know &lt;code class=&quot;highlighter-rouge&quot;&gt;ls&lt;/code&gt; (often found as &lt;code class=&quot;highlighter-rouge&quot;&gt;/bin/ls&lt;/code&gt;), the good old Unix command to list files in a directory.&lt;/p&gt;
+
+&lt;p&gt;I recently came across &lt;a href=&quot;https://the.exa.website&quot;&gt;exa&lt;/a&gt;, a modern replacement for &lt;code class=&quot;highlighter-rouge&quot;&gt;ls&lt;/code&gt;. It is part of a wave of new command-line tools written in &lt;a href=&quot;https://www.rust-lang.org&quot;&gt;Rust&lt;/a&gt; and that bring modernity while staying faithful to the Unix way of writing focused and composable tools.&lt;/p&gt;
+
+&lt;p&gt;Of course you may wonder &lt;em&gt;why&lt;/em&gt; switching from &lt;code class=&quot;highlighter-rouge&quot;&gt;ls&lt;/code&gt; is any good idea. It turns out that &lt;code class=&quot;highlighter-rouge&quot;&gt;exa&lt;/code&gt; is really a better &lt;code class=&quot;highlighter-rouge&quot;&gt;ls&lt;/code&gt;, with good colour support, customisable output, a humane interface and even &lt;code class=&quot;highlighter-rouge&quot;&gt;git&lt;/code&gt; metadata support (so you can see which files are being ignored, staged, etc).&lt;/p&gt;
+
+&lt;h3 id=&quot;a-quick-tour-of-exa&quot;&gt;A quick tour of exa&lt;/h3&gt;
+
+&lt;p&gt;The default behavior of &lt;code class=&quot;highlighter-rouge&quot;&gt;exa&lt;/code&gt; is to… list files, pretty much like &lt;code class=&quot;highlighter-rouge&quot;&gt;ls&lt;/code&gt; would do:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/2020/exa/1.png&quot; alt=&quot;exa&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The equivalent of &lt;code class=&quot;highlighter-rouge&quot;&gt;ls -la&lt;/code&gt; is &lt;code class=&quot;highlighter-rouge&quot;&gt;exa --long --all&lt;/code&gt;:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/2020/exa/2.png&quot; alt=&quot;exa&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Note that by default file sizes are given in a human-friendly form.&lt;/p&gt;
+
+&lt;p&gt;If you are in a Git repository you can also get metadata  by adding the &lt;code class=&quot;highlighter-rouge&quot;&gt;--git&lt;/code&gt; flag to any command:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/2020/exa/3.png&quot; alt=&quot;exa&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Note reading Git metadata can slow down the execution of &lt;code class=&quot;highlighter-rouge&quot;&gt;exa&lt;/code&gt; commands, so I personally tend to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;--git&lt;/code&gt; flag only when I actually need it.&lt;/p&gt;
+
+&lt;p&gt;You can also inspect trees with the &lt;code class=&quot;highlighter-rouge&quot;&gt;--tree&lt;/code&gt; flag:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/2020/exa/4.png&quot; alt=&quot;exa&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;There is also a &lt;code class=&quot;highlighter-rouge&quot;&gt;--recurse&lt;/code&gt; flag to list files in each directory of the file tree:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/2020/exa/5.png&quot; alt=&quot;exa&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;my-personal-aliases&quot;&gt;My personal aliases&lt;/h3&gt;
+
+&lt;p&gt;Typing &lt;code class=&quot;highlighter-rouge&quot;&gt;exa&lt;/code&gt; instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;ls&lt;/code&gt; is one more character, and you’ll likely have to fight muscle memory. In my case I am trying to get rid of typing &lt;code class=&quot;highlighter-rouge&quot;&gt;ls -lsa&lt;/code&gt; 😉&lt;/p&gt;
+
+&lt;p&gt;You can easily define a few aliases so &lt;code class=&quot;highlighter-rouge&quot;&gt;exa&lt;/code&gt; becomes your new &lt;code class=&quot;highlighter-rouge&quot;&gt;ls&lt;/code&gt;. Note that &lt;code class=&quot;highlighter-rouge&quot;&gt;exa&lt;/code&gt; is not fully compatible with &lt;code class=&quot;highlighter-rouge&quot;&gt;ls&lt;/code&gt;. For instance &lt;code class=&quot;highlighter-rouge&quot;&gt;ls -lsa&lt;/code&gt; (which I am fighting) results in an error with &lt;code class=&quot;highlighter-rouge&quot;&gt;exa -lsa&lt;/code&gt; because the &lt;code class=&quot;highlighter-rouge&quot;&gt;-s&lt;/code&gt; flag requires an argument to define a sort field.&lt;/p&gt;
+
+&lt;p&gt;Here are my personal aliases:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# A few aliases for exa, a ls replacement&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;l&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;exa --sort Name&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ll&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;exa --sort Name --long&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;la&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;exa --sort Name --long --all&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;lr&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;exa --sort Name --long --recurse&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;lra&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;exa --sort Name --long --recurse --all&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;lt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;exa --sort Name --long --tree&quot;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;alias &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;lta&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;exa --sort Name --long --tree --all&quot;&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;alias ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;exa --sort Name&quot;&lt;/span&gt;%
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Feel-free to take inspiration and define aliases and default flags that make sense to &lt;strong&gt;you&lt;/strong&gt;!&lt;/p&gt;</content><author><name></name></author><summary type="html">Using exa as a modern replacement to the venerable Unix ls command</summary></entry><entry><title type="html">Vert.x in Action has been published!</title><link href="https://julien.ponge.org/blog/vertx-in-action-has-been-published/" rel="alternate" type="text/html" title="Vert.x in Action has been published!" /><published>2020-10-30T00:00:00+01:00</published><updated>2020-10-30T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/vertx-in-action-has-been-published</id><content type="html" xml:base="https://julien.ponge.org/blog/vertx-in-action-has-been-published/">&lt;p&gt;After:&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;an academic sabbatical, and&lt;/li&gt;
@@ -811,45 +865,4 @@ Signed-off-by: Julien Ponge &amp;lt;julien.ponge@insa-lyon.fr&amp;gt;
 
 &lt;p&gt;Now having to use GnuPG for &lt;em&gt;all&lt;/em&gt; commits can be a bit daunting. Perhaps a simple alternative can be to require that contributors add their name and email to a file (e.g., &lt;code class=&quot;highlighter-rouge&quot;&gt;CONTRIBUTORS&lt;/code&gt;), and do so with a GnuPG + signed-off commit, and later at least sign-off commits. This is especially doable with services like &lt;a href=&quot;https://keybase.io/&quot;&gt;keybase.io&lt;/a&gt; that can link several public profiles to a key, and especially GitHub (although yes, GitHub shall not be the center of the universe in opensource!).&lt;/p&gt;
 
-&lt;p&gt;I think many variants can work out here, the most important thing is to have GnuPG in the loop at some point.&lt;/p&gt;</content><author><name></name></author><summary type="html">I am in favor of using contributor license agreements (CLA) for opensource projects that are expected to be developed in the long run, especially when you develop them as part of your professional activities.</summary></entry><entry><title type="html">Email, Desktop, Mobile Vacuum Apps and Fallacies</title><link href="https://julien.ponge.org/blog/email-desktop-mobile-vacuum-apps-and-fallacies/" rel="alternate" type="text/html" title="Email, Desktop, Mobile Vacuum Apps and Fallacies" /><published>2015-10-08T00:00:00+02:00</published><updated>2015-10-08T00:00:00+02:00</updated><id>https://julien.ponge.org/blog/email-desktop-mobile-vacuum-apps-and-fallacies</id><content type="html" xml:base="https://julien.ponge.org/blog/email-desktop-mobile-vacuum-apps-and-fallacies/">&lt;p&gt;Email on the Desktop is in a mess. In 2015 Mozilla has more or less long abandoned Thunderbird, Postbox is Thunderbird with a slightly better GUI, Apple Mail is &lt;em&gt;good enough&lt;/em&gt; but very short on customizability (shortcuts, plugins, etc), and MS Outlook is not especially better.&lt;/p&gt;
-
-&lt;p&gt;This in stark contrast with the huge interest for email productivity apps in the mobile space. Mailbox, now a (quiet) Dropbox product, showed the way a few years back by introducing new patterns for dealing with email. These patterns are mainly about swiping gestures to quickly take actions, and the ability to &lt;em&gt;snooze&lt;/em&gt; emails to get back to them at a specific time.&lt;/p&gt;
-
-&lt;p&gt;While dealing with personal email is generally &lt;em&gt;easy&lt;/em&gt;, dealing with work email is a different matter. Adopting a &lt;em&gt;getting things done&lt;/em&gt; strategy typically revolves around moving email between folders, say &lt;em&gt;action&lt;/em&gt;, &lt;em&gt;hold&lt;/em&gt;, etc. Some people use flagging, and / or the (un)read status to help in their triage. The more hats you have in your job, and the more it gets complicated as you need to keep track of different contexts.&lt;/p&gt;
-
-&lt;p&gt;Mailbox and its myriad of clones provide genuine helpers to reduce frictions and turn a flood of email into actionable items. But this comes at a very special price…&lt;/p&gt;
-
-&lt;h3 id=&quot;email-vacuum&quot;&gt;Email Vacuum&lt;/h3&gt;
-
-&lt;p&gt;The email client has traditionally been a multi-protocol software commonly supporting IMAP, POP3 and possibly Exchange. Mailbox showed the way for something different: the client is connected to proprietary gateway services that in turn connect to the email servers. In short: to provide functionality and push notifications, a &lt;em&gt;man in the middle&lt;/em&gt; service reads all your emails from your provider, which can be your company.&lt;/p&gt;
-
-&lt;p&gt;This is of course a very big threat, as third-party companies just tap into &lt;em&gt;all&lt;/em&gt; your email. All &lt;em&gt;modern&lt;/em&gt; and &lt;em&gt;fancy&lt;/em&gt; productivity email applications just do that: Outlook/Accompli, myMail, CloudMagic, Mail.ru, etc. Only Inbox from Google fares better in the war of email productivity, as email does not leave the Google servers.&lt;/p&gt;
-
-&lt;p&gt;What is perhaps a bigger issue is that most end users have absolutely &lt;em&gt;no idea&lt;/em&gt; that their email is being vacuumed to a third-party service which in turn is &lt;em&gt;likely&lt;/em&gt; to do &lt;em&gt;something&lt;/em&gt; from the data. All these applications ask for the type of email account you would like to add (GMail, Exchange, IMAP, etc) then for your credentials. It takes a bit of technical knowledge not to be fooled with the wordings and claims of &lt;em&gt;industry-grade security&lt;/em&gt;.&lt;/p&gt;
-
-&lt;p&gt;So yes, most of these apps will suck all your email &lt;em&gt;and&lt;/em&gt; they will know your email password (exception: GMail has OAuth, iCloud has app-specific passwords).&lt;/p&gt;
-
-&lt;h3 id=&quot;providing-functionality-fallacies&quot;&gt;Providing functionality: fallacies&lt;/h3&gt;
-
-&lt;p&gt;So suppose you enjoy crunching through email with one of these applications on mobile devices. Now get back to the desktop and enjoy the total lack of continuity: you are stuck with a big mismatch between what your mobile application does, and what your desktop application does. This isn’t exactly true: Mailbox has a (broken) desktop application and Inbox works fine from a web browser. But still, it’s not like a using a quality desktop email client.&lt;/p&gt;
-
-&lt;p&gt;Email is fundamentally based on distributed and client-agnostic protocols. Application providers are lying when they claim that vacuuming your email is the only way to provide functionality.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;A protocol like IMAP is generic enough to hold something else than email. Apple Notes are being stored as emails in a special folder. You could imagine an email application that would store its preferences and state in such &lt;em&gt;special&lt;/em&gt; emails. This could include identifiers of &lt;em&gt;snoozed&lt;/em&gt; emails, when they should be pushed front again, email classification learnings, etc etc.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Push email works with IMAP, too. The excellent Android K9 client supports &lt;em&gt;push&lt;/em&gt; by keeping a connection. Fastmail and Yahoo! have been given the technical details to support push on iOS devices. And even so, what’s so wrong with receiving emails on a mobile device at most 15 minutes later?&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Nothing precludes desktop and mobile applications to work hand-in-hand to offer great productivity features, and at the same time avoid gateway services. But of course, seeing through your email is very tempting…&lt;/p&gt;
-
-&lt;h3 id=&quot;open-source-to-the-rescue&quot;&gt;Open source to the rescue?&lt;/h3&gt;
-
-&lt;p&gt;Between desktop clients lacking efficiency, cloud silos (GMail, Office 365, …) and nice mobile clients acting as trojan horses for email vacuuming and with little interoperability with other applications, the state of email in 2015 is not all that sparkling.&lt;/p&gt;
-
-&lt;p&gt;The solution could, as usual, lie in open source. Mozilla did a lot of good in the browser space a few years back, but sadly it has completely lost interest in email. Still, after the &lt;em&gt;“let’s take back the web”&lt;/em&gt; initiative, could Mozilla or another foundation fuel a &lt;em&gt;“let’s take back the email”&lt;/em&gt;?&lt;/p&gt;
-
-&lt;p&gt;Wouldn’t it be nice to snooze an email from the iOS Mail application, have it pop back on a Android phone, and tweak classification settings from a Windows desktop?&lt;/p&gt;</content><author><name></name></author><summary type="html">Email on the Desktop is in a mess. In 2015 Mozilla has more or less long abandoned Thunderbird, Postbox is Thunderbird with a slightly better GUI, Apple Mail is good enough but very short on customizability (shortcuts, plugins, etc), and MS Outlook is not especially better.</summary></entry></feed>
+&lt;p&gt;I think many variants can work out here, the most important thing is to have GnuPG in the loop at some point.&lt;/p&gt;</content><author><name></name></author><summary type="html">I am in favor of using contributor license agreements (CLA) for opensource projects that are expected to be developed in the long run, especially when you develop them as part of your professional activities.</summary></entry></feed>
