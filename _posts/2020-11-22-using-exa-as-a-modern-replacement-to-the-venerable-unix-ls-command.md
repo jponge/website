@@ -27,7 +27,7 @@ If you are in a Git repository you can also get metadata  by adding the `--git` 
 
 ![exa](/images/posts/2020/exa/3.png)
 
-Note reading Git metadata can slow down the execution of `exa` commands, so I personally tend to use the `--git` flag only when I actually need it.
+Note that reading Git metadata can slow down the execution of `exa` commands, so I personally tend to use the `--git` flag only when I actually need it.
 
 You can also inspect trees with the `--tree` flag:
 
