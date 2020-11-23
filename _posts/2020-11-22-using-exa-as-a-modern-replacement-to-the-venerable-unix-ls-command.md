@@ -55,7 +55,7 @@ alias lra="exa --sort Name --long --recurse --all"
 alias lt="exa --sort Name --long --tree"
 alias lta="exa --sort Name --long --tree --all"
 
-alias ls="exa --sort Name"%
+alias ls="exa --sort Name"
 ```
 
 Feel-free to take inspiration and define aliases and default flags that make sense to **you**!
