@@ -15,7 +15,11 @@ Since it is hard keeping track of everything that was published, you may also fi
 
 ## Books
 
-[![Cover of Vert.x in Action](/images/vertx-in-action-cover.png)](https://www.manning.com/books/vertx-in-action)
+<p class="front-pictures">
+    <a href="https://www.manning.com/books/vertx-in-action">
+        <img src="/images/vertx-in-action-cover.png" alt="Vert.x in Action book cover" class="book-cover" />
+    </a>
+</p>
 
 Julien Ponge. **Vert.x in Action. Asynchronous and Reactive Java**. Manning Publications. October 2020  ISBN 9781617295621 
 
