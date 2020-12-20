@@ -9,4 +9,20 @@ pre, code {
     font-family: "Cousine", monospace;
 }
 
+.front-pictures {
+    margin-bottom: 2rem;
+}
+
+.profile-pic {
+    box-shadow: 0px 4px 16px 0px #666;
+    transform: rotate(2deg);
+}
+
+.book-cover {
+    height: 360px;
+    margin-left: 3rem;
+    box-shadow: 0px 4px 16px 0px #666;
+    transform: rotate(2deg);
+}
+
 @import "minima";

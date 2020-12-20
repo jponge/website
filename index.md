@@ -8,8 +8,12 @@ redirect_from:
     - /about/
 ---
 
-![Me](/images/me.png) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-[![Cover of Vert.x in Action](/images/vertx-in-action-cover.png)](https://www.manning.com/books/vertx-in-action?a_aid=vertx-in-action&a_bid=22152024)
+<p class="front-pictures">
+    <img src="/images/me.png" class="profile-pic" />
+    <a href="https://www.manning.com/books/vertx-in-action">
+        <img src="/images/vertx-in-action-cover.png" alt="Vert.x in Action book cover" class="book-cover" />
+    </a>
+</p>
 
 I am a **Principal Software Engineer** at [Red Hat](https://www.redhat.com/).
 I am primarily working on _reactive_ things and the [Eclipse Vert.x](https://vertx.io/) project.
