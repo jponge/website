@@ -65,6 +65,8 @@ Julien Ponge. **Vert.x in Action. Asynchronous and Reactive Java**. Manning Publ
 
 ## Refereed workshops and demonstrations ##
 
+* Patrik Fortier, Julien Ponge and Frédéric Le Mouël. **Dyninka: a framework for distributed FaaS dataflow.** Fifth Annual UK System Research Challenges Workshop, March 2020, Newton Aycliffe, United Kingdom. [HAL entry](https://hal.archives-ouvertes.fr/hal-02915715)
+
 * Baptiste Maingret, Frédéric Le Mouël, Julien Ponge, Nicolas Stouls, Jian Cao and Yannick Loiseau. **Towards a Decoupled Context-Oriented Programming Language for the Internet of Things**. *In Proceedings of the 7th International Workshop on Context-Oriented Programming ([COP'2015](http://2015.ecoop.org/track/COP-2015-papers)) in conjunction with the European Conference on Object-Oriented Programming (ECOOP'2015).* Prague, Czech Republic, July 2015.
 
 * Roya Golchay, Frédéric Le Mouël, Stéphane Frénot and Julien Ponge. **Towards Bridging IoT and Cloud Services: Proposing Smartphones as Mobile and Autonomic Service Gateways.** *In Actes des 7ème Journées Francophones de la Mobilité et Ubiquité (UbiMob'2011)*, pp. 45–48, Toulouse, France, June 2011. Position Paper. [PDF](/files/publications/UbiMob2011.pdf)
