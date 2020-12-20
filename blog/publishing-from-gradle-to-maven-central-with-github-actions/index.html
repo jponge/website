@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Publishing from Gradle to Maven Central with GitHub Actions | Julien Ponge</title>
+<meta name="generator" content="Jekyll v4.0.1" />
+<meta property="og:title" content="Publishing from Gradle to Maven Central with GitHub Actions" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Publishing from Gradle to Maven Central with GitHub Actions" />
+<meta property="og:description" content="Publishing from Gradle to Maven Central with GitHub Actions" />
+<link rel="canonical" href="https://julien.ponge.org/blog/publishing-from-gradle-to-maven-central-with-github-actions/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/publishing-from-gradle-to-maven-central-with-github-actions/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-12-20T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Publishing from Gradle to Maven Central with GitHub Actions" />
+<script type="application/ld+json">
+{"headline":"Publishing from Gradle to Maven Central with GitHub Actions","dateModified":"2020-12-20T00:00:00+01:00","datePublished":"2020-12-20T00:00:00+01:00","url":"https://julien.ponge.org/blog/publishing-from-gradle-to-maven-central-with-github-actions/","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/publishing-from-gradle-to-maven-central-with-github-actions/"},"description":"Publishing from Gradle to Maven Central with GitHub Actions","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Publishing from Gradle to Maven Central with GitHub Actions</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2020-12-20T00:00:00+01:00" itemprop="datePublished">Dec 20, 2020
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="publishing-from-gradle-to-maven-central-with-github-actions">Publishing from Gradle to Maven Central with GitHub Actions</h1>
+
+<p>With my friends <a href="https://twitter.com/yannick_loiseau">Yannick</a> and <a href="https://twitter.com/k33g_org">Philippe</a> we have decided to re-ignite the development of <a href="https://golo-lang.org">Eclipse Golo</a>. We are converging towards a 3.4.0 release after 2 years of hiatus, and we are doing contributions at our own (leisure) pace.</p>
+
+<p>This has been a great occasion to re-consider how releases would be published.</p>
+
+<p>💡 You can get all the source code and automation <a href="https://github.com/eclipse/golo-lang">from the Eclipse Golo project on GitHub.</a></p>
+
+<h2 id="-automate-all-the-things">🚀 Automate all the things!</h2>
+
+<p>Golo needs to publish 2 types of release artifacts:</p>
+
+<ol>
+  <li>a distribution zip archive of Golo with the libraries, documentation, execution scripts, samples, etc</li>
+  <li>regular jar archives to be published on Maven Central.</li>
+</ol>
+
+<h3 id="how-we-did-before">How we did before</h3>
+
+<p>Golo used to be released using a fairly manual process:</p>
+
+<ol>
+  <li>I would bump the version,</li>
+  <li>I would create a Git tag</li>
+  <li>I would run <code class="highlighter-rouge">./gradlew publish</code> to upload to Bintray, with my credentials for the Gradle build being safely stored in <code class="highlighter-rouge">~/.gradle/gradle.properties</code> on my computer</li>
+  <li>Bintray would sign all artifacts to meet the Maven Central requirements</li>
+  <li>I would publish the files on Bintray</li>
+  <li>I would push to Maven Central from Bintray using the synchronisation feature.</li>
+</ol>
+
+<p>This is clearly a manual process where empowering somebody else like Yannick who’s the project co-leader is harder than it should be.</p>
+
+<h3 id="the-new-cicd-process">The new CI/CD process</h3>
+
+<p>With the new process that I recently put in place the whole deployment happens in GitHub Actions.</p>
+
+<ol>
+  <li>Pull-requests are being built just like you would expect, and the distribution is attached to the workflow run. This gives us cheap nightly builds of Golo.</li>
+  <li>Each push to the <code class="highlighter-rouge">master</code> branch triggers a deployment to Sonatype OSS. Depending on the version defined in the Gradle build file then this will be a snapshots publication or a full release to Maven Central.</li>
+  <li>Pushing a tag (e.g., <code class="highlighter-rouge">milestone/3.4.0-M4</code>, <code class="highlighter-rouge">release/3.4.0</code>) creates a (draft) GitHub release, and the corresponding distribution archive is attached to the release for general availability consumption. The draft is manually made public after some release notes text is added.</li>
+</ol>
+
+<p>This means that now any trusted committer can bump the version, create a tag and push to GitHub, and the GitHub Actions workflow will figure out what to do.</p>
+
+<p>The biggest challenge here compared to the previous process is that we need the workflow to be able to sign artifacts with a GnuPG key, and it needs to have the credentials to publish to Sonatype OSS.</p>
+
+<p>Let’s dive into how we publish to Maven Central from GitHub Actions, and using Gradle.</p>
+
+<h2 id="️-publishing-with-gradle">🏗️ Publishing with Gradle</h2>
+
+<p>Publishing with Gradle to Maven Central is well-documented.</p>
+
+<p>First define the following plugins:</p>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">plugins</span> <span class="p">{</span>
+
+  <span class="c1">// (...)</span>
+
+  <span class="n">`java-library`</span>
+  <span class="n">`maven-publish`</span>
+  <span class="n">signing</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Next you have to create <em>publications</em> and define <em>repositories</em> so Gradle knows <em>what</em> files to publish, and <em>where</em>:</p>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">publishing</span> <span class="p">{</span>
+
+  <span class="nf">publications</span> <span class="p">{</span>
+    <span class="n">create</span><span class="p">&lt;</span><span class="nc">MavenPublication</span><span class="p">&gt;(</span><span class="s">"main"</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">artifactId</span> <span class="p">=</span> <span class="s">"golo"</span>
+      <span class="nf">from</span><span class="p">(</span><span class="n">components</span><span class="p">[</span><span class="s">"java"</span><span class="p">])</span>
+      <span class="nf">pom</span> <span class="p">{</span>
+        <span class="n">name</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="s">"Eclipse Golo Programming Language"</span><span class="p">)</span>
+        <span class="n">description</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="s">"Eclipse Golo: a lightweight dynamic language for the JVM."</span><span class="p">)</span>
+        <span class="n">url</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="s">"https://golo-lang.org"</span><span class="p">)</span>
+        <span class="n">inceptionYear</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="s">"2012"</span><span class="p">)</span>
+        <span class="nf">developers</span> <span class="p">{</span>
+          <span class="nf">developer</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="s">"Golo committers"</span><span class="p">)</span>
+            <span class="n">email</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="s">"golo-dev@eclipse.org"</span><span class="p">)</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nf">licenses</span> <span class="p">{</span>
+          <span class="nf">license</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="s">"Eclipse Public License - v 2.0"</span><span class="p">)</span>
+            <span class="n">url</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="s">"https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html"</span><span class="p">)</span>
+            <span class="n">distribution</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="s">"repo"</span><span class="p">)</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nf">scm</span> <span class="p">{</span>
+          <span class="n">url</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="s">"https://github.com/eclipse/golo-lang"</span><span class="p">)</span>
+          <span class="n">connection</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="s">"scm:git:git@github.com:eclipse/golo-lang.git"</span><span class="p">)</span>
+          <span class="n">developerConnection</span><span class="p">.</span><span class="k">set</span><span class="p">(</span><span class="s">"scm:git:ssh:git@github.com:eclipse/golo-lang.git"</span><span class="p">)</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="nf">repositories</span> <span class="p">{</span>
+
+    <span class="nf">maven</span> <span class="p">{</span>
+      <span class="n">name</span> <span class="p">=</span> <span class="s">"CameraReady"</span>
+      <span class="n">url</span> <span class="p">=</span> <span class="nf">uri</span><span class="p">(</span><span class="s">"$buildDir/repos/camera-ready"</span><span class="p">)</span>
+    <span class="p">}</span>
+
+    <span class="nf">maven</span> <span class="p">{</span>
+      <span class="n">name</span> <span class="p">=</span> <span class="s">"SonatypeOSS"</span>
+      <span class="nf">credentials</span> <span class="p">{</span>
+        <span class="n">username</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="n">project</span><span class="p">.</span><span class="nf">hasProperty</span><span class="p">(</span><span class="s">"ossrhUsername"</span><span class="p">))</span> <span class="p">(</span><span class="n">project</span><span class="p">.</span><span class="nf">property</span><span class="p">(</span><span class="s">"ossrhUsername"</span><span class="p">)</span> <span class="k">as</span> <span class="nc">String</span><span class="p">)</span> <span class="k">else</span> <span class="s">"N/A"</span>
+        <span class="n">password</span> <span class="p">=</span> <span class="k">if</span> <span class="p">(</span><span class="n">project</span><span class="p">.</span><span class="nf">hasProperty</span><span class="p">(</span><span class="s">"ossrhPassword"</span><span class="p">))</span> <span class="p">(</span><span class="n">project</span><span class="p">.</span><span class="nf">property</span><span class="p">(</span><span class="s">"ossrhPassword"</span><span class="p">)</span> <span class="k">as</span> <span class="nc">String</span><span class="p">)</span> <span class="k">else</span> <span class="s">"N/A"</span>
+      <span class="p">}</span>
+
+      <span class="kd">val</span> <span class="py">releasesRepoUrl</span> <span class="p">=</span> <span class="s">"https://oss.sonatype.org/service/local/staging/deploy/maven2/"</span>
+      <span class="kd">val</span> <span class="py">snapshotsRepoUrl</span> <span class="p">=</span> <span class="s">"https://oss.sonatype.org/content/repositories/snapshots/"</span>
+      <span class="n">url</span> <span class="p">=</span> <span class="nf">uri</span><span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="n">isReleaseVersion</span><span class="p">)</span> <span class="n">releasesRepoUrl</span> <span class="k">else</span> <span class="n">snapshotsRepoUrl</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Here we define a publication called <code class="highlighter-rouge">main</code>, and use some Gradle embedded domain-specific language to customise the Maven <code class="highlighter-rouge">pom.xml</code> generation.</p>
+
+<p>We also define 2 repositories:</p>
+
+<ol>
+  <li><code class="highlighter-rouge">CameraReady</code> is for checking locally what the generated publication looks like, and</li>
+  <li><code class="highlighter-rouge">SonatypeOSS</code> points to the actual Sonatype OSS repositories.</li>
+</ol>
+
+<p>We get the Sonatype OSS credentials from project properties <code class="highlighter-rouge">ossrhUsername</code> and <code class="highlighter-rouge">ossrhPassword</code> but ensure we use a bogus <code class="highlighter-rouge">"N/A"</code> value so people can still build the project even if they don’t have these properties defined.</p>
+
+<p>We also use a boolean value <code class="highlighter-rouge">isReleaseVersion</code> which is defined as:</p>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">val</span> <span class="py">isReleaseVersion</span> <span class="p">=</span> <span class="p">!</span><span class="n">version</span><span class="p">.</span><span class="nf">toString</span><span class="p">().</span><span class="nf">endsWith</span><span class="p">(</span><span class="s">"SNAPSHOT"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>This allows us to point to the correct Sonatype OSS repository.</p>
+
+<p>We also need to instruct Gradle to sign the publication artifacts:</p>
+
+<div class="language-kotlin highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">signing</span> <span class="p">{</span>
+  <span class="nf">useGpgCmd</span><span class="p">()</span>
+  <span class="nf">sign</span><span class="p">(</span><span class="n">publishing</span><span class="p">.</span><span class="n">publications</span><span class="p">[</span><span class="s">"main"</span><span class="p">])</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>To check what the published artifacts would look like run:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./gradlew publishAllPublicationsToCameraReadyRepository
+</code></pre></div></div>
+
+<p>then check the files tree:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>exa <span class="nt">--tree</span> build/repos/camera-ready
+build/repos/camera-ready
+└── org
+   └── eclipse
+      └── golo
+         └── golo
+            ├── 3.4.0-SNAPSHOT
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.asc
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.asc.md5
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.asc.sha1
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.asc.sha256
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.asc.sha512
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.md5
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.sha1
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.sha256
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.sha512
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.asc
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.asc.md5
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.asc.sha1
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.asc.sha256
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.asc.sha512
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.md5
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.sha1
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.sha256
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.sha512
+            │  ├── golo-3.4.0-20201218.172135-1.jar
+            │  ├── golo-3.4.0-20201218.172135-1.jar.asc
+            │  ├── golo-3.4.0-20201218.172135-1.jar.asc.md5
+            │  ├── golo-3.4.0-20201218.172135-1.jar.asc.sha1
+            │  ├── golo-3.4.0-20201218.172135-1.jar.asc.sha256
+            │  ├── golo-3.4.0-20201218.172135-1.jar.asc.sha512
+            │  ├── golo-3.4.0-20201218.172135-1.jar.md5
+            │  ├── golo-3.4.0-20201218.172135-1.jar.sha1
+            │  ├── golo-3.4.0-20201218.172135-1.jar.sha256
+            │  ├── golo-3.4.0-20201218.172135-1.jar.sha512
+            │  ├── golo-3.4.0-20201218.172135-1.module
+            │  ├── golo-3.4.0-20201218.172135-1.module.asc
+            │  ├── golo-3.4.0-20201218.172135-1.module.asc.md5
+            │  ├── golo-3.4.0-20201218.172135-1.module.asc.sha1
+            │  ├── golo-3.4.0-20201218.172135-1.module.asc.sha256
+            │  ├── golo-3.4.0-20201218.172135-1.module.asc.sha512
+            │  ├── golo-3.4.0-20201218.172135-1.module.md5
+            │  ├── golo-3.4.0-20201218.172135-1.module.sha1
+            │  ├── golo-3.4.0-20201218.172135-1.module.sha256
+            │  ├── golo-3.4.0-20201218.172135-1.module.sha512
+            │  ├── golo-3.4.0-20201218.172135-1.pom
+            │  ├── golo-3.4.0-20201218.172135-1.pom.asc
+            │  ├── golo-3.4.0-20201218.172135-1.pom.asc.md5
+            │  ├── golo-3.4.0-20201218.172135-1.pom.asc.sha1
+            │  ├── golo-3.4.0-20201218.172135-1.pom.asc.sha256
+            │  ├── golo-3.4.0-20201218.172135-1.pom.asc.sha512
+            │  ├── golo-3.4.0-20201218.172135-1.pom.md5
+            │  ├── golo-3.4.0-20201218.172135-1.pom.sha1
+            │  ├── golo-3.4.0-20201218.172135-1.pom.sha256
+            │  ├── golo-3.4.0-20201218.172135-1.pom.sha512
+            │  ├── maven-metadata.xml
+            │  ├── maven-metadata.xml.md5
+            │  ├── maven-metadata.xml.sha1
+            │  ├── maven-metadata.xml.sha256
+            │  └── maven-metadata.xml.sha512
+            ├── maven-metadata.xml
+            ├── maven-metadata.xml.md5
+            ├── maven-metadata.xml.sha1
+            ├── maven-metadata.xml.sha256
+            └── maven-metadata.xml.sha512
+</code></pre></div></div>
+
+<h2 id="-generate-files-that-will-be-decrypted-in-your-cicd-workflow">🔐 Generate files that will be decrypted in your CI/CD workflow</h2>
+
+<h3 id="generate-a-key-for-signing-artifacts">Generate a key for signing artifacts</h3>
+
+<p>The first thing is to create a GnuPG signing key:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gpg <span class="nt">--gen-key</span>
+</code></pre></div></div>
+
+<p>You will be asked for a name and email, choose whatever is relevant for your project. In the case of Golo the key that I created is for <code class="highlighter-rouge">Eclipse Golo developers</code> with the email of the development mailing-list: <code class="highlighter-rouge">golo-dev@eclipse.org</code>. Also make sure to note the passphrase for signing, we’ll need it in a minute.</p>
+
+<p>Maven Central checks that artifacts are being signed, and the key needs to be available from one of the popular key servers.</p>
+
+<p>To do that get the fingerprint of your (public) key, then publish it:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gpg <span class="nt">--fingerprint</span> golo-dev@eclipse.org
+<span class="nv">$ </span>gpg <span class="nt">--keyserver</span> http://keys.gnupg.net <span class="nt">--send-keys</span> FINGERPRINT
+</code></pre></div></div>
+
+<p>where <code class="highlighter-rouge">FINGERPRINT</code> is… the fingerprint 😉</p>
+
+<p>Now export the secret key to a file called <code class="highlighter-rouge">golo-dev-sign.asc</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gpg <span class="nt">--export-secret-key</span> <span class="nt">-a</span> golo-dev@eclipse.org <span class="o">&gt;</span> golo-dev-sign.asc
+</code></pre></div></div>
+
+<p>🚨 This private key will be used for signing, so make sure you don’t accidentally leak it. Make especially sure you don’t commit it!</p>
+
+<h3 id="prepare-a-custom-gradle-properties-file">Prepare a custom Gradle properties file</h3>
+
+<p>Gradle looks for <code class="highlighter-rouge">gradle.properties</code> files in various places. If you have that file in your root project folder then it will be used to pass configuration to the build file.</p>
+
+<p>Fill this file with relevant data:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ossrhUsername=YOUR_LOGIN
+ossrhPassword=YOUR_PASSWORD
+
+signing.gnupg.keyName=FINGERPRINT
+signing.gnupg.passphrase=PASSPHRASE
+</code></pre></div></div>
+
+<p>where:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">YOUR_LOGIN</code> / <code class="highlighter-rouge">YOUR_PASSWORD</code> are from your Sonatype OSS account, and</li>
+  <li><code class="highlighter-rouge">FINGERPRINT</code> / <code class="highlighter-rouge">PASSPHRASE</code> are for the GnuPG key that you created above.</li>
+</ul>
+
+<p>🚨 Again be careful not to leak this file because it contains credentials!</p>
+
+<h3 id="encrypt-all-the-things">Encrypt all the things!</h3>
+
+<p>So we have both <code class="highlighter-rouge">gradle.properties</code> and <code class="highlighter-rouge">golo-dev-sign.asc</code> that contain sensitive data. We want these files to be available only while the CI/CD workflow is running, so they will be stored encrypted in the Git repository.</p>
+
+<p>To do that, let’s define some arbitrarily complex password and store it temporarily in the <code class="highlighter-rouge">GPG_SECRET</code> environment variable. GnuPG offers <a href="https://en.wikipedia.org/wiki/Advanced_Encryption_Standard">AES 256</a> symmetric encryption:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>gpg <span class="nt">--cipher-algo</span> AES256 <span class="nt">--symmetric</span> <span class="nt">--batch</span> <span class="nt">--yes</span> <span class="nt">--passphrase</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">GPG_SECRET</span><span class="k">}</span><span class="s2">"</span> <span class="nt">--output</span> .build/golo-dev-sign.asc.gpg golo-dev-sign.asc
+<span class="nv">$ </span>gpg <span class="nt">--cipher-algo</span> AES256 <span class="nt">--symmetric</span> <span class="nt">--batch</span> <span class="nt">--yes</span> <span class="nt">--passphrase</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">GPG_SECRET</span><span class="k">}</span><span class="s2">"</span> <span class="nt">--output</span> .build/gradle.properties.gpg gradle.properties
+</code></pre></div></div>
+
+<p>We now have <code class="highlighter-rouge">.build/golo-dev-sign.asc.gpg</code> and <code class="highlighter-rouge">.build/gradle.properties.gpg</code> that can be safely stored in Git. Sure anyone in the world can have these files, but without the password all they can do is a brute force attempt against AES 256 encrypted files.</p>
+
+<h2 id="-github-actions-in-action">✨ GitHub Actions in Action</h2>
+
+<h3 id="publishing-script">Publishing script</h3>
+
+<p>To publish artifacts we need to run the Gradle <code class="highlighter-rouge">publish</code> task. However we need Gradle to know about the credentials first, so the encrypted files have to be decrypted.</p>
+
+<p>Here is the <code class="highlighter-rouge">.build/deploy.sh</code> script that we have for that purpose:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/env bash</span>
+<span class="nb">set</span> <span class="nt">-euo</span> pipefail
+<span class="nv">IFS</span><span class="o">=</span><span class="s1">$'</span><span class="se">\n\t</span><span class="s1">'</span>
+
+<span class="k">function </span>cleanup <span class="o">{</span>
+    <span class="nb">echo</span> <span class="s2">"🧹 Cleanup..."</span>
+    <span class="nb">rm</span> <span class="nt">-f</span> gradle.properties golo-dev-sign.asc
+<span class="o">}</span>
+
+<span class="nb">trap </span>cleanup SIGINT SIGTERM ERR EXIT
+
+<span class="nb">echo</span> <span class="s2">"🚀 Preparing to deploy..."</span>
+
+<span class="nb">echo</span> <span class="s2">"🔑 Decrypting files..."</span>
+
+gpg <span class="nt">--quiet</span> <span class="nt">--batch</span> <span class="nt">--yes</span> <span class="nt">--decrypt</span> <span class="nt">--passphrase</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">GPG_SECRET</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+    <span class="nt">--output</span> golo-dev-sign.asc .build/golo-dev-sign.asc.gpg
+
+gpg <span class="nt">--quiet</span> <span class="nt">--batch</span> <span class="nt">--yes</span> <span class="nt">--decrypt</span> <span class="nt">--passphrase</span><span class="o">=</span><span class="s2">"</span><span class="k">${</span><span class="nv">GPG_SECRET</span><span class="k">}</span><span class="s2">"</span> <span class="se">\</span>
+    <span class="nt">--output</span> gradle.properties .build/gradle.properties.gpg
+
+gpg <span class="nt">--fast-import</span> <span class="nt">--no-tty</span> <span class="nt">--batch</span> <span class="nt">--yes</span> golo-dev-sign.asc
+
+<span class="nb">echo</span> <span class="s2">"📦 Publishing..."</span>
+
+./gradlew publish
+
+<span class="nb">echo</span> <span class="s2">"✅ Done!"</span>
+</code></pre></div></div>
+
+<p>This script assumes that the <code class="highlighter-rouge">GPG_SECRET</code> environment variable holds the password for the AES 256 encrypted files, then moves them to the project root folder.</p>
+
+<p>Note that for what it’s worth the script defines a trap to always remove the decrypted files.</p>
+
+<h3 id="github-actions-workflow">GitHub Actions workflow</h3>
+
+<p>Now comes the final piece of the puzzle: the workflow definition.</p>
+
+<p>There are many ways one can write such workflow. In the case of Golo I opted to go with a single workflow and a single job to do everything, but do not take it as the golden solution. You may want to have separate jobs, separate workflows, etc. It all depends on your project requirements and what you want to automate.</p>
+
+<p>The full workflow is as follows.</p>
+
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="na">name</span><span class="pi">:</span> <span class="s">Continuous integration and deployment</span>
+
+<span class="na">on</span><span class="pi">:</span>
+  <span class="na">push</span><span class="pi">:</span>
+    <span class="na">branches</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">master</span>
+    <span class="na">tags</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s1">'</span><span class="s">milestone/*'</span>
+      <span class="pi">-</span> <span class="s1">'</span><span class="s">release/*'</span>
+  <span class="na">pull_request</span><span class="pi">:</span>
+    <span class="na">branches</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">master</span>
+
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">pipeline</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Checkout</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v2</span>
+
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Set up JDK </span><span class="m">1.8</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/setup-java@v1</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">java-version</span><span class="pi">:</span> <span class="m">1.8</span>
+
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Cache Gradle packages</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/cache@v2</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">~/.gradle/caches</span>
+        <span class="na">key</span><span class="pi">:</span> <span class="s">${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}</span>
+        <span class="na">restore-keys</span><span class="pi">:</span> <span class="s">${{ runner.os }}-gradle</span>
+
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Grant execute permission for gradlew</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="s">chmod +x gradlew</span>
+
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Build with Gradle</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="s">./gradlew build</span>
+
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Copy build distribution</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="s">cp build/distributions/*.zip golo-distribution.zip</span>
+
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Attach build distribution from this build</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/upload-artifact@v2</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">name</span><span class="pi">:</span> <span class="s">Golo distribution from this build</span>
+        <span class="na">path</span><span class="pi">:</span> <span class="s">./golo-distribution.zip</span>
+
+    <span class="c1"># Only pushes to master trigger a publication to Sonatype OSS</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Deploy</span>
+      <span class="na">if</span><span class="pi">:</span> <span class="s">github.ref == 'refs/heads/master'</span>
+      <span class="na">run</span><span class="pi">:</span> <span class="s">.build/deploy.sh</span>
+      <span class="na">env</span><span class="pi">:</span>
+        <span class="na">GPG_SECRET</span><span class="pi">:</span> <span class="s">${{ secrets.GPG_SECRET }}</span>
+
+    <span class="c1"># Only pushes of tags trigger a release creation</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Create the release</span>
+      <span class="na">id</span><span class="pi">:</span> <span class="s">create_release</span>
+      <span class="na">if</span><span class="pi">:</span> <span class="s">startsWith(github.ref, 'refs/tags/')</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/create-release@v1</span>
+      <span class="na">env</span><span class="pi">:</span>
+        <span class="na">GITHUB_TOKEN</span><span class="pi">:</span> <span class="s">${{ secrets.GITHUB_TOKEN }}</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">tag_name</span><span class="pi">:</span> <span class="s">${{ github.ref }}</span>
+        <span class="na">release_name</span><span class="pi">:</span> <span class="s">Release ${{ github.ref }}</span>
+        <span class="na">draft</span><span class="pi">:</span> <span class="no">true</span>
+        <span class="na">prerelease</span><span class="pi">:</span> <span class="s">startsWith(github.ref, 'refs/tags/milestone/')</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Attach build distribution to the release</span>
+      <span class="na">if</span><span class="pi">:</span> <span class="s">startsWith(github.ref, 'refs/tags/')</span>
+      <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/upload-release-asset@v1</span>
+      <span class="na">env</span><span class="pi">:</span>
+        <span class="na">GITHUB_TOKEN</span><span class="pi">:</span> <span class="s">${{ secrets.GITHUB_TOKEN }}</span>
+      <span class="na">with</span><span class="pi">:</span>
+        <span class="na">upload_url</span><span class="pi">:</span> <span class="s">${{ steps.create_release.outputs.upload_url }}</span>
+        <span class="na">asset_path</span><span class="pi">:</span> <span class="s">./golo-distribution.zip</span>
+        <span class="na">asset_name</span><span class="pi">:</span> <span class="s">golo-distribution.zip</span>
+        <span class="na">asset_content_type</span><span class="pi">:</span> <span class="s">application/zip</span></code></pre></figure>
+
+<p>The workflow only requires that you define a secret called <code class="highlighter-rouge">GPG_SECRET</code> in your GitHub project (or organisation) settings. This secret is the golden key to everything else, since the 2 encrypted files contain your credentials for signing artifacts and uploading them to Sonatype OSS.</p>
+
+<p>This workflow is linear with many steps being conditional depending on what trigger the run.</p>
+
+<p>The first steps are always run: we setup Java, we checkout and build the project, and attach the distribution archive to the GitHub action run.</p>
+
+<p>Golo uses a convention where release tags are prefixed with <code class="highlighter-rouge">milestone/</code> and <code class="highlighter-rouge">release/</code>. We consequently can test when a GitHub release has to be created because a tag has been pushed (<code class="highlighter-rouge">if: startsWith(github.ref, 'refs/tags/')</code>) and when it shall be marked as a release or a pre-release (<code class="highlighter-rouge">prerelease: startsWith(github.ref, 'refs/tags/milestone/')</code>).</p>
+
+<p>Note that the GitHub release is created as a draft here because we prefer to make it live manually from the GitHub interface, but you may just directly publish it. You can also define some text / release notes using the <code class="highlighter-rouge">actions/create-release</code> action, possibly generated from a script of yours.</p>
+
+<p>The deployment step is only enabled for pushes to the <code class="highlighter-rouge">master</code> branch (<code class="highlighter-rouge">if: github.ref == 'refs/heads/master'</code>) that call the <code class="highlighter-rouge">.build/deploy.sh</code>shell script from above.</p>
+
+<h2 id="-concluding-remarks">💭 Concluding remarks</h2>
+
+<p>This workflow works well for a project like Golo. Again you can have a more complex workflow if that suits your needs better, or you may want to trigger workflow from other events. This is really up to you.</p>
+
+<h3 id="security-considerations">Security considerations</h3>
+
+<p>At the time of the writing AES 256 is considered <em>safe</em> if you have a complex and long password.</p>
+
+<p>Please keep in mind that you are still uploading your credentials to someone else’s computers!</p>
+
+<p>Your credentials are encrypted in a public Git repository, and they will be decrypted while the deployment script runs.</p>
+
+<p>It is a very good idea to periodically update the encryption password, and rotate the passwords in the encrypted files.</p>
+
+<h3 id="cleaning-the-build-attachments">Cleaning the build attachments</h3>
+
+<p>The workflow above attaches a distribution of Golo to each build.</p>
+
+<p>This is great because nightly builds are available as a distribution one can download from the corresponding workflow runs. Still, you don’t want to hit quotas and pollute servers with everything you’ve built, so you can use another GitHub Action workflow like this one for cleaning old artifacts:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Copied from https://poweruser.blog/storage-housekeeping-on-github-actions-e2997b5b23d1</span>
+
+<span class="na">name</span><span class="pi">:</span> <span class="s1">'</span><span class="s">Nightly</span><span class="nv"> </span><span class="s">artifacts</span><span class="nv"> </span><span class="s">cleanup</span><span class="nv"> </span><span class="s">(&gt;</span><span class="nv"> </span><span class="s">14</span><span class="nv"> </span><span class="s">days)'</span>
+<span class="na">on</span><span class="pi">:</span>
+  <span class="na">schedule</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">cron</span><span class="pi">:</span> <span class="s1">'</span><span class="s">0</span><span class="nv"> </span><span class="s">4</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*</span><span class="nv"> </span><span class="s">*'</span> <span class="c1"># every night at 4 am UTC</span>
+
+<span class="na">jobs</span><span class="pi">:</span>
+  <span class="na">delete-artifacts</span><span class="pi">:</span>
+    <span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+    <span class="na">steps</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">kolpav/purge-artifacts-action@v1</span>
+        <span class="na">with</span><span class="pi">:</span>
+          <span class="na">token</span><span class="pi">:</span> <span class="s">$</span>
+          <span class="na">expire-in</span><span class="pi">:</span> <span class="s">14days</span>
+</code></pre></div></div>
+
+<h3 id="what-we-did-not-cover-the-website">What we did not cover: the website</h3>
+
+<p>So far this workflow does not publish an updated website.</p>
+
+<p>This is left for future work 😇</p>
+
+  </div><a class="u-url" href="/blog/publishing-from-gradle-to-maven-central-with-github-actions/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Software engineer, doctor, researcher, lecturer, manager, enthusiast, maker, speaker, (and first and foremost) whatever.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

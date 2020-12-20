@@ -1,4 +1,470 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.0">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2020-11-23T16:10:55+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle>Software engineer, doctor, researcher, lecturer, manager, enthusiast, maker, speaker, (and first and foremost) whatever.</subtitle><entry><title type="html">Using exa as a modern replacement to the venerable Unix ls command</title><link href="https://julien.ponge.org/blog/using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command/" rel="alternate" type="text/html" title="Using exa as a modern replacement to the venerable Unix ls command" /><published>2020-11-22T00:00:00+01:00</published><updated>2020-11-22T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command</id><content type="html" xml:base="https://julien.ponge.org/blog/using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command/">&lt;h1 id=&quot;using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command&quot;&gt;Using exa as a modern replacement to the venerable Unix ls command&lt;/h1&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2020-12-20T17:25:23+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle>Software engineer, doctor, researcher, lecturer, manager, enthusiast, maker, speaker, (and first and foremost) whatever.</subtitle><entry><title type="html">Publishing from Gradle to Maven Central with GitHub Actions</title><link href="https://julien.ponge.org/blog/publishing-from-gradle-to-maven-central-with-github-actions/" rel="alternate" type="text/html" title="Publishing from Gradle to Maven Central with GitHub Actions" /><published>2020-12-20T00:00:00+01:00</published><updated>2020-12-20T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/publishing-from-gradle-to-maven-central-with-github-actions</id><content type="html" xml:base="https://julien.ponge.org/blog/publishing-from-gradle-to-maven-central-with-github-actions/">&lt;h1 id=&quot;publishing-from-gradle-to-maven-central-with-github-actions&quot;&gt;Publishing from Gradle to Maven Central with GitHub Actions&lt;/h1&gt;
+
+&lt;p&gt;With my friends &lt;a href=&quot;https://twitter.com/yannick_loiseau&quot;&gt;Yannick&lt;/a&gt; and &lt;a href=&quot;https://twitter.com/k33g_org&quot;&gt;Philippe&lt;/a&gt; we have decided to re-ignite the development of &lt;a href=&quot;https://golo-lang.org&quot;&gt;Eclipse Golo&lt;/a&gt;. We are converging towards a 3.4.0 release after 2 years of hiatus, and we are doing contributions at our own (leisure) pace.&lt;/p&gt;
+
+&lt;p&gt;This has been a great occasion to re-consider how releases would be published.&lt;/p&gt;
+
+&lt;p&gt;💡 You can get all the source code and automation &lt;a href=&quot;https://github.com/eclipse/golo-lang&quot;&gt;from the Eclipse Golo project on GitHub.&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;-automate-all-the-things&quot;&gt;🚀 Automate all the things!&lt;/h2&gt;
+
+&lt;p&gt;Golo needs to publish 2 types of release artifacts:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;a distribution zip archive of Golo with the libraries, documentation, execution scripts, samples, etc&lt;/li&gt;
+  &lt;li&gt;regular jar archives to be published on Maven Central.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;how-we-did-before&quot;&gt;How we did before&lt;/h3&gt;
+
+&lt;p&gt;Golo used to be released using a fairly manual process:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;I would bump the version,&lt;/li&gt;
+  &lt;li&gt;I would create a Git tag&lt;/li&gt;
+  &lt;li&gt;I would run &lt;code class=&quot;highlighter-rouge&quot;&gt;./gradlew publish&lt;/code&gt; to upload to Bintray, with my credentials for the Gradle build being safely stored in &lt;code class=&quot;highlighter-rouge&quot;&gt;~/.gradle/gradle.properties&lt;/code&gt; on my computer&lt;/li&gt;
+  &lt;li&gt;Bintray would sign all artifacts to meet the Maven Central requirements&lt;/li&gt;
+  &lt;li&gt;I would publish the files on Bintray&lt;/li&gt;
+  &lt;li&gt;I would push to Maven Central from Bintray using the synchronisation feature.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This is clearly a manual process where empowering somebody else like Yannick who’s the project co-leader is harder than it should be.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-new-cicd-process&quot;&gt;The new CI/CD process&lt;/h3&gt;
+
+&lt;p&gt;With the new process that I recently put in place the whole deployment happens in GitHub Actions.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Pull-requests are being built just like you would expect, and the distribution is attached to the workflow run. This gives us cheap nightly builds of Golo.&lt;/li&gt;
+  &lt;li&gt;Each push to the &lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt; branch triggers a deployment to Sonatype OSS. Depending on the version defined in the Gradle build file then this will be a snapshots publication or a full release to Maven Central.&lt;/li&gt;
+  &lt;li&gt;Pushing a tag (e.g., &lt;code class=&quot;highlighter-rouge&quot;&gt;milestone/3.4.0-M4&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;release/3.4.0&lt;/code&gt;) creates a (draft) GitHub release, and the corresponding distribution archive is attached to the release for general availability consumption. The draft is manually made public after some release notes text is added.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This means that now any trusted committer can bump the version, create a tag and push to GitHub, and the GitHub Actions workflow will figure out what to do.&lt;/p&gt;
+
+&lt;p&gt;The biggest challenge here compared to the previous process is that we need the workflow to be able to sign artifacts with a GnuPG key, and it needs to have the credentials to publish to Sonatype OSS.&lt;/p&gt;
+
+&lt;p&gt;Let’s dive into how we publish to Maven Central from GitHub Actions, and using Gradle.&lt;/p&gt;
+
+&lt;h2 id=&quot;️-publishing-with-gradle&quot;&gt;🏗️ Publishing with Gradle&lt;/h2&gt;
+
+&lt;p&gt;Publishing with Gradle to Maven Central is well-documented.&lt;/p&gt;
+
+&lt;p&gt;First define the following plugins:&lt;/p&gt;
+
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;plugins&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;// (...)&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;`java-library`&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;`maven-publish`&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;signing&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Next you have to create &lt;em&gt;publications&lt;/em&gt; and define &lt;em&gt;repositories&lt;/em&gt; so Gradle knows &lt;em&gt;what&lt;/em&gt; files to publish, and &lt;em&gt;where&lt;/em&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;publishing&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;nf&quot;&gt;publications&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;MavenPublication&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;&amp;gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;main&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;artifactId&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;golo&quot;&lt;/span&gt;
+      &lt;span class=&quot;nf&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;components&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;java&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+      &lt;span class=&quot;nf&quot;&gt;pom&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Eclipse Golo Programming Language&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Eclipse Golo: a lightweight dynamic language for the JVM.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;https://golo-lang.org&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;inceptionYear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;2012&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;nf&quot;&gt;developers&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;nf&quot;&gt;developer&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Golo committers&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;golo-dev@eclipse.org&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;nf&quot;&gt;licenses&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;nf&quot;&gt;license&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Eclipse Public License - v 2.0&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.html&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;distribution&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;repo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;nf&quot;&gt;scm&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;https://github.com/eclipse/golo-lang&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;scm:git:git@github.com:eclipse/golo-lang.git&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;developerConnection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;scm:git:ssh:git@github.com:eclipse/golo-lang.git&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;nf&quot;&gt;repositories&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;nf&quot;&gt;maven&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;CameraReady&quot;&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;uri&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;$buildDir/repos/camera-ready&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nf&quot;&gt;maven&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;SonatypeOSS&quot;&lt;/span&gt;
+      &lt;span class=&quot;nf&quot;&gt;credentials&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;project&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;hasProperty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ossrhUsername&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;project&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;property&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ossrhUsername&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;N/A&quot;&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;project&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;hasProperty&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ossrhPassword&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;project&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;property&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ossrhPassword&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;N/A&quot;&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+      &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;releasesRepoUrl&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;https://oss.sonatype.org/service/local/staging/deploy/maven2/&quot;&lt;/span&gt;
+      &lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;snapshotsRepoUrl&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;https://oss.sonatype.org/content/repositories/snapshots/&quot;&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;uri&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isReleaseVersion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;releasesRepoUrl&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;snapshotsRepoUrl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Here we define a publication called &lt;code class=&quot;highlighter-rouge&quot;&gt;main&lt;/code&gt;, and use some Gradle embedded domain-specific language to customise the Maven &lt;code class=&quot;highlighter-rouge&quot;&gt;pom.xml&lt;/code&gt; generation.&lt;/p&gt;
+
+&lt;p&gt;We also define 2 repositories:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;CameraReady&lt;/code&gt; is for checking locally what the generated publication looks like, and&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;SonatypeOSS&lt;/code&gt; points to the actual Sonatype OSS repositories.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;We get the Sonatype OSS credentials from project properties &lt;code class=&quot;highlighter-rouge&quot;&gt;ossrhUsername&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;ossrhPassword&lt;/code&gt; but ensure we use a bogus &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;N/A&quot;&lt;/code&gt; value so people can still build the project even if they don’t have these properties defined.&lt;/p&gt;
+
+&lt;p&gt;We also use a boolean value &lt;code class=&quot;highlighter-rouge&quot;&gt;isReleaseVersion&lt;/code&gt; which is defined as:&lt;/p&gt;
+
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;py&quot;&gt;isReleaseVersion&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;endsWith&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SNAPSHOT&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This allows us to point to the correct Sonatype OSS repository.&lt;/p&gt;
+
+&lt;p&gt;We also need to instruct Gradle to sign the publication artifacts:&lt;/p&gt;
+
+&lt;div class=&quot;language-kotlin highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;signing&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nf&quot;&gt;useGpgCmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;nf&quot;&gt;sign&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;publishing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;publications&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;main&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;To check what the published artifacts would look like run:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./gradlew publishAllPublicationsToCameraReadyRepository
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;then check the files tree:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;exa &lt;span class=&quot;nt&quot;&gt;--tree&lt;/span&gt; build/repos/camera-ready
+build/repos/camera-ready
+└── org
+   └── eclipse
+      └── golo
+         └── golo
+            ├── 3.4.0-SNAPSHOT
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.asc
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.asc.md5
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.asc.sha1
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.asc.sha256
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.asc.sha512
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.md5
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.sha1
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.sha256
+            │  ├── golo-3.4.0-20201218.172135-1-javadoc.jar.sha512
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.asc
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.asc.md5
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.asc.sha1
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.asc.sha256
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.asc.sha512
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.md5
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.sha1
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.sha256
+            │  ├── golo-3.4.0-20201218.172135-1-sources.jar.sha512
+            │  ├── golo-3.4.0-20201218.172135-1.jar
+            │  ├── golo-3.4.0-20201218.172135-1.jar.asc
+            │  ├── golo-3.4.0-20201218.172135-1.jar.asc.md5
+            │  ├── golo-3.4.0-20201218.172135-1.jar.asc.sha1
+            │  ├── golo-3.4.0-20201218.172135-1.jar.asc.sha256
+            │  ├── golo-3.4.0-20201218.172135-1.jar.asc.sha512
+            │  ├── golo-3.4.0-20201218.172135-1.jar.md5
+            │  ├── golo-3.4.0-20201218.172135-1.jar.sha1
+            │  ├── golo-3.4.0-20201218.172135-1.jar.sha256
+            │  ├── golo-3.4.0-20201218.172135-1.jar.sha512
+            │  ├── golo-3.4.0-20201218.172135-1.module
+            │  ├── golo-3.4.0-20201218.172135-1.module.asc
+            │  ├── golo-3.4.0-20201218.172135-1.module.asc.md5
+            │  ├── golo-3.4.0-20201218.172135-1.module.asc.sha1
+            │  ├── golo-3.4.0-20201218.172135-1.module.asc.sha256
+            │  ├── golo-3.4.0-20201218.172135-1.module.asc.sha512
+            │  ├── golo-3.4.0-20201218.172135-1.module.md5
+            │  ├── golo-3.4.0-20201218.172135-1.module.sha1
+            │  ├── golo-3.4.0-20201218.172135-1.module.sha256
+            │  ├── golo-3.4.0-20201218.172135-1.module.sha512
+            │  ├── golo-3.4.0-20201218.172135-1.pom
+            │  ├── golo-3.4.0-20201218.172135-1.pom.asc
+            │  ├── golo-3.4.0-20201218.172135-1.pom.asc.md5
+            │  ├── golo-3.4.0-20201218.172135-1.pom.asc.sha1
+            │  ├── golo-3.4.0-20201218.172135-1.pom.asc.sha256
+            │  ├── golo-3.4.0-20201218.172135-1.pom.asc.sha512
+            │  ├── golo-3.4.0-20201218.172135-1.pom.md5
+            │  ├── golo-3.4.0-20201218.172135-1.pom.sha1
+            │  ├── golo-3.4.0-20201218.172135-1.pom.sha256
+            │  ├── golo-3.4.0-20201218.172135-1.pom.sha512
+            │  ├── maven-metadata.xml
+            │  ├── maven-metadata.xml.md5
+            │  ├── maven-metadata.xml.sha1
+            │  ├── maven-metadata.xml.sha256
+            │  └── maven-metadata.xml.sha512
+            ├── maven-metadata.xml
+            ├── maven-metadata.xml.md5
+            ├── maven-metadata.xml.sha1
+            ├── maven-metadata.xml.sha256
+            └── maven-metadata.xml.sha512
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;-generate-files-that-will-be-decrypted-in-your-cicd-workflow&quot;&gt;🔐 Generate files that will be decrypted in your CI/CD workflow&lt;/h2&gt;
+
+&lt;h3 id=&quot;generate-a-key-for-signing-artifacts&quot;&gt;Generate a key for signing artifacts&lt;/h3&gt;
+
+&lt;p&gt;The first thing is to create a GnuPG signing key:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gpg &lt;span class=&quot;nt&quot;&gt;--gen-key&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;You will be asked for a name and email, choose whatever is relevant for your project. In the case of Golo the key that I created is for &lt;code class=&quot;highlighter-rouge&quot;&gt;Eclipse Golo developers&lt;/code&gt; with the email of the development mailing-list: &lt;code class=&quot;highlighter-rouge&quot;&gt;golo-dev@eclipse.org&lt;/code&gt;. Also make sure to note the passphrase for signing, we’ll need it in a minute.&lt;/p&gt;
+
+&lt;p&gt;Maven Central checks that artifacts are being signed, and the key needs to be available from one of the popular key servers.&lt;/p&gt;
+
+&lt;p&gt;To do that get the fingerprint of your (public) key, then publish it:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gpg &lt;span class=&quot;nt&quot;&gt;--fingerprint&lt;/span&gt; golo-dev@eclipse.org
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gpg &lt;span class=&quot;nt&quot;&gt;--keyserver&lt;/span&gt; http://keys.gnupg.net &lt;span class=&quot;nt&quot;&gt;--send-keys&lt;/span&gt; FINGERPRINT
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;where &lt;code class=&quot;highlighter-rouge&quot;&gt;FINGERPRINT&lt;/code&gt; is… the fingerprint 😉&lt;/p&gt;
+
+&lt;p&gt;Now export the secret key to a file called &lt;code class=&quot;highlighter-rouge&quot;&gt;golo-dev-sign.asc&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gpg &lt;span class=&quot;nt&quot;&gt;--export-secret-key&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; golo-dev@eclipse.org &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; golo-dev-sign.asc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;🚨 This private key will be used for signing, so make sure you don’t accidentally leak it. Make especially sure you don’t commit it!&lt;/p&gt;
+
+&lt;h3 id=&quot;prepare-a-custom-gradle-properties-file&quot;&gt;Prepare a custom Gradle properties file&lt;/h3&gt;
+
+&lt;p&gt;Gradle looks for &lt;code class=&quot;highlighter-rouge&quot;&gt;gradle.properties&lt;/code&gt; files in various places. If you have that file in your root project folder then it will be used to pass configuration to the build file.&lt;/p&gt;
+
+&lt;p&gt;Fill this file with relevant data:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ossrhUsername=YOUR_LOGIN
+ossrhPassword=YOUR_PASSWORD
+
+signing.gnupg.keyName=FINGERPRINT
+signing.gnupg.passphrase=PASSPHRASE
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;where:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;YOUR_LOGIN&lt;/code&gt; / &lt;code class=&quot;highlighter-rouge&quot;&gt;YOUR_PASSWORD&lt;/code&gt; are from your Sonatype OSS account, and&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;FINGERPRINT&lt;/code&gt; / &lt;code class=&quot;highlighter-rouge&quot;&gt;PASSPHRASE&lt;/code&gt; are for the GnuPG key that you created above.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;🚨 Again be careful not to leak this file because it contains credentials!&lt;/p&gt;
+
+&lt;h3 id=&quot;encrypt-all-the-things&quot;&gt;Encrypt all the things!&lt;/h3&gt;
+
+&lt;p&gt;So we have both &lt;code class=&quot;highlighter-rouge&quot;&gt;gradle.properties&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;golo-dev-sign.asc&lt;/code&gt; that contain sensitive data. We want these files to be available only while the CI/CD workflow is running, so they will be stored encrypted in the Git repository.&lt;/p&gt;
+
+&lt;p&gt;To do that, let’s define some arbitrarily complex password and store it temporarily in the &lt;code class=&quot;highlighter-rouge&quot;&gt;GPG_SECRET&lt;/code&gt; environment variable. GnuPG offers &lt;a href=&quot;https://en.wikipedia.org/wiki/Advanced_Encryption_Standard&quot;&gt;AES 256&lt;/a&gt; symmetric encryption:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gpg &lt;span class=&quot;nt&quot;&gt;--cipher-algo&lt;/span&gt; AES256 &lt;span class=&quot;nt&quot;&gt;--symmetric&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--batch&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--yes&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--passphrase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;GPG_SECRET&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--output&lt;/span&gt; .build/golo-dev-sign.asc.gpg golo-dev-sign.asc
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;gpg &lt;span class=&quot;nt&quot;&gt;--cipher-algo&lt;/span&gt; AES256 &lt;span class=&quot;nt&quot;&gt;--symmetric&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--batch&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--yes&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--passphrase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;GPG_SECRET&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--output&lt;/span&gt; .build/gradle.properties.gpg gradle.properties
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We now have &lt;code class=&quot;highlighter-rouge&quot;&gt;.build/golo-dev-sign.asc.gpg&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;.build/gradle.properties.gpg&lt;/code&gt; that can be safely stored in Git. Sure anyone in the world can have these files, but without the password all they can do is a brute force attempt against AES 256 encrypted files.&lt;/p&gt;
+
+&lt;h2 id=&quot;-github-actions-in-action&quot;&gt;✨ GitHub Actions in Action&lt;/h2&gt;
+
+&lt;h3 id=&quot;publishing-script&quot;&gt;Publishing script&lt;/h3&gt;
+
+&lt;p&gt;To publish artifacts we need to run the Gradle &lt;code class=&quot;highlighter-rouge&quot;&gt;publish&lt;/code&gt; task. However we need Gradle to know about the credentials first, so the encrypted files have to be decrypted.&lt;/p&gt;
+
+&lt;p&gt;Here is the &lt;code class=&quot;highlighter-rouge&quot;&gt;.build/deploy.sh&lt;/code&gt; script that we have for that purpose:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-euo&lt;/span&gt; pipefail
+&lt;span class=&quot;nv&quot;&gt;IFS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;$'&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n\t&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;cleanup &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;🧹 Cleanup...&quot;&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; gradle.properties golo-dev-sign.asc
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;trap &lt;/span&gt;cleanup SIGINT SIGTERM ERR EXIT
+
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;🚀 Preparing to deploy...&quot;&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;🔑 Decrypting files...&quot;&lt;/span&gt;
+
+gpg &lt;span class=&quot;nt&quot;&gt;--quiet&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--batch&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--yes&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--decrypt&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--passphrase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;GPG_SECRET&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--output&lt;/span&gt; golo-dev-sign.asc .build/golo-dev-sign.asc.gpg
+
+gpg &lt;span class=&quot;nt&quot;&gt;--quiet&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--batch&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--yes&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--decrypt&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--passphrase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;GPG_SECRET&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;--output&lt;/span&gt; gradle.properties .build/gradle.properties.gpg
+
+gpg &lt;span class=&quot;nt&quot;&gt;--fast-import&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--no-tty&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--batch&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;--yes&lt;/span&gt; golo-dev-sign.asc
+
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;📦 Publishing...&quot;&lt;/span&gt;
+
+./gradlew publish
+
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;✅ Done!&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This script assumes that the &lt;code class=&quot;highlighter-rouge&quot;&gt;GPG_SECRET&lt;/code&gt; environment variable holds the password for the AES 256 encrypted files, then moves them to the project root folder.&lt;/p&gt;
+
+&lt;p&gt;Note that for what it’s worth the script defines a trap to always remove the decrypted files.&lt;/p&gt;
+
+&lt;h3 id=&quot;github-actions-workflow&quot;&gt;GitHub Actions workflow&lt;/h3&gt;
+
+&lt;p&gt;Now comes the final piece of the puzzle: the workflow definition.&lt;/p&gt;
+
+&lt;p&gt;There are many ways one can write such workflow. In the case of Golo I opted to go with a single workflow and a single job to do everything, but do not take it as the golden solution. You may want to have separate jobs, separate workflows, etc. It all depends on your project requirements and what you want to automate.&lt;/p&gt;
+
+&lt;p&gt;The full workflow is as follows.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-yaml&quot; data-lang=&quot;yaml&quot;&gt;&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Continuous integration and deployment&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;branches&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;master&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;tags&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;milestone/*'&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;release/*'&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;pull_request&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;branches&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;master&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;pipeline&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Checkout&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/checkout@v2&lt;/span&gt;
+
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Set up JDK &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1.8&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/setup-java@v1&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;java-version&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1.8&lt;/span&gt;
+
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Cache Gradle packages&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/cache@v2&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;~/.gradle/caches&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;restore-keys&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ runner.os }}-gradle&lt;/span&gt;
+
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Grant execute permission for gradlew&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;chmod +x gradlew&lt;/span&gt;
+
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Build with Gradle&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;./gradlew build&lt;/span&gt;
+
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Copy build distribution&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;cp build/distributions/*.zip golo-distribution.zip&lt;/span&gt;
+
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Attach build distribution from this build&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/upload-artifact@v2&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Golo distribution from this build&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;./golo-distribution.zip&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# Only pushes to master trigger a publication to Sonatype OSS&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Deploy&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;github.ref == 'refs/heads/master'&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;.build/deploy.sh&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;GPG_SECRET&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ secrets.GPG_SECRET }}&lt;/span&gt;
+
+    &lt;span class=&quot;c1&quot;&gt;# Only pushes of tags trigger a release creation&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Create the release&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;create_release&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;startsWith(github.ref, 'refs/tags/')&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/create-release@v1&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;GITHUB_TOKEN&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ secrets.GITHUB_TOKEN }}&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;tag_name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ github.ref }}&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;release_name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Release ${{ github.ref }}&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;draft&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;true&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;prerelease&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;startsWith(github.ref, 'refs/tags/milestone/')&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Attach build distribution to the release&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;startsWith(github.ref, 'refs/tags/')&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;actions/upload-release-asset@v1&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;GITHUB_TOKEN&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ secrets.GITHUB_TOKEN }}&lt;/span&gt;
+      &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;upload_url&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;${{ steps.create_release.outputs.upload_url }}&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;asset_path&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;./golo-distribution.zip&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;asset_name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;golo-distribution.zip&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;asset_content_type&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;application/zip&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The workflow only requires that you define a secret called &lt;code class=&quot;highlighter-rouge&quot;&gt;GPG_SECRET&lt;/code&gt; in your GitHub project (or organisation) settings. This secret is the golden key to everything else, since the 2 encrypted files contain your credentials for signing artifacts and uploading them to Sonatype OSS.&lt;/p&gt;
+
+&lt;p&gt;This workflow is linear with many steps being conditional depending on what trigger the run.&lt;/p&gt;
+
+&lt;p&gt;The first steps are always run: we setup Java, we checkout and build the project, and attach the distribution archive to the GitHub action run.&lt;/p&gt;
+
+&lt;p&gt;Golo uses a convention where release tags are prefixed with &lt;code class=&quot;highlighter-rouge&quot;&gt;milestone/&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;release/&lt;/code&gt;. We consequently can test when a GitHub release has to be created because a tag has been pushed (&lt;code class=&quot;highlighter-rouge&quot;&gt;if: startsWith(github.ref, 'refs/tags/')&lt;/code&gt;) and when it shall be marked as a release or a pre-release (&lt;code class=&quot;highlighter-rouge&quot;&gt;prerelease: startsWith(github.ref, 'refs/tags/milestone/')&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;Note that the GitHub release is created as a draft here because we prefer to make it live manually from the GitHub interface, but you may just directly publish it. You can also define some text / release notes using the &lt;code class=&quot;highlighter-rouge&quot;&gt;actions/create-release&lt;/code&gt; action, possibly generated from a script of yours.&lt;/p&gt;
+
+&lt;p&gt;The deployment step is only enabled for pushes to the &lt;code class=&quot;highlighter-rouge&quot;&gt;master&lt;/code&gt; branch (&lt;code class=&quot;highlighter-rouge&quot;&gt;if: github.ref == 'refs/heads/master'&lt;/code&gt;) that call the &lt;code class=&quot;highlighter-rouge&quot;&gt;.build/deploy.sh&lt;/code&gt;shell script from above.&lt;/p&gt;
+
+&lt;h2 id=&quot;-concluding-remarks&quot;&gt;💭 Concluding remarks&lt;/h2&gt;
+
+&lt;p&gt;This workflow works well for a project like Golo. Again you can have a more complex workflow if that suits your needs better, or you may want to trigger workflow from other events. This is really up to you.&lt;/p&gt;
+
+&lt;h3 id=&quot;security-considerations&quot;&gt;Security considerations&lt;/h3&gt;
+
+&lt;p&gt;At the time of the writing AES 256 is considered &lt;em&gt;safe&lt;/em&gt; if you have a complex and long password.&lt;/p&gt;
+
+&lt;p&gt;Please keep in mind that you are still uploading your credentials to someone else’s computers!&lt;/p&gt;
+
+&lt;p&gt;Your credentials are encrypted in a public Git repository, and they will be decrypted while the deployment script runs.&lt;/p&gt;
+
+&lt;p&gt;It is a very good idea to periodically update the encryption password, and rotate the passwords in the encrypted files.&lt;/p&gt;
+
+&lt;h3 id=&quot;cleaning-the-build-attachments&quot;&gt;Cleaning the build attachments&lt;/h3&gt;
+
+&lt;p&gt;The workflow above attaches a distribution of Golo to each build.&lt;/p&gt;
+
+&lt;p&gt;This is great because nightly builds are available as a distribution one can download from the corresponding workflow runs. Still, you don’t want to hit quotas and pollute servers with everything you’ve built, so you can use another GitHub Action workflow like this one for cleaning old artifacts:&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Copied from https://poweruser.blog/storage-housekeeping-on-github-actions-e2997b5b23d1&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Nightly&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;artifacts&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;cleanup&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;(&amp;gt;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;14&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;days)'&lt;/span&gt;
+&lt;span class=&quot;na&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;schedule&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;cron&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;*'&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# every night at 4 am UTC&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;delete-artifacts&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;runs-on&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ubuntu-latest&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;steps&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;uses&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;kolpav/purge-artifacts-action@v1&lt;/span&gt;
+        &lt;span class=&quot;na&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;token&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;$&lt;/span&gt;
+          &lt;span class=&quot;na&quot;&gt;expire-in&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;14days&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;what-we-did-not-cover-the-website&quot;&gt;What we did not cover: the website&lt;/h3&gt;
+
+&lt;p&gt;So far this workflow does not publish an updated website.&lt;/p&gt;
+
+&lt;p&gt;This is left for future work 😇&lt;/p&gt;</content><author><name></name></author><summary type="html">Publishing from Gradle to Maven Central with GitHub Actions</summary></entry><entry><title type="html">Using exa as a modern replacement to the venerable Unix ls command</title><link href="https://julien.ponge.org/blog/using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command/" rel="alternate" type="text/html" title="Using exa as a modern replacement to the venerable Unix ls command" /><published>2020-11-22T00:00:00+01:00</published><updated>2020-11-22T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command</id><content type="html" xml:base="https://julien.ponge.org/blog/using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command/">&lt;h1 id=&quot;using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command&quot;&gt;Using exa as a modern replacement to the venerable Unix ls command&lt;/h1&gt;
 
 &lt;p&gt;So you know &lt;code class=&quot;highlighter-rouge&quot;&gt;ls&lt;/code&gt; (often found as &lt;code class=&quot;highlighter-rouge&quot;&gt;/bin/ls&lt;/code&gt;), the good old Unix command to list files in a directory.&lt;/p&gt;
 
@@ -726,143 +1192,4 @@ Again, a shell script does the heavy work:&lt;/p&gt;
 
 &lt;p&gt;I am very excited and humbled by the challenges presented by this opportunity. I will do my best to help Eclipse Vert.x going forward!&lt;/p&gt;
 
-&lt;p&gt;Many thanks to Red Hat, INSA-Lyon, the Telecom department, the CITI-INRIA Laboratory and the Dynamid research team for their enthusiasm and support.&lt;/p&gt;</content><author><name></name></author><summary type="html">Originally posted at https://medium.com/@jponge/im-taking-a-part-time-industry-leave-to-work-on-vert-x-at-red-hat-38797e70ecfa</summary></entry><entry><title type="html">Developer Certificate of Origin versus Contributor License Agreements</title><link href="https://julien.ponge.org/blog/developer-certificate-of-origin-versus-contributor-license-agreements/" rel="alternate" type="text/html" title="Developer Certificate of Origin versus Contributor License Agreements" /><published>2016-03-11T00:00:00+01:00</published><updated>2016-03-11T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/developer-certificate-of-origin-versus-contributor-license-agreements</id><content type="html" xml:base="https://julien.ponge.org/blog/developer-certificate-of-origin-versus-contributor-license-agreements/">&lt;p&gt;&lt;a href=&quot;/blog/in-defense-of-contributor-license-agreements/&quot;&gt;I am in favor of using &lt;em&gt;contributor license agreements (CLA)&lt;/em&gt;&lt;/a&gt;
-for opensource projects that are expected to be developed in the long run, especially when you develop them as part of your professional activities.&lt;/p&gt;
-
-&lt;p&gt;That being said, using a CLA is not always a &lt;em&gt;practical&lt;/em&gt; option as it adds a bit of bureaucracy.
-Indeed, you will need to adapt a CLA &lt;a href=&quot;https://www.apache.org/licenses/icla.txt&quot;&gt;like the one from the Apache Software Foundation&lt;/a&gt;, and you will have to make sure that people send it back to you before you can accept any contribution from them.&lt;/p&gt;
-
-&lt;p&gt;The Linux kernel does not use a CLA, but in 2004 the team introduced a &lt;a href=&quot;http://elinux.org/Developer_Certificate_Of_Origin&quot;&gt;&lt;em&gt;developer certificate of origin (DCO)&lt;/em&gt;&lt;/a&gt;. How does it compare to CLAs?&lt;/p&gt;
-
-&lt;h3 id=&quot;whats-in-a-dco&quot;&gt;What’s in a DCO?&lt;/h3&gt;
-
-&lt;p&gt;From &lt;a href=&quot;http://developercertificate.org/&quot;&gt;http://developercertificate.org/&lt;/a&gt;:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Developer Certificate of Origin
-Version 1.1
-
-Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
-660 York Street, Suite 102,
-San Francisco, CA 94110 USA
-
-Everyone is permitted to copy and distribute verbatim copies of this
-license document, but changing it is not allowed.
-
-
-Developer's Certificate of Origin 1.1
-
-By making a contribution to this project, I certify that:
-
-(a) The contribution was created in whole or in part by me and I
-have the right to submit it under the open source license
-indicated in the file; or
-
-(b) The contribution is based upon previous work that, to the best
-of my knowledge, is covered under an appropriate open source
-license and I have the right under that license to submit that
-work with modifications, whether created in whole or in part
-by me, under the same open source license (unless I am
-permitted to submit under a different license), as indicated
-in the file; or
-
-(c) The contribution was provided directly to me by some other
-person who certified (a), (b) or (c) and I have not modified
-it.
-
-(d) I understand and agree that this project and the contribution
-are public and that a record of the contribution (including all
-personal information I submit with it, including my sign-off) is
-maintained indefinitely and may be redistributed consistent with
-this project or the open source license(s) involved.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The idea is pretty simple: you certify that you adhere to these requirements by &lt;em&gt;signing-off&lt;/em&gt; your commits (&lt;code class=&quot;highlighter-rouge&quot;&gt;git commit -s&lt;/code&gt;), and it essentially means that:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;you offer the changes under the same license agreement as the project, and&lt;/li&gt;
-  &lt;li&gt;you have the right to do that,&lt;/li&gt;
-  &lt;li&gt;you did not &lt;em&gt;steal&lt;/em&gt; somebody else’s work.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;This is a clearer than accepting commits from the random pull-request, and at least the person sharing the contribution engages on some IP cleanliness requirements.&lt;/p&gt;
-
-&lt;p&gt;Another bonus point for the DCO is that it is light on bureaucracy compared to a CLA: everything is bound to making signed-off commits with Git.&lt;/p&gt;
-
-&lt;h3 id=&quot;what-is-missing-compared-to-a-cla&quot;&gt;What is missing compared to a CLA?&lt;/h3&gt;
-
-&lt;p&gt;Looking at the &lt;a href=&quot;https://eclipse.org/legal/CLA.php&quot;&gt;Eclipse CLA&lt;/a&gt; and the &lt;a href=&quot;https://www.apache.org/licenses/icla.txt&quot;&gt;Apache CLA&lt;/a&gt;, a first difference is that the DCO does not explicitly grant a license to the receiving entities.&lt;/p&gt;
-
-&lt;p&gt;Apache does it with clause 2:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;2. Grant of Copyright License. Subject to the terms and conditions of
-this Agreement, You hereby grant to the Foundation and to
-recipients of software distributed by the Foundation a perpetual,
-worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-copyright license to reproduce, prepare derivative works of,
-publicly display, publicly perform, sublicense, and distribute Your
-Contributions and such derivative works.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;and Eclipse has a mention in the preambule:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;This CLA, and the license(s) associated with the particular Eclipse Foundation
-projects You are contributing to, provides a license to Your Contributions to
-the Eclipse Foundation and downstream consumers, but You still own Your Contributions,
-and except for the licenses provided for in this CLA, You reserve all right, title and
-interest in Your Contributions.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The remainder of the Eclipse CLA is quite similar to the Linux DCO, and very short. My guess is that it mostly defers to the &lt;em&gt;Eclipse Public License&lt;/em&gt;, especially for patent issues.&lt;/p&gt;
-
-&lt;p&gt;The Apache CLA is more lengthy than the one from Eclipse, and it adds a few more clauses, but in effect they are more or less redundant with what the &lt;em&gt;Apache Software License&lt;/em&gt; provides. Still, there is one clause that is interesting:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; 6. You are not expected to provide support for Your Contributions,
- except to the extent You desire to provide support. You may provide
- support for free, for a fee, or not at all. Unless required by
- applicable law or agreed to in writing, You provide Your
- Contributions on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS
- OF ANY KIND, either express or implied, including, without
- limitation, any warranties or conditions of TITLE, NON-
- INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;This lifts any requirement for supporting the contributions. This may come as a surprise, but in some countries this &lt;em&gt;could&lt;/em&gt; be the case that by default one has to support its work.&lt;/p&gt;
-
-&lt;h3 id=&quot;a-warning-on-trust&quot;&gt;A warning on trust&lt;/h3&gt;
-
-&lt;p&gt;The DCO is very Git-centric, and it only relies on commit metadata. Indeed, signing-off a commit is just about appending a &lt;code class=&quot;highlighter-rouge&quot;&gt;Signed-off-by:&lt;/code&gt; line in the commit comment as in:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;commit 0909d26f5de9e7e67fabcc94bab55f82fd33a1d3
-Author: Julien Ponge &amp;lt;julien.ponge@insa-lyon.fr&amp;gt;
-Date:   Tue Nov 17 10:29:19 2015 +0100
-
-Gradle sample rework
-
-* Switch to Gradle 2.8
-* Use the new plugins declaration section
-* Point to jCenter and Sonatype OSS snapshots (also switched to HTTPS)
-* Make the Java 8 source requirement explicit
-* The Java 8 Gradle check has been moved to settings.gradle to reduce clutter
-* The application plugin is being used to run the application from Gradle
-* The application code has been made verbose to know if the listen() operation succeeded or not.
-
-Signed-off-by: Julien Ponge &amp;lt;julien.ponge@insa-lyon.fr&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;It is very easy to use &lt;em&gt;whatever&lt;/em&gt; email address you want for a commit, and the sign-off is just text.&lt;/p&gt;
-
-&lt;h3 id=&quot;should-you-use-a-dco&quot;&gt;Should you use a DCO?&lt;/h3&gt;
-
-&lt;p&gt;In many respects, the Linux DCO is a valuable alternative to using a CLA, and it is certainly better than having no such mechanism at all for receiving contributions.&lt;/p&gt;
-
-&lt;p&gt;Still, the issue of trust is important. What can be done to mitigate that is using GnuPG signatures in Git commits:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git commit -s -S&lt;/code&gt; makes GnuPG-signed commits, and&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git log --show-signature&lt;/code&gt; shows GnuPG signatures in the log history, and&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;git merge --verify-signatures branch&lt;/code&gt; ensures that all commits are signed &lt;em&gt;and&lt;/em&gt; valid before performing a merge.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Now having to use GnuPG for &lt;em&gt;all&lt;/em&gt; commits can be a bit daunting. Perhaps a simple alternative can be to require that contributors add their name and email to a file (e.g., &lt;code class=&quot;highlighter-rouge&quot;&gt;CONTRIBUTORS&lt;/code&gt;), and do so with a GnuPG + signed-off commit, and later at least sign-off commits. This is especially doable with services like &lt;a href=&quot;https://keybase.io/&quot;&gt;keybase.io&lt;/a&gt; that can link several public profiles to a key, and especially GitHub (although yes, GitHub shall not be the center of the universe in opensource!).&lt;/p&gt;
-
-&lt;p&gt;I think many variants can work out here, the most important thing is to have GnuPG in the loop at some point.&lt;/p&gt;</content><author><name></name></author><summary type="html">I am in favor of using contributor license agreements (CLA) for opensource projects that are expected to be developed in the long run, especially when you develop them as part of your professional activities.</summary></entry></feed>
+&lt;p&gt;Many thanks to Red Hat, INSA-Lyon, the Telecom department, the CITI-INRIA Laboratory and the Dynamid research team for their enthusiasm and support.&lt;/p&gt;</content><author><name></name></author><summary type="html">Originally posted at https://medium.com/@jponge/im-taking-a-part-time-industry-leave-to-work-on-vert-x-at-red-hat-38797e70ecfa</summary></entry></feed>
