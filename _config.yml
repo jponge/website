@@ -2,8 +2,7 @@ title: Julien Ponge
 
 email: julien@ponge.org
 
-description: >- # this means to ignore newlines until "baseurl:"
-  Software engineer, doctor, researcher, lecturer, manager, enthusiast, maker, speaker, (and first and foremost) whatever.
+description: ""
 
 baseurl: "" # the subpath of your site, e.g. /blog
 
