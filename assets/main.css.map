@@ -3,10 +3,10 @@
 	"file": "main.css",
 	"sources": [
 		"main.scss",
-		"../../../../usr/local/lib/ruby/gems/2.7.0/gems/minima-2.5.1/_sass/minima.scss",
-		"../../../../usr/local/lib/ruby/gems/2.7.0/gems/minima-2.5.1/_sass/minima/_base.scss",
-		"../../../../usr/local/lib/ruby/gems/2.7.0/gems/minima-2.5.1/_sass/minima/_layout.scss",
-		"../../../../usr/local/lib/ruby/gems/2.7.0/gems/minima-2.5.1/_sass/minima/_syntax-highlighting.scss"
+		"../../.rbenv/versions/2.6.3/lib/ruby/gems/2.6.0/gems/minima-2.5.1/_sass/minima.scss",
+		"../../.rbenv/versions/2.6.3/lib/ruby/gems/2.6.0/gems/minima-2.5.1/_sass/minima/_base.scss",
+		"../../.rbenv/versions/2.6.3/lib/ruby/gems/2.6.0/gems/minima-2.5.1/_sass/minima/_layout.scss",
+		"../../.rbenv/versions/2.6.3/lib/ruby/gems/2.6.0/gems/minima-2.5.1/_sass/minima/_syntax-highlighting.scss"
 	],
 	"sourcesContent": [
 		"@import url('https://fonts.googleapis.com/css?family=Cousine|IBM+Plex+Sans');\n\n$base-font-family: \"IBM Plex Sans\", sans-serif;\n\npre, code {\n    font-family: \"Cousine\", monospace;\n}\n\n.front-pictures {\n    margin-bottom: 2rem;\n}\n\n.profile-pic {\n    box-shadow: 0px 4px 16px 0px #666;\n    transform: rotate(2deg);\n}\n\n.book-cover {\n    height: 360px;\n    margin-left: 3rem;\n    box-shadow: 0px 4px 16px 0px #666;\n    transform: rotate(2deg);\n}\n\n@import \"minima\";\n",
