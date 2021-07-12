@@ -36,7 +36,9 @@ I have held various teaching, research, managing and executive positions while a
 
 ## Major open source contributions ✨
 
+* [Mutiny](https://smallrye.io/smallrye-mutiny/): intuitive event-driven reactive programming library for Java. Maintainer.
 * [Eclipse Vert.x](https://vertx.io/): reactive toolkit for the JVM. Developer and modules maintainer.
+* [Quarkus](https://quarkus.io): a Kubernetes-native Java stack tailored for OpenJDK HotSpot and GraalVM, crafted from the best of breed Java libraries and standards. Developer.
 * [Eclipse Golo](https://golo-lang.org/): dynamically-typed language for the JVM. Creator.
 * [JooFlux](https://github.com/dynamid/jooflux): Java agent for dynamic aspect injection and method patching. Co-creator.
 * [IzPack](http://izpack.org/): software package installer toolkit. Creator, long retired.
