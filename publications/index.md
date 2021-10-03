@@ -55,19 +55,11 @@ Julien Ponge. **Vert.x in Action. Asynchronous and Reactive Java**. Manning Publ
 
 * Boualem Benatallah, Fabio Casati, Julien Ponge and Farouk Toumani. **On Temporal Abstractions of Web Services Protocols.** *Procs of CAiSE Forum 2005.* Porto, Portugal. Jun 2005. [PDF](/files/publications/FORUM_07.pdf). [Poster](/files/publications/Poster-CAiSE05.pdf).
 
-## National peer-reviewed conferences ##
+## International peer-reviewed workshops ##
 
-* Oscar Carrillo, Nicolas Stouls, Raphael Laurent, Nikolai Plokhoi, Qifan Zhou, Julien Ponge and Frédéric Le Mouël. **HardenedGolo : pour augmenter le niveau de confiance en un code Golo**. *16èmes journées sur les Approches Formelles dans l'Assistance au Développement de Logiciels (AFADL'17)*. Montpellier, France. June 2017. [HAL entry](https://hal.inria.fr/hal-01526659)
+* Julien Ponge, Arthur Navarro, Clément Escoffier, and Frédéric Le Mouël. 2021. **Analysing the Performance and Costs of Reactive Programming Libraries in Java**. *In Proceedings of the 8th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems ([REBLS ’21](https://2021.splashcon.org/home/rebls-2021)), October 18, 2021, Chicago, IL, USA. ACM, New York, NY, USA, 10 pages.* [DOI](https://doi.org/10.1145/3486605.3486788) [PDF](/files/publications/reactive-libraries-rebls21.pdf)
 
-* Stefan-Gabriel Chitic, Julien Ponge and Olivier Simonin. **SDfR protocol : Service Discovery for Robots.** *Journée sur les Architectures Logicielles pour la Robotique Autonome, les Systèmes Cyber-Physiques et les Systèmes Auto-Adaptables.* Paris, France, December 2014.
-
-* Stefan-Gabriel Chitic, Julien Ponge and Olivier Simonin. **Intergiciels pour systèmes multi-robots: état de l'art.** *In Proceedings of UbiMob2014 : 10èmes journées francophones Mobilité et Ubiquité*. Sophia Antipolis. France, June 2014. [HAL entry](http://hal.archives-ouvertes.fr/hal-00994810)
-
-* Julien Ponge and Frédéric Le Mouël. **JooFlux : modification de code à chaud et injection d'aspects directement dans une JVM 7**. *In Proceedings of Conférence d'informatique en Parallélisme, Architecture et Système (ComPAS) - Conférence Française en Systèmes d'Exploitation (CFSE)*. Grenoble, France. January 2013. [HAL entry](http://hal.inria.fr/hal-00759402). [Slides](https://speakerdeck.com/jponge/jooflux-at-compas-2013).
-
-* Boualem Benatallah, Fabio Casati, Julien Ponge, Farouk Toumani. **Compatibility and replaceability analysis for timed web service protocols.** *Procs of BDA 2005*. Saint-Malo, France. Oct 2005. [PDF](/files/publications/bda05-BCPT.pdf). [Slides](/files/publications/slides-bda05-BCPT.pdf).
-
-## Refereed workshops and demonstrations ##
+* Patrik Fortier, Frédéric Le Mouël, and Julien Ponge. 2021. **Dyninka: a FaaS framework for distributed dataflow applications**. *In Proceedings of the 8th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems ([REBLS ’21](https://2021.splashcon.org/home/rebls-2021)), October 18, 2021, Chicago, IL, USA. ACM, New York, NY, USA.*
 
 * Patrik Fortier, Julien Ponge and Frédéric Le Mouël. **Dyninka: a framework for distributed FaaS dataflow.** Fifth Annual UK System Research Challenges Workshop, March 2020, Newton Aycliffe, United Kingdom. [HAL entry](https://hal.archives-ouvertes.fr/hal-02915715)
 
@@ -81,13 +73,25 @@ Julien Ponge. **Vert.x in Action. Asynchronous and Reactive Java**. Manning Publ
 
 * Julien Ponge, **Modeling and Analysing Web Services Protocols.** [*IBM PhD Student Symposium at ICSOC 2005.*](http://ftp.informatik.rwth-aachen.de/Publications/CEUR-WS/Vol-169/). Amsterdam, The Netherlands, Dec 2005.
 
+## National peer-reviewed conferences ##
+
+* Oscar Carrillo, Nicolas Stouls, Raphael Laurent, Nikolai Plokhoi, Qifan Zhou, Julien Ponge and Frédéric Le Mouël. **HardenedGolo : pour augmenter le niveau de confiance en un code Golo**. *16èmes journées sur les Approches Formelles dans l'Assistance au Développement de Logiciels (AFADL'17)*. Montpellier, France. June 2017. [HAL entry](https://hal.inria.fr/hal-01526659)
+
+* Stefan-Gabriel Chitic, Julien Ponge and Olivier Simonin. **SDfR protocol : Service Discovery for Robots.** *Journée sur les Architectures Logicielles pour la Robotique Autonome, les Systèmes Cyber-Physiques et les Systèmes Auto-Adaptables.* Paris, France, December 2014.
+
+* Stefan-Gabriel Chitic, Julien Ponge and Olivier Simonin. **Intergiciels pour systèmes multi-robots: état de l'art.** *In Proceedings of UbiMob2014 : 10èmes journées francophones Mobilité et Ubiquité*. Sophia Antipolis. France, June 2014. [HAL entry](http://hal.archives-ouvertes.fr/hal-00994810)
+
+* Julien Ponge and Frédéric Le Mouël. **JooFlux : modification de code à chaud et injection d'aspects directement dans une JVM 7**. *In Proceedings of Conférence d'informatique en Parallélisme, Architecture et Système (ComPAS) - Conférence Française en Systèmes d'Exploitation (CFSE)*. Grenoble, France. January 2013. [HAL entry](http://hal.inria.fr/hal-00759402). [Slides](https://speakerdeck.com/jponge/jooflux-at-compas-2013).
+
+* Boualem Benatallah, Fabio Casati, Julien Ponge, Farouk Toumani. **Compatibility and replaceability analysis for timed web service protocols.** *Procs of BDA 2005*. Saint-Malo, France. Oct 2005. [PDF](/files/publications/bda05-BCPT.pdf). [Slides](/files/publications/slides-bda05-BCPT.pdf).
+
 ## Invited papers ##
 
 * Stéphane Frénot, Frédéric Le Mouel, Julien Ponge and Guillaume Salagnac. **Various Extensions for the Ambient OSGi Framework.** *In Proceedings of the 4th International workshop on Adaptive and DependAble Mobile Ubiquitous Systems (ADAMUS'2010) in conjunction with the ACM International Conference on Pervasive Services (ICPS'2010).* Berlin, Germany, July 2010. [HAL entry](http://hal.inria.fr/inria-00515189/)
 
 ## Preprints / research reports ##
 
-* Julien Ponge, Frédéric Le Mouël, Nicolas Stouls and Yanick Loiseau. **Opportunities for a Truffle-based Golo Interpreter**. Research report, 2015. [arXiv 1505.06003](http://arxiv.org/abs/1505.06003).
+* Julien Ponge, Frédéric Le Mouël, Nicolas Stouls and Yannick Loiseau. **Opportunities for a Truffle-based Golo Interpreter**. Research report, 2015. [arXiv 1505.06003](http://arxiv.org/abs/1505.06003).
 
 * Julien Ponge and Frédéric Le Mouël. **JooFlux: Hijacking Java 7 InvokeDynamic To Support Live Code Modifications**. Research report, 2012. [arXiv 1210.1039](http://arxiv.org/abs/1210.1039).
 

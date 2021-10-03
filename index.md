@@ -16,11 +16,10 @@ redirect_from:
 </p>
 
 I am a **Principal Software Engineer** at [Red Hat](https://www.redhat.com/).
-I am primarily working on _reactive_ things and the [Eclipse Vert.x](https://vertx.io/) project.
+I am primarily working on _reactive_ things, including [Eclipse Vert.x](https://vertx.io/), [Mutiny](https://smallrye.io/smallrye-mutiny/) and [Quarkus](https://quarkus.io).
 I am based in [Lyon, France](https://en.wikipedia.org/wiki/Lyon).
 
-I am _"on leave"_ from [INSA Lyon](http://www.insa-lyon.fr/) and the [CITI Laboratory](http://www.citi-lab.fr/) where I was an **Associate Professor** in computer science and engineering.
-I have held various teaching, research, managing and executive positions while at INSA.
+Before joining Red Hat, I was an **Associate Professor** in computer science and engineering at [INSA Lyon](http://www.insa-lyon.fr/) and the [CITI Laboratory](http://www.citi-lab.fr/) where I have held various teaching, research, management and executive positions.
 
 ## I've worked here 👨🏻‍💻
 
@@ -43,22 +42,12 @@ I have held various teaching, research, managing and executive positions while a
 * [JooFlux](https://github.com/dynamid/jooflux): Java agent for dynamic aspect injection and method patching. Co-creator.
 * [IzPack](http://izpack.org/): software package installer toolkit. Creator, long retired.
 
-## Research interests 🤔
-
-* Middleware
-* Distributed systems
-* Programming languages and virtual machines
-
-## PhD students 👨‍🔬 👩‍🔬
-
-* Patrik Fortier (Since fall 2017, funded by the INSA Lyon / Spie ICS chair on the Internet of Things), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Programming language abstractions for the Internet of Things**.
-
-* Stefan-Gabriel Chitic (Fall 2013 -- March 2018, French Research Ministry Grant), co-supervision with [Olivier Simonin](http://perso.citi-lab.fr/osimonin/). **Middleware and programming models for multi-robot systems**, defended March 15th 2018. Stefan now works at [CERN](https://home.cern/).
-
 ## Selected publications 📚
 
 These publications reflect some significant milestones of my activities, not necessarily the value in terms of destination ranking.
 Check out my [full publications page](/academia/publications/) for a more comprehensive listing.
+
+* Julien Ponge, Arthur Navarro, Clément Escoffier, and Frédéric Le Mouël. 2021. **Analysing the Performance and Costs of Reactive Programming Libraries in Java**. *In Proceedings of the 8th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems ([REBLS ’21](https://2021.splashcon.org/home/rebls-2021)), October 18, 2021, Chicago, IL, USA. ACM, New York, NY, USA, 10 pages.* [DOI](https://doi.org/10.1145/3486605.3486788) [PDF](/files/publications/reactive-libraries-rebls21.pdf)
 
 * Julien Ponge and Mark Little. **Scalability and resilience in practice: current trends and opportunities**. *SRDS 2019 (38th International Symposium on Reliable Distributed Systems)*, October 2019, Lyon, France. [PDF](/files/publications/srds-jpml19.pdf)
 
@@ -73,6 +62,18 @@ Check out my [full publications page](/academia/publications/) for a more compre
 * Julien Ponge, Boualem Benatallah, Fabio Casati and Farouk Toumani. **Analysis and Applications of Timed Service Protocols.** *ACM Transactions on Software Engineering and Methodology* in vol. 19, issue # 4. October 2010. [DOI](http://dx.doi.org/10.1145/1734229.1734230). [PDF of a preliminary version](/files/publications/preliminary-version-analysis-and-applications-of-timed-service-protocols.pdf).
 
 * Hamid Motahari, Regis Saint-Paul, Boualem Benatallah, Fabio Casati, Julien Ponge and Farouk Toumani. **ServiceMosaic: Interactive Analysis and Manipulations of Service Conversations.** *In International Conference on Data Engineering (ICDE’07).* Istanbul, Turkey. April 2007. [PDF](/files/publications/icde07.pdf).
+
+## Research interests 🤔
+
+* Middleware
+* Distributed systems
+* Programming languages and virtual machines
+
+## PhD students 👨‍🔬 👩‍🔬
+
+* Patrik Fortier (Since fall 2017, funded by the INSA Lyon / Spie ICS chair on the Internet of Things), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Programming language abstractions for the Internet of Things**.
+
+* Stefan-Gabriel Chitic (Fall 2013 -- March 2018, French Research Ministry Grant), co-supervision with [Olivier Simonin](http://perso.citi-lab.fr/osimonin/). **Middleware and programming models for multi-robot systems**, defended March 15th 2018. Stefan now works at [CERN](https://home.cern/).
 
 ## Education 🎓
 
