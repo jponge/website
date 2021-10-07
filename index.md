@@ -81,4 +81,4 @@ Check out my [full publications page](/academia/publications/) for a more compre
 * 2008: 🇫🇷 PhD, Clermont-Auvergne University. Locally supervised by Farouk Toumani.
 * 2004: Master, Clermont-Auvergne University.
 * 2002: Bachelor, Clermont-Auvergne University.
-* 1999: High-school degree, Nevers.
+* 1999: High-school degree, Lycée Alain Colas, Nevers.
