@@ -59,7 +59,7 @@ Julien Ponge. **Vert.x in Action. Asynchronous and Reactive Java**. Manning Publ
 
 * Julien Ponge, Arthur Navarro, Clément Escoffier, and Frédéric Le Mouël. 2021. **Analysing the Performance and Costs of Reactive Programming Libraries in Java**. *In Proceedings of the 8th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems ([REBLS ’21](https://2021.splashcon.org/home/rebls-2021)), October 18, 2021, Chicago, IL, USA. ACM, New York, NY, USA, 10 pages.* [DOI](https://doi.org/10.1145/3486605.3486788) [PDF](/files/publications/reactive-libraries-rebls21.pdf)
 
-* Patrik Fortier, Frédéric Le Mouël, and Julien Ponge. 2021. **Dyninka: a FaaS framework for distributed dataflow applications**. *In Proceedings of the 8th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems ([REBLS ’21](https://2021.splashcon.org/home/rebls-2021)), October 18, 2021, Chicago, IL, USA. ACM, New York, NY, USA.*
+* Patrik Fortier, Frédéric Le Mouël, and Julien Ponge. 2021. **Dyninka: a FaaS framework for distributed dataflow applications**. *In Proceedings of the 8th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems ([REBLS ’21](https://2021.splashcon.org/home/rebls-2021)), October 18, 2021, Chicago, IL, USA. ACM, New York, NY, USA.* [PDF](/files/publications/dyninka-rebls21.pdf)
 
 * Patrik Fortier, Julien Ponge and Frédéric Le Mouël. **Dyninka: a framework for distributed FaaS dataflow.** Fifth Annual UK System Research Challenges Workshop, March 2020, Newton Aycliffe, United Kingdom. [HAL entry](https://hal.archives-ouvertes.fr/hal-02915715)
 
