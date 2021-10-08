@@ -63,22 +63,16 @@ Check out my [full publications page](/academia/publications/) for a more compre
 
 * Hamid Motahari, Regis Saint-Paul, Boualem Benatallah, Fabio Casati, Julien Ponge and Farouk Toumani. **ServiceMosaic: Interactive Analysis and Manipulations of Service Conversations.** *In International Conference on Data Engineering (ICDE’07).* Istanbul, Turkey. April 2007. [PDF](/files/publications/icde07.pdf).
 
-## Research interests 🤔
-
-* Middleware
-* Distributed systems
-* Programming languages and virtual machines
-
 ## PhD students 👨‍🔬 👩‍🔬
 
 * Patrik Fortier (Since fall 2017, funded by the INSA Lyon / Spie ICS chair on the Internet of Things), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Programming language abstractions for the Internet of Things**.
 
 * Stefan-Gabriel Chitic (Fall 2013 -- March 2018, French Research Ministry Grant), co-supervision with [Olivier Simonin](http://perso.citi-lab.fr/osimonin/). **Middleware and programming models for multi-robot systems**, defended March 15th 2018. Stefan now works at [CERN](https://home.cern/).
 
-## Education 🎓
+## I studied there 🎓
 
-* 2008: 🇦🇺 PhD _under cotutelle agreements_, University of New South Wales. Locally supervised by Boualem Benatallah.
-* 2008: 🇫🇷 PhD, Clermont-Auvergne University. Locally supervised by Farouk Toumani.
-* 2004: Master, Clermont-Auvergne University.
-* 2002: Bachelor, Clermont-Auvergne University.
-* 1999: High-school degree, Lycée Alain Colas, Nevers.
+* 2008: 🇦🇺 PhD _under cotutelle agreements_, [University of New South Wales](https://www.unsw.edu.au/engineering/computer-science-and-engineering). Locally supervised by Boualem Benatallah.
+* 2008: 🇫🇷 PhD, [Clermont-Auvergne University](https://www.uca.fr). Locally supervised by Farouk Toumani.
+* 2004: Master, [Clermont-Auvergne University](https://www.uca.fr).
+* 2002: Bachelor, [Clermont-Auvergne University](https://www.uca.fr).
+* 1999: High-school degree, [Lycée Alain Colas](http://lyc58-colas.ac-dijon.fr), Nevers.
