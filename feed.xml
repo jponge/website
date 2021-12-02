@@ -1,4 +1,91 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2021-10-18T14:44:27+02:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle></subtitle><entry><title type="html">New Publication: Analysing the Performance and Costs of Reactive Programming Libraries in Java</title><link href="https://julien.ponge.org/blog/publication-performance-and-costs-of-reactive-programming-libraries-in-java/" rel="alternate" type="text/html" title="New Publication: Analysing the Performance and Costs of Reactive Programming Libraries in Java" /><published>2021-10-18T00:00:00+02:00</published><updated>2021-10-18T00:00:00+02:00</updated><id>https://julien.ponge.org/blog/publication-performance-and-costs-of-reactive-programming-libraries-in-java</id><content type="html" xml:base="https://julien.ponge.org/blog/publication-performance-and-costs-of-reactive-programming-libraries-in-java/">&lt;p&gt;I presented today a new publication called &lt;a href=&quot;https://dl.acm.org/doi/10.1145/3486605.3486788&quot;&gt;Analysing the Performance and Costs of Reactive Programming Libraries in Java&lt;/a&gt; at the &lt;a href=&quot;https://2021.splashcon.org/home/rebls-2021&quot;&gt;8th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems (REBLS)&lt;/a&gt; (a workshop of &lt;a href=&quot;https://2021.splashcon.org/&quot;&gt;Splash 2021&lt;/a&gt;).&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2021-12-02T17:33:10+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle></subtitle><entry><title type="html">Not all Java single-threaded executors are created equal: a Java finalizer horror story</title><link href="https://julien.ponge.org/blog/not-all-java-single-threaded-executors-are-created-equal-a-java-finalizer-horror-story/" rel="alternate" type="text/html" title="Not all Java single-threaded executors are created equal: a Java finalizer horror story" /><published>2021-12-02T00:00:00+01:00</published><updated>2021-12-02T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/not-all-java-single-threaded-executors-are-created-equal-a-java-finalizer-horror-story</id><content type="html" xml:base="https://julien.ponge.org/blog/not-all-java-single-threaded-executors-are-created-equal-a-java-finalizer-horror-story/">&lt;p&gt;I was recently puzzled by flaky tests in &lt;a href=&quot;https://smallrye.io/smallrye-mutiny/&quot;&gt;Mutiny&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-problem&quot;&gt;The problem&lt;/h3&gt;
+
+&lt;p&gt;Once in a while we would get build failures in &lt;em&gt;GitHub Action&lt;/em&gt; runners, and of course we could not reproduce them locally.
+Even repeating a test a thousand times would not reproduce the failure seen in the runners.
+And of course, there was not much determinism in which test could fail.&lt;/p&gt;
+
+&lt;p&gt;Still, the logs would hint at tasks being rejected by terminated Java executors, so I started digging.
+I went through the usage of executors in tests, but aside from a few trivial fixes, all executors were being used as they should be, as in:&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// Get an executor&lt;/span&gt;
+&lt;span class=&quot;kt&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;executor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Executors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;newFixedThreadPool&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Do stuff&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;doThingsWith&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// Shut it down&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;shutdownNow&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;the-eureka-moment&quot;&gt;The &lt;a href=&quot;https://en.wikipedia.org/wiki/Eureka_(word)&quot;&gt;Eureka&lt;/a&gt; moment&lt;/h3&gt;
+
+&lt;p&gt;I then started tracking calls to &lt;code class=&quot;highlighter-rouge&quot;&gt;shutdown()&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;shutdownNow()&lt;/code&gt;, to try and see if we had some code, somewhere, that would shut an executor down.
+Nothing in tests, but I eventually found a call to &lt;code class=&quot;highlighter-rouge&quot;&gt;shutdown&lt;/code&gt; in that class from the JDK:&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FinalizableDelegatedExecutorService&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DelegatedExecutorService&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;FinalizableDelegatedExecutorService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;ExecutorService&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;executor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;protected&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;finalize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;shutdown&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Guess what?&lt;/p&gt;
+
+&lt;p&gt;This class is used by… &lt;code class=&quot;highlighter-rouge&quot;&gt;Executors.newSingleThreadExecutor()&lt;/code&gt;!&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ExecutorService&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;newSingleThreadExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;FinalizableDelegatedExecutorService&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ThreadPoolExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                                &lt;span class=&quot;mi&quot;&gt;0L&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TimeUnit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;MILLISECONDS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+                                &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LinkedBlockingQueue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Runnable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;()));&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;So if you create an executor using &lt;code class=&quot;highlighter-rouge&quot;&gt;newSingleThreadExecutor()&lt;/code&gt;, then the actual executor is being wrapped in a class whose sole purpose is to call &lt;code class=&quot;highlighter-rouge&quot;&gt;shutdown()&lt;/code&gt; in a &lt;em&gt;finalizer&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;See the first paragraph of the documentation of the (now-deprecated!) &lt;a href=&quot;https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Object.html#finalize()&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Object.finalize()&lt;/code&gt; method&lt;/a&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Called by the garbage collector on an object when garbage collection determines that there are no more references to the object. 
+A subclass overrides the finalize method to dispose of system resources or to perform other cleanup.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It is to be expected that in a constrained environment such as that of a CI/CD runner, the garbage collector has to run more frequently than on a 32Gb of RAM laptop.
+Depending on how your code is written, you may end up in cases where an executor gets &lt;em&gt;finalized&lt;/em&gt; before it has received all tasks and they get rejected.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-fix-and-a-bit-of-caution&quot;&gt;The fix, and a bit of caution&lt;/h3&gt;
+
+&lt;p&gt;In the case of Mutiny tests flakiness was greatly reduced by replacing calls of:&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;executor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Executors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;newSingleThreadExecutor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;with:&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kt&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;executor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Executors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;newFixedThreadPool&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Indeed &lt;code class=&quot;highlighter-rouge&quot;&gt;newSingleThreadExecutor()&lt;/code&gt; is the sole method that wraps executors with &lt;code class=&quot;highlighter-rouge&quot;&gt;FinalizableDelegatedExecutorService&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now should you do the same to your code base and ditch &lt;code class=&quot;highlighter-rouge&quot;&gt;newSingleThreadExecutor()&lt;/code&gt;?&lt;/p&gt;
+
+&lt;p&gt;I don’t think so!&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Make sure that you manage executors &lt;em&gt;correctly&lt;/em&gt;, and especially that you don’t forget to shut them down.
+This is especially important in test suites because you could be creating lots of them.&lt;/li&gt;
+  &lt;li&gt;As a general practice for new code I think it’s a good idea to call &lt;code class=&quot;highlighter-rouge&quot;&gt;Executors.newFixedThreadPool(1)&lt;/code&gt;, even if there’s a method with the correct name for the purpose.
+At some point in future Java releases &lt;em&gt;finalizers&lt;/em&gt; will be gone and &lt;code class=&quot;highlighter-rouge&quot;&gt;Executors.newSingleThreadExecutor()&lt;/code&gt; will have the same runtime behavior, but meanwhile you can avoid some potential headaches.&lt;/li&gt;
+  &lt;li&gt;If you or your libraries use &lt;code class=&quot;highlighter-rouge&quot;&gt;Executors.newSingleThreadExecutor()&lt;/code&gt; and you see weird task rejections then there’s a good chance you hit the same problem!&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/posts/2021/single-thread-executors.jpg&quot; alt=&quot;Some funny meme&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">I was recently puzzled by flaky tests in Mutiny.</summary></entry><entry><title type="html">New Publication: Analysing the Performance and Costs of Reactive Programming Libraries in Java</title><link href="https://julien.ponge.org/blog/publication-performance-and-costs-of-reactive-programming-libraries-in-java/" rel="alternate" type="text/html" title="New Publication: Analysing the Performance and Costs of Reactive Programming Libraries in Java" /><published>2021-10-18T00:00:00+02:00</published><updated>2021-10-18T00:00:00+02:00</updated><id>https://julien.ponge.org/blog/publication-performance-and-costs-of-reactive-programming-libraries-in-java</id><content type="html" xml:base="https://julien.ponge.org/blog/publication-performance-and-costs-of-reactive-programming-libraries-in-java/">&lt;p&gt;I presented today a new publication called &lt;a href=&quot;https://dl.acm.org/doi/10.1145/3486605.3486788&quot;&gt;Analysing the Performance and Costs of Reactive Programming Libraries in Java&lt;/a&gt; at the &lt;a href=&quot;https://2021.splashcon.org/home/rebls-2021&quot;&gt;8th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems (REBLS)&lt;/a&gt; (a workshop of &lt;a href=&quot;https://2021.splashcon.org/&quot;&gt;Splash 2021&lt;/a&gt;).&lt;/p&gt;
 
 &lt;p&gt;This paper was co-authored with Arthur Navarro, Clément Escoffier and Frédéric Le Mouël.&lt;/p&gt;
 
@@ -1114,96 +1201,4 @@ I am thankful to the people I worked with here, and I am also very grateful to t
 
 &lt;blockquote&gt;
   &lt;p&gt;A preliminary version was published at &lt;a href=&quot;https://medium.com/@jponge/the-graalvm-frenzy-f54257f5932c&quot;&gt;https://medium.com/@jponge/the-graalvm-frenzy-f54257f5932c&lt;/a&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">It seems like the whole Java ecosystem is going mad these days with GraalVM. Every library and framework wants to proudly work on GraalVM, making GraalVM a new silver bullet for modern Java applications.</summary></entry><entry><title type="html">Exporting HTML Slides in Markdown to PDF</title><link href="https://julien.ponge.org/blog/exporting-html-slides-in-markdown-to-pdf/" rel="alternate" type="text/html" title="Exporting HTML Slides in Markdown to PDF" /><published>2017-02-13T00:00:00+01:00</published><updated>2017-02-13T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/exporting-html-slides-in-markdown-to-pdf</id><content type="html" xml:base="https://julien.ponge.org/blog/exporting-html-slides-in-markdown-to-pdf/">&lt;p&gt;I am not a big fan of HTML slides.
-For sure many fancy tools and libraries exist in that space, but no matter what I always prefer the pixel-perfection of a tool like Apple Keynote.
-Pushing pixels is what I prefer doing for public talks and important meetings.&lt;/p&gt;
-
-&lt;p&gt;The flip side of the coin is that crafting great slide decks &lt;strong&gt;is&lt;/strong&gt; time consuming.
-There is a context where having &lt;em&gt;just good enough&lt;/em&gt; slides is key: teaching.&lt;/p&gt;
-
-&lt;p&gt;Teaching slide decks are always big, and you &lt;em&gt;need&lt;/em&gt; to put lots of text for students.
-Doing a public talk with lots of text is a major &lt;em&gt;faux-pas&lt;/em&gt;, but when doing teaching a reasonable amount of text it is actually helpful.
-I’m in computer engineering, so my slides tend to have lots of code snippets: this is an area where traditional presentation softwares fall short.&lt;/p&gt;
-
-&lt;p&gt;Last but not least: teaching slide decks need to be frequently updated, refactored and remixed, so any tooling friction is painful.&lt;/p&gt;
-
-&lt;h3 id=&quot;markdown-to-html&quot;&gt;Markdown to HTML&lt;/h3&gt;
-
-&lt;p&gt;There are many fancy tools with rollercoaster visual effects on slide transitions.
-I like none of them, so I went with the simple and effective &lt;a href=&quot;https://github.com/cwjohan/markdown-to-html&quot;&gt;markdown-to-html&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;This way I can just type some Markdown, as in:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;---&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;middle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;left&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Basic&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stuff&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;---&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;#&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;A&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;src&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;insa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Hello&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;`&lt;/span&gt;
-
-&lt;span class=&quot;p&quot;&gt;```&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;insa&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;util&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;List&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;java&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;util&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ArrayList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Hello&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-
-    &lt;span class=&quot;n&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;List&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;list&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ArrayList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
-
-    &lt;span class=&quot;k&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;doStuff&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;A&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;B&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;C&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;```&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Except for the &lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt; attributes that allow some layout and positioning, it’s just Markdown with slides being separated by &lt;code class=&quot;highlighter-rouge&quot;&gt;---&lt;/code&gt; rulers.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/2017/md2html.png&quot; alt=&quot;Slides in HTML&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;I am using the default CSS stylesheet with some font adjustments.
-The great thing with markdown-to-html is that it is very easy to customize.&lt;/p&gt;
-
-&lt;p&gt;Rendering slides to HTML is done with this quick shell script:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;f &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;.md&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do
-  &lt;/span&gt;markdown-to-slides &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; style.css &lt;span class=&quot;nt&quot;&gt;-o&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;basename&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$f&lt;/span&gt; .md&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;.html&quot;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$f&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;h3 id=&quot;pdf-export&quot;&gt;PDF export&lt;/h3&gt;
-
-&lt;p&gt;Some students have asked me for a PDF output.
-Fortunately it is not very complicated to do!&lt;/p&gt;
-
-&lt;p&gt;I recommend &lt;a href=&quot;https://github.com/astefanutti/decktape&quot;&gt;DeckTape&lt;/a&gt; for that purpose.
-Like most HTML to PDF renderers, it takes control of a web browser engine via PhantomJS to capture slide images then assemble them as a PDF.&lt;/p&gt;
-
-&lt;p&gt;If you use DeckTape as a one-shot tool just like I do, it is perhaps easier to use the Docker image.
-Again, a shell script does the heavy work:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;f &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;.md&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do
-  &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;deck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;basename&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$f&lt;/span&gt; .md&lt;span class=&quot;si&quot;&gt;)&lt;/span&gt; 
-  docker run &lt;span class=&quot;nt&quot;&gt;--rm&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-v&lt;/span&gt; &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;:/slides astefanutti/decktape &lt;span class=&quot;nv&quot;&gt;$deck&lt;/span&gt;.html &lt;span class=&quot;nv&quot;&gt;$deck&lt;/span&gt;.pdf
-&lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;The way it works is simple:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;--rm&lt;/code&gt; ensures the container gets erased after execution,&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-v&lt;/code&gt; allows mounting the local folder to &lt;code class=&quot;highlighter-rouge&quot;&gt;/slides&lt;/code&gt; in the container,&lt;/li&gt;
-  &lt;li&gt;DeckTape then does the magic.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Easy, isn’t it?&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/images/posts/2017/html2pdf.png&quot; alt=&quot;Slides in HTML&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">I am not a big fan of HTML slides. For sure many fancy tools and libraries exist in that space, but no matter what I always prefer the pixel-perfection of a tool like Apple Keynote. Pushing pixels is what I prefer doing for public talks and important meetings.</summary></entry></feed>
+&lt;/blockquote&gt;</content><author><name></name></author><summary type="html">It seems like the whole Java ecosystem is going mad these days with GraalVM. Every library and framework wants to proudly work on GraalVM, making GraalVM a new silver bullet for modern Java applications.</summary></entry></feed>
