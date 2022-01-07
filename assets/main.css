@@ -1,4 +1,8 @@
-@import url("https://fonts.googleapis.com/css?family=Cousine|IBM+Plex+Sans");
+@import url("https://fonts.googleapis.com/css?family=Cousine|IBM+Plex+Sans|IBM+Plex+Serif");
+main { font-family: "IBM Plex Serif", serif; }
+
+h1, h2, h3, h4, h5, h6 { font-family: "IBM Plex Sans", sans-serif; }
+
 pre, code { font-family: "Cousine", monospace; }
 
 .front-pictures { margin-bottom: 2rem; }
