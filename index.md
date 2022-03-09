@@ -65,6 +65,8 @@ Check out my [full publications page](/academia/publications/) for a more compre
 
 ## PhD students 👨‍🔬 👩‍🔬
 
+* Arthur Navarro (soon in 2022)
+
 * Patrik Fortier (Since fall 2017, funded by the INSA Lyon / Spie ICS chair on the Internet of Things), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Programming language abstractions for the Internet of Things**.
 
 * Stefan-Gabriel Chitic (Fall 2013 -- March 2018, French Research Ministry Grant), co-supervision with [Olivier Simonin](http://perso.citi-lab.fr/osimonin/). **Middleware and programming models for multi-robot systems**, defended March 15th 2018. Stefan now works at [CERN](https://home.cern/).
