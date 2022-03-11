@@ -8,7 +8,7 @@ Switching branches is especially easy (if you are a CVS / Subversion veteran you
 
 My workflow to implement features is not very surprising:
 
-1. I spawn a new branch off the `main` branch,
+1. I spawn a new branch from the `main` branch,
 2. I prepare changes in one or a few commits,
 3. I open a pull-request and ask for peer-review,
 4. (goto 1)
@@ -22,7 +22,7 @@ In such cases I would use a mix of:
 
 I've recently shifted to a new workflow that allows me to make exploratory branches, keep track of all intermediate steps, and finally offer a clean pull-request when ready.
 
-1. I spawn a new branch off the `main` branch, and I prefix it with `scratchpad/` to signal the intent: `git switch -c scratchpad/yolo`
+1. I spawn a new branch from the `main` branch, and I prefix it with `scratchpad/` to signal the intent: `git switch -c scratchpad/yolo`
 2. I make commits as I need them (the code might even be broken!), sometimes being informative, sometimes just having `WIP` as a comment: `git commit -am 'WIP'`, `git commit -am 'Adding docs'`, etc
 3. I can move to another `scratchpad/` branch any time I need to explore another design by going back to step 1
 4. I frequently rebase on top of `main` to capture any future conflict: `git rebase origin/main`
@@ -33,7 +33,7 @@ Deriving a clean branch is easy with a _soft reset_:
 
 ```
 git switch scratchpad/yolo
-git switch -n feature/yolo
+git switch -c feature/yolo
 git reset --soft origin/main
 git commit -a
 ```
