@@ -53,7 +53,7 @@ Switching branches is especially easy (if you are a CVS / Subversion veteran you
 <p>My workflow to implement features is not very surprising:</p>
 
 <ol>
-  <li>I spawn a new branch off the <code class="highlighter-rouge">main</code> branch,</li>
+  <li>I spawn a new branch from the <code class="highlighter-rouge">main</code> branch,</li>
   <li>I prepare changes in one or a few commits,</li>
   <li>I open a pull-request and ask for peer-review,</li>
   <li>(goto 1)</li>
@@ -71,7 +71,7 @@ In such cases I would use a mix of:</p>
 <p>I’ve recently shifted to a new workflow that allows me to make exploratory branches, keep track of all intermediate steps, and finally offer a clean pull-request when ready.</p>
 
 <ol>
-  <li>I spawn a new branch off the <code class="highlighter-rouge">main</code> branch, and I prefix it with <code class="highlighter-rouge">scratchpad/</code> to signal the intent: <code class="highlighter-rouge">git switch -c scratchpad/yolo</code></li>
+  <li>I spawn a new branch from the <code class="highlighter-rouge">main</code> branch, and I prefix it with <code class="highlighter-rouge">scratchpad/</code> to signal the intent: <code class="highlighter-rouge">git switch -c scratchpad/yolo</code></li>
   <li>I make commits as I need them (the code might even be broken!), sometimes being informative, sometimes just having <code class="highlighter-rouge">WIP</code> as a comment: <code class="highlighter-rouge">git commit -am 'WIP'</code>, <code class="highlighter-rouge">git commit -am 'Adding docs'</code>, etc</li>
   <li>I can move to another <code class="highlighter-rouge">scratchpad/</code> branch any time I need to explore another design by going back to step 1</li>
   <li>I frequently rebase on top of <code class="highlighter-rouge">main</code> to capture any future conflict: <code class="highlighter-rouge">git rebase origin/main</code></li>
@@ -82,7 +82,7 @@ In such cases I would use a mix of:</p>
 <p>Deriving a clean branch is easy with a <em>soft reset</em>:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git switch scratchpad/yolo
-git switch -n feature/yolo
+git switch -c feature/yolo
 git reset --soft origin/main
 git commit -a
 </code></pre></div></div>

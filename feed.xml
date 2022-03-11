@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2022-03-09T16:03:05+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle></subtitle><entry><title type="html">A workflow for experiments in Git: scratchpad branches</title><link href="https://julien.ponge.org/blog/a-workflow-for-experiments-in-git-scratchpad-branches/" rel="alternate" type="text/html" title="A workflow for experiments in Git: scratchpad branches" /><published>2022-03-09T00:00:00+01:00</published><updated>2022-03-09T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/a-workflow-for-experiments-in-git-scratchpad-branches</id><content type="html" xml:base="https://julien.ponge.org/blog/a-workflow-for-experiments-in-git-scratchpad-branches/"><![CDATA[<p>Git is a fantastic tool to manage source code.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2022-03-11T09:27:29+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle></subtitle><entry><title type="html">A workflow for experiments in Git: scratchpad branches</title><link href="https://julien.ponge.org/blog/a-workflow-for-experiments-in-git-scratchpad-branches/" rel="alternate" type="text/html" title="A workflow for experiments in Git: scratchpad branches" /><published>2022-03-09T00:00:00+01:00</published><updated>2022-03-09T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/a-workflow-for-experiments-in-git-scratchpad-branches</id><content type="html" xml:base="https://julien.ponge.org/blog/a-workflow-for-experiments-in-git-scratchpad-branches/"><![CDATA[<p>Git is a fantastic tool to manage source code.
 Switching branches is especially easy (if you are a CVS / Subversion veteran you know what I mean).</p>
 
 <p>My workflow to implement features is not very surprising:</p>
 
 <ol>
-  <li>I spawn a new branch off the <code class="highlighter-rouge">main</code> branch,</li>
+  <li>I spawn a new branch from the <code class="highlighter-rouge">main</code> branch,</li>
   <li>I prepare changes in one or a few commits,</li>
   <li>I open a pull-request and ask for peer-review,</li>
   <li>(goto 1)</li>
@@ -22,7 +22,7 @@ In such cases I would use a mix of:</p>
 <p>I’ve recently shifted to a new workflow that allows me to make exploratory branches, keep track of all intermediate steps, and finally offer a clean pull-request when ready.</p>
 
 <ol>
-  <li>I spawn a new branch off the <code class="highlighter-rouge">main</code> branch, and I prefix it with <code class="highlighter-rouge">scratchpad/</code> to signal the intent: <code class="highlighter-rouge">git switch -c scratchpad/yolo</code></li>
+  <li>I spawn a new branch from the <code class="highlighter-rouge">main</code> branch, and I prefix it with <code class="highlighter-rouge">scratchpad/</code> to signal the intent: <code class="highlighter-rouge">git switch -c scratchpad/yolo</code></li>
   <li>I make commits as I need them (the code might even be broken!), sometimes being informative, sometimes just having <code class="highlighter-rouge">WIP</code> as a comment: <code class="highlighter-rouge">git commit -am 'WIP'</code>, <code class="highlighter-rouge">git commit -am 'Adding docs'</code>, etc</li>
   <li>I can move to another <code class="highlighter-rouge">scratchpad/</code> branch any time I need to explore another design by going back to step 1</li>
   <li>I frequently rebase on top of <code class="highlighter-rouge">main</code> to capture any future conflict: <code class="highlighter-rouge">git rebase origin/main</code></li>
@@ -33,7 +33,7 @@ In such cases I would use a mix of:</p>
 <p>Deriving a clean branch is easy with a <em>soft reset</em>:</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git switch scratchpad/yolo
-git switch -n feature/yolo
+git switch -c feature/yolo
 git reset --soft origin/main
 git commit -a
 </code></pre></div></div>
