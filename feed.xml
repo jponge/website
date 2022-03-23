@@ -1,4 +1,322 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2022-03-11T09:27:29+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle></subtitle><entry><title type="html">A workflow for experiments in Git: scratchpad branches</title><link href="https://julien.ponge.org/blog/a-workflow-for-experiments-in-git-scratchpad-branches/" rel="alternate" type="text/html" title="A workflow for experiments in Git: scratchpad branches" /><published>2022-03-09T00:00:00+01:00</published><updated>2022-03-09T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/a-workflow-for-experiments-in-git-scratchpad-branches</id><content type="html" xml:base="https://julien.ponge.org/blog/a-workflow-for-experiments-in-git-scratchpad-branches/"><![CDATA[<p>Git is a fantastic tool to manage source code.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2022-03-23T23:24:03+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle></subtitle><entry><title type="html">Playing with test fuzzing in Go</title><link href="https://julien.ponge.org/blog/playing-with-test-fuzzing-in-go/" rel="alternate" type="text/html" title="Playing with test fuzzing in Go" /><published>2022-03-23T00:00:00+01:00</published><updated>2022-03-23T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/playing-with-test-fuzzing-in-go</id><content type="html" xml:base="https://julien.ponge.org/blog/playing-with-test-fuzzing-in-go/"><![CDATA[<p>Go 1.18 recently introduced <em>test fuzzing</em>, so I decided to give it a go (no no, I’m not making a stupid joke).</p>
+
+<p><a href="https://go.dev/doc/tutorial/fuzz">Go has a great tutorial about fuzzing</a>.
+The idea behind fuzzing is not to replace traditional tests but rather to complement them by (randomly) iterating over input values to the code under test.
+This is helpful to find bugs and security issues on data whose domain are numbers, byte arrays or strings.</p>
+
+<p>Using fuzzing to detect a division by zero error is most likely a bad idea if the code under test takes a parameter that is directly used to divide, as in:</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span> <span class="n">DoSomeMath</span><span class="p">(</span><span class="n">a</span> <span class="kt">int</span><span class="p">,</span> <span class="n">b</span> <span class="kt">int</span><span class="p">,</span> <span class="n">c</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Catching that <code class="highlighter-rouge">c</code> shall not be <code class="highlighter-rouge">0</code> is possible with fuzzing as at some point <code class="highlighter-rouge">c</code> will be <code class="highlighter-rouge">0</code>, but it should really be one of the first test cases you write.
+Now of course if your code performs a division by a number whose link with the function arguments is not so obvious then fuzzing might help.</p>
+
+<h3 id="palindromes-shall-be-easy-right">Palindromes shall be easy, right?</h3>
+
+<p>So let’s take a quite simple example: <a href="https://en.wikipedia.org/wiki/Palindrome">palindromes</a>.</p>
+
+<p><code class="highlighter-rouge">1221</code>, <code class="highlighter-rouge">//--//</code>, <code class="highlighter-rouge">madam</code> and <code class="highlighter-rouge">eye</code> are valid palindromes, while <code class="highlighter-rouge">foo</code> is not.</p>
+
+<p>Let’s start with a first iteration of a <code class="highlighter-rouge">IsPalindrome</code> function:</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span> <span class="n">IsPalindrome</span><span class="p">(</span><span class="n">str</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+	<span class="n">first</span> <span class="o">:=</span> <span class="m">0</span>
+	<span class="n">last</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="o">-</span> <span class="m">1</span>
+	<span class="k">for</span> <span class="n">first</span> <span class="o">&lt;=</span> <span class="n">last</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="n">str</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">!=</span> <span class="n">str</span><span class="p">[</span><span class="n">last</span><span class="p">]</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="no">false</span>
+		<span class="p">}</span>
+		<span class="n">first</span><span class="o">++</span>
+		<span class="n">last</span><span class="o">--</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="no">true</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>I took a very simple approach to the code, with indexes at both ends of the string that converge to the middle as long as characters are identical.</p>
+
+<p>Let’s have a simple tabular test to cover some basic cases:</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span> <span class="n">TestIsPalindrome</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span><span class="n">testing</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">tests</span> <span class="o">:=</span> <span class="p">[]</span><span class="k">struct</span> <span class="p">{</span>
+		<span class="n">str</span>  <span class="kt">string</span>
+		<span class="n">want</span> <span class="kt">bool</span>
+	<span class="p">}{</span>
+		<span class="p">{</span>
+			<span class="n">str</span><span class="o">:</span>  <span class="s">"eye"</span><span class="p">,</span>
+			<span class="n">want</span><span class="o">:</span> <span class="no">true</span><span class="p">,</span>
+		<span class="p">},</span>
+		<span class="p">{</span>
+			<span class="n">str</span><span class="o">:</span>  <span class="s">"1221"</span><span class="p">,</span>
+			<span class="n">want</span><span class="o">:</span> <span class="no">true</span><span class="p">,</span>
+		<span class="p">},</span>
+		<span class="p">{</span>
+			<span class="n">str</span><span class="o">:</span>  <span class="s">"//--//"</span><span class="p">,</span>
+			<span class="n">want</span><span class="o">:</span> <span class="no">true</span><span class="p">,</span>
+		<span class="p">},</span>
+		<span class="p">{</span>
+			<span class="n">str</span><span class="o">:</span>  <span class="s">"foo"</span><span class="p">,</span>
+			<span class="n">want</span><span class="o">:</span> <span class="no">false</span><span class="p">,</span>
+		<span class="p">},</span>
+	<span class="p">}</span>
+	<span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">tt</span> <span class="o">:=</span> <span class="k">range</span> <span class="n">tests</span> <span class="p">{</span>
+		<span class="n">t</span><span class="o">.</span><span class="n">Run</span><span class="p">(</span><span class="n">tt</span><span class="o">.</span><span class="n">str</span><span class="p">,</span> <span class="k">func</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span><span class="n">testing</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="n">got</span> <span class="o">:=</span> <span class="n">IsPalindrome</span><span class="p">(</span><span class="n">tt</span><span class="o">.</span><span class="n">str</span><span class="p">);</span> <span class="n">got</span> <span class="o">!=</span> <span class="n">tt</span><span class="o">.</span><span class="n">want</span> <span class="p">{</span>
+				<span class="n">t</span><span class="o">.</span><span class="n">Errorf</span><span class="p">(</span><span class="s">"IsPalindrome() = %v, want %v"</span><span class="p">,</span> <span class="n">got</span><span class="p">,</span> <span class="n">tt</span><span class="o">.</span><span class="n">want</span><span class="p">)</span>
+			<span class="p">}</span>
+		<span class="p">})</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Let’s test:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go test                
+PASS
+ok      yolo/playground 0.239s
+$
+</code></pre></div></div>
+
+<p>Great! How about coverage?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go test -coverprofile=coverage.out
+PASS
+coverage: 100.0% of statements
+ok      yolo/playground 0.170s
+</code></pre></div></div>
+
+<p>With 100% of statements, our code must be great… right?</p>
+
+<h3 id="enter-fuzzing-drama">Enter fuzzing! (drama)</h3>
+
+<p>Fuzzing works for types such as numbers, strings, byte arrays, boolean values, etc.
+If your input data is some <code class="highlighter-rouge">struct</code> then you will need to feed its fields with some fuzzed data.
+The fuzzing engine can’t magically generate random <code class="highlighter-rouge">struct</code> values 🤣</p>
+
+<p>Here’s a fuzzing test:</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span> <span class="n">FuzzIsPalindrome</span><span class="p">(</span><span class="n">f</span> <span class="o">*</span><span class="n">testing</span><span class="o">.</span><span class="n">F</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">f</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="s">"kayak"</span><span class="p">)</span>
+	<span class="n">f</span><span class="o">.</span><span class="n">Fuzz</span><span class="p">(</span><span class="k">func</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span><span class="n">testing</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">str</span> <span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">t1</span> <span class="o">:=</span> <span class="n">IsPalindrome</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
+		<span class="n">t2</span> <span class="o">:=</span> <span class="n">reverse</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="o">==</span> <span class="n">str</span>
+		<span class="k">if</span> <span class="n">t1</span> <span class="o">!=</span> <span class="n">t2</span> <span class="p">{</span>
+			<span class="n">t</span><span class="o">.</span><span class="n">Fail</span><span class="p">()</span>
+		<span class="p">}</span>
+	<span class="p">})</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">testing.F</code> type is for fuzzing.
+The <code class="highlighter-rouge">Add</code> function allows passing some <em>seed data</em> for each argument of the function given to <code class="highlighter-rouge">Fuzz</code>.
+Since we have just 1 parameter for fuzzing we just pass 1 string.
+This will be the value of <code class="highlighter-rouge">str</code> at the first iteration, then the engine will derive some other (random) strings.</p>
+
+<p>Checking failures requires having some way to check results.
+This can be a challenge with fuzzing since you don’t know in advance what is the outcome given the input values.
+In this case we use a custom <code class="highlighter-rouge">reverse</code> function that reverses a string, so it’s a cheap way to check the behavior of our <code class="highlighter-rouge">IsPalindrome</code> function (more on <code class="highlighter-rouge">reverse</code> in the next section).
+In other cases you might rely on the code under test to report an error or even panic.
+Your mileage varies, but it can sometimes be difficult to find a way to report when tests pass and when they fail.</p>
+
+<p>So what happens when we run tests just like before?</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go test -v                    
+=== RUN   TestIsPalindrome
+=== RUN   TestIsPalindrome/eye
+=== RUN   TestIsPalindrome/1221
+=== RUN   TestIsPalindrome///--//
+=== RUN   TestIsPalindrome/foo
+--- PASS: TestIsPalindrome (0.00s)
+    --- PASS: TestIsPalindrome/eye (0.00s)
+    --- PASS: TestIsPalindrome/1221 (0.00s)
+    --- PASS: TestIsPalindrome///--// (0.00s)
+    --- PASS: TestIsPalindrome/foo (0.00s)
+=== RUN   FuzzIsPalindrome
+=== RUN   FuzzIsPalindrome/seed#0
+--- PASS: FuzzIsPalindrome (0.00s)
+    --- PASS: FuzzIsPalindrome/seed#0 (0.00s)
+PASS
+ok      yolo/playground 0.246s
+$
+</code></pre></div></div>
+
+<p>We can see that the fuzz test case as been used with the seed data.</p>
+
+<p>Now let’s run some proper fuzzing:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go test -fuzz FuzzIsPalindrome
+fuzz: elapsed: 0s, gathering baseline coverage: 0/8 completed
+fuzz: minimizing 264-byte failing input file
+fuzz: elapsed: 0s, gathering baseline coverage: 3/8 completed
+--- FAIL: FuzzIsPalindrome (0.02s)
+    --- FAIL: FuzzIsPalindrome (0.00s)
+    
+    Failing input written to testdata/fuzz/FuzzIsPalindrome/530aa3ce17341fb6fbfd1f28e61b116d8a1f20c03b796122175963d7a7863256
+    To re-run:
+    go test -run=FuzzIsPalindrome/530aa3ce17341fb6fbfd1f28e61b116d8a1f20c03b796122175963d7a7863256
+FAIL
+exit status 1
+FAIL    yolo/playground 0.270s
+$
+</code></pre></div></div>
+
+<p>Oops! We have a bug! 🙀</p>
+
+<p>We have a new file under <code class="highlighter-rouge">testdata</code>, a folder where you can place all files useful for your package tests but that compilation will ignore.
+This file tells us which input string caused the failure:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat testdata/fuzz/FuzzIsPalindrome/530aa3ce17341fb6fbfd1f28e61b116d8a1f20c03b796122175963d7a7863256 
+go test fuzz v1
+string("11\xc311")
+$
+</code></pre></div></div>
+
+<p>In any case our regular tests now take this input data into account to catch regressions:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go test                       
+--- FAIL: FuzzIsPalindrome (0.00s)
+    --- FAIL: FuzzIsPalindrome/530aa3ce17341fb6fbfd1f28e61b116d8a1f20c03b796122175963d7a7863256 (0.00s)
+FAIL
+exit status 1
+FAIL    yolo/playground 0.214s
+$
+</code></pre></div></div>
+
+<p>Note that since that file catches a bug it shall be under version control.</p>
+
+<h3 id="fixing-bugs">Fixing bugs</h3>
+
+<p>So let’s go back to the failed test: the input string is not a correct UTF-8 string.</p>
+
+<p>We can fix the <code class="highlighter-rouge">IsPalindrome</code> using the <code class="highlighter-rouge">unicode/utf8</code> package <code class="highlighter-rouge">ValidString</code> function:</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span> <span class="n">IsPalindrome</span><span class="p">(</span><span class="n">str</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="o">!</span><span class="n">utf8</span><span class="o">.</span><span class="n">ValidString</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="no">false</span>
+	<span class="p">}</span>
+	<span class="n">first</span> <span class="o">:=</span> <span class="m">0</span>
+	<span class="n">last</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="o">-</span> <span class="m">1</span>
+	<span class="k">for</span> <span class="n">first</span> <span class="o">&lt;=</span> <span class="n">last</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="n">str</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">!=</span> <span class="n">str</span><span class="p">[</span><span class="n">last</span><span class="p">]</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="no">false</span>
+		<span class="p">}</span>
+		<span class="n">first</span><span class="o">++</span>
+		<span class="n">last</span><span class="o">--</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="no">true</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>And now we’re back to green tests:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go test
+PASS
+ok      yolo/playground 0.242s
+$
+</code></pre></div></div>
+
+<p>Are we done?</p>
+
+<p>Let’s do some more fuzzing for 15 seconds:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go test -fuzz FuzzIsPalindrome -fuzztime 15s
+fuzz: elapsed: 0s, gathering baseline coverage: 0/9 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 9/9 completed, now fuzzing with 12 workers
+fuzz: elapsed: 0s, execs: 1406 (5198/sec), new interesting: 2 (total: 11)
+--- FAIL: FuzzIsPalindrome (0.27s)
+    --- FAIL: FuzzIsPalindrome (0.00s)
+    
+    Failing input written to testdata/fuzz/FuzzIsPalindrome/b102348c25c69890607f026bc3186f5faf9de089188791a75c97daf5fdd10caa
+    To re-run:
+    go test -run=FuzzIsPalindrome/b102348c25c69890607f026bc3186f5faf9de089188791a75c97daf5fdd10caa
+FAIL
+exit status 1
+FAIL    yolo/playground 0.526s
+$
+</code></pre></div></div>
+
+<p>Another failure! 😿</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat testdata/fuzz/FuzzIsPalindrome/b102348c25c69890607f026bc3186f5faf9de089188791a75c97daf5fdd10caa
+go test fuzz v1
+string("Ó")
+$
+</code></pre></div></div>
+
+<p>It turns out that we should work on <em>runes</em> (aka the string as a bytes array) rather than accessing string elements by index.</p>
+
+<p>A good hint is the <code class="highlighter-rouge">reverse</code> function we use in tests and that we copy/pasted from somewhere on the <em>Grand Internet</em>:</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span> <span class="n">reverse</span><span class="p">(</span><span class="n">str</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+	<span class="n">r</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">rune</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
+	<span class="k">var</span> <span class="n">res</span> <span class="p">[]</span><span class="kt">rune</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="m">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span> <span class="p">{</span>
+		<span class="n">res</span> <span class="o">=</span> <span class="nb">append</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="kt">string</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>So let’s do the same and work on runes:</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">func</span> <span class="n">IsPalindrome</span><span class="p">(</span><span class="n">str</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="o">!</span><span class="n">utf8</span><span class="o">.</span><span class="n">ValidString</span><span class="p">(</span><span class="n">str</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="no">false</span>
+	<span class="p">}</span>
+	<span class="n">r</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">rune</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
+	<span class="n">first</span> <span class="o">:=</span> <span class="m">0</span>
+	<span class="n">last</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="m">1</span>
+	<span class="k">for</span> <span class="n">first</span> <span class="o">&lt;=</span> <span class="n">last</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="n">first</span><span class="p">]</span> <span class="o">!=</span> <span class="n">r</span><span class="p">[</span><span class="n">last</span><span class="p">]</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="no">false</span>
+		<span class="p">}</span>
+		<span class="n">first</span><span class="o">++</span>
+		<span class="n">last</span><span class="o">--</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="no">true</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We are now back to green:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go test                                     
+PASS
+ok      yolo/playground 0.257s
+$
+</code></pre></div></div>
+
+<p>And let’s do some more fuzzing:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go test -fuzz FuzzIsPalindrome -fuzztime 15s                                                       
+fuzz: elapsed: 0s, gathering baseline coverage: 0/12 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 12/12 completed, now fuzzing with 12 workers
+fuzz: elapsed: 3s, execs: 223057 (74327/sec), new interesting: 24 (total: 36)
+fuzz: elapsed: 6s, execs: 223057 (0/sec), new interesting: 24 (total: 36)
+fuzz: elapsed: 9s, execs: 503462 (93490/sec), new interesting: 26 (total: 38)
+fuzz: elapsed: 12s, execs: 538411 (11648/sec), new interesting: 27 (total: 39)
+fuzz: elapsed: 15s, execs: 580859 (14151/sec), new interesting: 28 (total: 40)
+fuzz: elapsed: 16s, execs: 580859 (0/sec), new interesting: 28 (total: 40)
+PASS
+ok      yolo/playground 16.336s
+$
+</code></pre></div></div>
+
+<p>No more failures, we seem to be much better now! 🎉</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>We just saw test fuzzing in Go.</p>
+
+<ul>
+  <li>Fuzzing works on Go data types.</li>
+  <li>Fuzzing is useful to detect obscure bugs even when your regular tests have excellent coverage.</li>
+  <li>Detecting failing tests can be tricky compared to regular tests. Failures can be detected based on: errors, panics, a side function to check, a property of the function return value, etc.</li>
+  <li>Fuzzing produces test data files that are picked up by tests, and that shall become part of your source code to prevent from future regressions.</li>
+  <li>Fuzzing is not deterministic. But the beauty is that it helps you enrich your deterministic tests.</li>
+</ul>]]></content><author><name></name></author><summary type="html"><![CDATA[Go 1.18 recently introduced test fuzzing, so I decided to give it a go (no no, I’m not making a stupid joke).]]></summary></entry><entry><title type="html">A workflow for experiments in Git: scratchpad branches</title><link href="https://julien.ponge.org/blog/a-workflow-for-experiments-in-git-scratchpad-branches/" rel="alternate" type="text/html" title="A workflow for experiments in Git: scratchpad branches" /><published>2022-03-09T00:00:00+01:00</published><updated>2022-03-09T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/a-workflow-for-experiments-in-git-scratchpad-branches</id><content type="html" xml:base="https://julien.ponge.org/blog/a-workflow-for-experiments-in-git-scratchpad-branches/"><![CDATA[<p>Git is a fantastic tool to manage source code.
 Switching branches is especially easy (if you are a CVS / Subversion veteran you know what I mean).</p>
 
 <p>My workflow to implement features is not very surprising:</p>
@@ -1076,24 +1394,4 @@ This is very useful when running a long build, an upload, etc.</li>
 
 <blockquote>
   <p>As a member of the Vert.x core team, Julien Ponge has up-close-and-personal experience you can trust. The lessons and examples in this book center on principles that will easily transfer to other reactive technologies, empowering you to apply what you learn using Vert.x or the reactive tech of your choice. With the rising tide of microservices and distributed systems, reactive programming is flowing into the mainstream. With Vert.x in Action, you’ll be sailing smoothly!</p>
-</blockquote>]]></content><author><name></name></author><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Hello Red Hat!</title><link href="https://julien.ponge.org/blog/hello-redhat/" rel="alternate" type="text/html" title="Hello Red Hat!" /><published>2018-10-01T00:00:00+02:00</published><updated>2018-10-01T00:00:00+02:00</updated><id>https://julien.ponge.org/blog/hello-redhat</id><content type="html" xml:base="https://julien.ponge.org/blog/hello-redhat/"><![CDATA[<p>Two years ago I ventured into spending some time in industry.
-I was <em>delegated</em> by INSA Lyon to work with Red Hat on the Eclipse Vert.x project.</p>
-
-<p>What had to happen happened: I loved the experience, enjoyed working with the people here, started interesting work, and after 2 years it became just too soon to end the journey.</p>
-
-<p>I always wanted to work at the frontier between industry and academia, and Red Hat gave me the chance and the perfect context to do it.</p>
-
-<p>I am glad to start today as a <em>Principal Software Engineer</em> at Red Hat, and I look forward to the fun challenges ahead!
-The <em>reactive</em> space is an interesting place to be.
-More generally, modern distributed systems are all the rage, and we are no short of challenges to help teams better deliver <em>highly-scalable</em> and <em>resilient</em> systems.</p>
-
-<p>On a side-note: I am <em>not</em> leaving academia.</p>
-
-<p>I will be <em>on leave</em> from INSA Lyon, but I will remain involved with research at the CITI Laboratory and keep collaborating with my team.
-At the very least I will keep supervising Jean-Baptiste (<em>disciple #2</em>) and Patrik (<em>disciple #3</em>) as they work towards getting their PhDs.</p>
-
-<p>I learned and grew up a lot over the past 9 years at INSA.
-It has not always been an easy ride, but it was worth every bit of it.
-I am thankful to the people I worked with here, and I am also very grateful to the institution that gave me every support to follow this path.</p>
-
-<p>Hello, Red Hat!</p>]]></content><author><name></name></author><summary type="html"><![CDATA[Two years ago I ventured into spending some time in industry. I was delegated by INSA Lyon to work with Red Hat on the Eclipse Vert.x project.]]></summary></entry></feed>
+</blockquote>]]></content><author><name></name></author><summary type="html"><![CDATA[]]></summary></entry></feed>
