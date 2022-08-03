@@ -65,7 +65,7 @@ Check out my [full publications page](/academia/publications/) for a more compre
 
 ## PhD students 👨‍🔬 👩‍🔬
 
-* Arthur Navarro (soon in 2022)
+* Arthur Navarro (since March 2022, funded by [Red Hat Research](https://research.redhat.com/)), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Characterizing and optimizing reactive systems, a language-runtime continuum**.
 
 * Patrik Fortier (Since fall 2017, funded by the INSA Lyon / Spie ICS chair on the Internet of Things), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Programming language abstractions for the Internet of Things**.
 
