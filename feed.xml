@@ -1,4 +1,75 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2022-08-03T15:50:31+02:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle></subtitle><entry><title type="html">Playing with test fuzzing in Go</title><link href="https://julien.ponge.org/blog/playing-with-test-fuzzing-in-go/" rel="alternate" type="text/html" title="Playing with test fuzzing in Go" /><published>2022-03-23T00:00:00+01:00</published><updated>2022-03-23T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/playing-with-test-fuzzing-in-go</id><content type="html" xml:base="https://julien.ponge.org/blog/playing-with-test-fuzzing-in-go/"><![CDATA[<p>Go 1.18 recently introduced <em>test fuzzing</em>, so I decided to give it a go (no no, I’m not making a stupid joke).</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2022-08-30T16:15:42+02:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle></subtitle><entry><title type="html">Notes on migrating from the legacy Reactive Streams APIs to Java Flow</title><link href="https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow/" rel="alternate" type="text/html" title="Notes on migrating from the legacy Reactive Streams APIs to Java Flow" /><published>2022-08-30T00:00:00+02:00</published><updated>2022-08-30T00:00:00+02:00</updated><id>https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow</id><content type="html" xml:base="https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow/"><![CDATA[<p>The Java <a href="https://www.reactive-streams.org/">Reactive Streams</a> APIs have been part of the JDK since Java 9.</p>
+
+<p>It is about time for the modern Java ecosystem to migrate away from the legacy APIs (<code class="highlighter-rouge">org.reactivestreams:reactive-streams</code> Maven coordinates) and adopt the interfaces in <a href="https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.html"><code class="highlighter-rouge">java.util.concurrent.Flow</code></a>.</p>
+
+<p>I have recently started migrating the <a href="https://smallrye.io/smallrye-mutiny/">Mutiny</a> and <a href="https://smallrye.io/smallrye-mutiny-zero/">Mutiny Zero</a> libraries and thought these notes would be useful to others as well.</p>
+
+<h3 id="migration-of-isomorphic-apis">Migration of isomorphic APIs</h3>
+
+<p>The good news is that the legacy and the <code class="highlighter-rouge">Flow</code> APIs are isomorphic.
+For instance <code class="highlighter-rouge">org.reactivestreams.Publisher&lt;T&gt;</code> becomes <code class="highlighter-rouge">java.util.concurrent.Flow.Publisher&lt;T&gt;</code>.</p>
+
+<p>One option is to perform string replacements to move from one API to the other, but an IDE like IntelliJ can help you with API migrations (see <code class="highlighter-rouge">Refactor &gt; Migrate Packages and Classes</code>):</p>
+
+<p><img src="/images/posts/2022/intellij-type-migration-flow.png" alt="IntelliJ type migration map" /></p>
+
+<h3 id="transition-period">Transition period</h3>
+
+<p>The bad news is that moving from one API to the other <em>could</em> be a breaking change for your own code bases.</p>
+
+<p>If your code relies on a high-level implementation of <em>Reactive Streams</em> then the change will be mostly transparent at the source code level.
+For instance the <a href="https://hibernate.org/reactive/">Hibernate Reactive</a> library uses Mutiny and none of the low-level <em>Reactive Streams</em> types such as <code class="highlighter-rouge">Publisher</code>, hence the migration of Mutiny to the JDK <code class="highlighter-rouge">Flow</code> APIs requires no change in Hibernate Reactive.</p>
+
+<p>By contrast <a href="https://quarkus.io/guides/resteasy-reactive">RESTEasy Reactive</a> does support exposing endpoints using <code class="highlighter-rouge">org.reactivestreams.Publisher&lt;T&gt;</code> return types (and not just, say, <code class="highlighter-rouge">Multi&lt;T&gt;</code> from Mutiny), so the migration requires more work than just bumping a dependency version.</p>
+
+<ol>
+  <li>In many cases one can simply perform an API migration.</li>
+  <li>In some cases such as that of <em>RESTEasy Reactive</em> there needs to be a transition period where both the legacy and <code class="highlighter-rouge">Flow</code> types will be supported.</li>
+  <li>In some other cases such as using a library with a dependency to the legacy APIs, type adaptation will need to be made.</li>
+</ol>
+
+<h3 id="flow--legacy-type-adapters">Flow / Legacy type adapters</h3>
+
+<p>The <a href="https://github.com/reactive-streams/reactive-streams-jvm/"><code class="highlighter-rouge">reactive-streams-jvm</code> project</a> contains <a href="https://github.com/reactive-streams/reactive-streams-jvm/blob/master/api/src/main/java9/org/reactivestreams/FlowAdapters.java">adapters</a> to go back and forth from legacy types to <code class="highlighter-rouge">Flow</code> types.</p>
+
+<p>You might as well use the <a href="https://smallrye.io/smallrye-mutiny-zero/0.4.3/flow-adapters/">adapters that I developed and maintain as part of Mutiny Zero</a>.</p>
+
+<p>Suppose that you have a library that has yet to migrate to <code class="highlighter-rouge">Flow</code> APIs.
+You can easily turn a <code class="highlighter-rouge">Publisher&lt;T&gt;</code> into a <code class="highlighter-rouge">Flow.Publisher&lt;T&gt;</code>:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">rsPublisher</span> <span class="o">=</span> <span class="n">connect</span><span class="o">(</span><span class="s">"foo"</span><span class="o">);</span> <span class="c1">// ... where 'connect' returns a Publisher&lt;String&gt;</span>
+
+<span class="nc">Flow</span><span class="o">.</span><span class="na">Publisher</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">flowPublisher</span> <span class="o">=</span> <span class="nc">AdaptersToFlow</span><span class="o">.</span><span class="na">publisher</span><span class="o">(</span><span class="n">rsPublisher</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p>Type adapters exist for the 4 interfaces of <em>Reactive Streams</em>, and they have virtually no cost.</p>
+
+<h3 id="passing-the-reactive-streams-tck">Passing the Reactive Streams TCK</h3>
+
+<p>While the <em>Reactive Streams</em> APIs are fairly simple, the evil is in the protocol and semantics.
+This is why publishers, processors and subscribers need to pass the <em>Reactive Streams TCK</em>.</p>
+
+<p><a href="https://github.com/reactive-streams/reactive-streams-jvm/tree/master/tck-flow">There is fortunately a <code class="highlighter-rouge">Flow</code> variant of the TCK</a>, so if you have implemented <em>Reactive Streams</em> the changes will be minimal as you transition to <code class="highlighter-rouge">Flow</code>.</p>
+
+<p>First, the TCK dependency Maven coordinates will become <code class="highlighter-rouge">org.reactivestreams:reactive-streams-tck-flow</code>.</p>
+
+<p>Next, you will need to move your test classes from <code class="highlighter-rouge">org.reactivestreams.tck.PublisherVerification&lt;T&gt;</code> as a base class to <code class="highlighter-rouge">org.reactivestreams.tck.flow.FlowPublisherVerification&lt;T&gt;</code>.</p>
+
+<p>The rest of your TCK test code will be the same, except that some method names have <code class="highlighter-rouge">Flow</code> in them: <code class="highlighter-rouge">createPublisher(long)</code> becomes <code class="highlighter-rouge">createFlowPublisher(long)</code>, etc.
+You can see that in <a href="https://github.com/smallrye/smallrye-mutiny-zero/blob/f795f242e5d88f0a44fb3838da1fcc0f6da49c68/mutiny-zero/src/test/java/mutiny/zero/tck/CompletionStageTckPublisherTest.java">one of the test cases from Mutiny Zero</a>.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Migrating to the JDK <code class="highlighter-rouge">Flow</code> APIs is important for the modern Java ecosystem, especially as <em>Reactive Streams</em> APIs have been part of the JDK since Java 9.</p>
+
+<p>The migration is fairly transparent for application developers as they are unlikely to be directly using the low-level <em>Reactive Streams</em> types.
+This is instead the duty of frameworks, libraries and drivers to do this transition and impose one less dependency in application stacks.</p>
+
+<p>The migration in itself isn’t too hard to perform as types are isomorphic, but there is an inevitable transition period for stacks where multiple dependencies need to be aligned past Java 8 and on top of the JDK <code class="highlighter-rouge">Flow</code> APIs.
+Type adapters represent a virtually no-cost solution when alignment is not possible yet.</p>
+
+<p>The most important part for <em>Reactive Streams</em> implementers remains its TCK as the guardian of interoperability between various libraries.
+As the TCK already ships with a <code class="highlighter-rouge">Flow</code> variant, migrating away from the legacy APIs won’t break the behavior and interoperability of <em>Reactive Streams</em> implementations.</p>]]></content><author><name></name></author><summary type="html"><![CDATA[The Java Reactive Streams APIs have been part of the JDK since Java 9.]]></summary></entry><entry><title type="html">Playing with test fuzzing in Go</title><link href="https://julien.ponge.org/blog/playing-with-test-fuzzing-in-go/" rel="alternate" type="text/html" title="Playing with test fuzzing in Go" /><published>2022-03-23T00:00:00+01:00</published><updated>2022-03-23T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/playing-with-test-fuzzing-in-go</id><content type="html" xml:base="https://julien.ponge.org/blog/playing-with-test-fuzzing-in-go/"><![CDATA[<p>Go 1.18 recently introduced <em>test fuzzing</em>, so I decided to give it a go (no no, I’m not making a stupid joke).</p>
 
 <p><a href="https://go.dev/doc/tutorial/fuzz">Go has a great tutorial about fuzzing</a>.
 The idea behind fuzzing is not to replace traditional tests but rather to complement them by (randomly) iterating over input values to the code under test.
@@ -1374,24 +1445,4 @@ This is very useful when running a long build, an upload, etc.</li>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">BAT_THEME</span><span class="o">=</span><span class="s2">"ansi-dark"</span>
 <span class="nb">export </span><span class="nv">BAT_STYLE</span><span class="o">=</span><span class="s2">"plain"</span>
-</code></pre></div></div>]]></content><author><name></name></author><summary type="html"><![CDATA[I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS. I use iTerm2, Zsh, and a few cool command-line tools.]]></summary></entry><entry><title type="html">Vert.x in Action MEAP</title><link href="https://julien.ponge.org/blog/vertx-in-action-meap/" rel="alternate" type="text/html" title="Vert.x in Action MEAP" /><published>2018-10-23T00:00:00+02:00</published><updated>2018-10-23T00:00:00+02:00</updated><id>https://julien.ponge.org/blog/vertx-in-action-meap</id><content type="html" xml:base="https://julien.ponge.org/blog/vertx-in-action-meap/"><![CDATA[<p><a href="https://www.manning.com/books/vertx-in-action?a_aid=vertx-in-action&amp;a_bid=22152024"><img src="/images/MEAP-cover.png" alt="Cover of Vert.x in Action" /></a></p>
-
-<p>I am happy to announce that my upcoming book <a href="https://www.manning.com/books/vertx-in-action?a_aid=vertx-in-action&amp;a_bid=22152024">Vert.x in Action: Asynchronous and Reactive Applications in Java</a> is now available in early access at Manning!</p>
-
-<p>The road towards completion is still long, but the beauty of the <em>Manning Early Access Program</em> is that readers can give their feedback as chapters are being written and edited.</p>
-
-<p>By purchasing a book, you do participate in making a book even better!</p>
-
-<p>I am looking forward to hearing from you, and I hope that this book will be useful to you.</p>
-
-<blockquote>
-  <p>As enterprise applications become larger and more distributed, new architectural approaches like reactive designs, microservices, and event streams are required knowledge. The Vert.x framework provides a mature, rock-solid toolkit for building reactive applications using Java, Kotlin, or Scala. Vert.x in Action teaches you to build responsive, resilient, and scalable JVM applications with Vert.x using well-established reactive design patterns.</p>
-</blockquote>
-
-<blockquote>
-  <p>Vert.x in Action teaches you to build highly-scalable reactive enterprise applications. In this practical developer’s guide, Vert.x expert Julien Ponge gets you up to speed in the basics of asynchronous programming as you learn to design and code reactive applications. Using the Vert.x asynchronous APIs, you’ll build services including web stack, messaging, authentication, and access control. You’ll also dive into deployment of container-native components with Docker, Kubernetes, and OpenShift. Along the way, you’ll check your app’s health and learn to test its resilience to external service failures.</p>
-</blockquote>
-
-<blockquote>
-  <p>As a member of the Vert.x core team, Julien Ponge has up-close-and-personal experience you can trust. The lessons and examples in this book center on principles that will easily transfer to other reactive technologies, empowering you to apply what you learn using Vert.x or the reactive tech of your choice. With the rising tide of microservices and distributed systems, reactive programming is flowing into the mainstream. With Vert.x in Action, you’ll be sailing smoothly!</p>
-</blockquote>]]></content><author><name></name></author><summary type="html"><![CDATA[]]></summary></entry></feed>
+</code></pre></div></div>]]></content><author><name></name></author><summary type="html"><![CDATA[I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS. I use iTerm2, Zsh, and a few cool command-line tools.]]></summary></entry></feed>

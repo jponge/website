@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Notes on migrating from the legacy Reactive Streams APIs to Java Flow | Julien Ponge</title>
+<meta name="generator" content="Jekyll v4.0.1" />
+<meta property="og:title" content="Notes on migrating from the legacy Reactive Streams APIs to Java Flow" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The Java Reactive Streams APIs have been part of the JDK since Java 9." />
+<meta property="og:description" content="The Java Reactive Streams APIs have been part of the JDK since Java 9." />
+<link rel="canonical" href="https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-08-30T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Notes on migrating from the legacy Reactive Streams APIs to Java Flow" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-08-30T00:00:00+02:00","datePublished":"2022-08-30T00:00:00+02:00","description":"The Java Reactive Streams APIs have been part of the JDK since Java 9.","headline":"Notes on migrating from the legacy Reactive Streams APIs to Java Flow","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow/"},"url":"https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow/"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Notes on migrating from the legacy Reactive Streams APIs to Java Flow</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2022-08-30T00:00:00+02:00" itemprop="datePublished">Aug 30, 2022
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>The Java <a href="https://www.reactive-streams.org/">Reactive Streams</a> APIs have been part of the JDK since Java 9.</p>
+
+<p>It is about time for the modern Java ecosystem to migrate away from the legacy APIs (<code class="highlighter-rouge">org.reactivestreams:reactive-streams</code> Maven coordinates) and adopt the interfaces in <a href="https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.html"><code class="highlighter-rouge">java.util.concurrent.Flow</code></a>.</p>
+
+<p>I have recently started migrating the <a href="https://smallrye.io/smallrye-mutiny/">Mutiny</a> and <a href="https://smallrye.io/smallrye-mutiny-zero/">Mutiny Zero</a> libraries and thought these notes would be useful to others as well.</p>
+
+<h3 id="migration-of-isomorphic-apis">Migration of isomorphic APIs</h3>
+
+<p>The good news is that the legacy and the <code class="highlighter-rouge">Flow</code> APIs are isomorphic.
+For instance <code class="highlighter-rouge">org.reactivestreams.Publisher&lt;T&gt;</code> becomes <code class="highlighter-rouge">java.util.concurrent.Flow.Publisher&lt;T&gt;</code>.</p>
+
+<p>One option is to perform string replacements to move from one API to the other, but an IDE like IntelliJ can help you with API migrations (see <code class="highlighter-rouge">Refactor &gt; Migrate Packages and Classes</code>):</p>
+
+<p><img src="/images/posts/2022/intellij-type-migration-flow.png" alt="IntelliJ type migration map" /></p>
+
+<h3 id="transition-period">Transition period</h3>
+
+<p>The bad news is that moving from one API to the other <em>could</em> be a breaking change for your own code bases.</p>
+
+<p>If your code relies on a high-level implementation of <em>Reactive Streams</em> then the change will be mostly transparent at the source code level.
+For instance the <a href="https://hibernate.org/reactive/">Hibernate Reactive</a> library uses Mutiny and none of the low-level <em>Reactive Streams</em> types such as <code class="highlighter-rouge">Publisher</code>, hence the migration of Mutiny to the JDK <code class="highlighter-rouge">Flow</code> APIs requires no change in Hibernate Reactive.</p>
+
+<p>By contrast <a href="https://quarkus.io/guides/resteasy-reactive">RESTEasy Reactive</a> does support exposing endpoints using <code class="highlighter-rouge">org.reactivestreams.Publisher&lt;T&gt;</code> return types (and not just, say, <code class="highlighter-rouge">Multi&lt;T&gt;</code> from Mutiny), so the migration requires more work than just bumping a dependency version.</p>
+
+<ol>
+  <li>In many cases one can simply perform an API migration.</li>
+  <li>In some cases such as that of <em>RESTEasy Reactive</em> there needs to be a transition period where both the legacy and <code class="highlighter-rouge">Flow</code> types will be supported.</li>
+  <li>In some other cases such as using a library with a dependency to the legacy APIs, type adaptation will need to be made.</li>
+</ol>
+
+<h3 id="flow--legacy-type-adapters">Flow / Legacy type adapters</h3>
+
+<p>The <a href="https://github.com/reactive-streams/reactive-streams-jvm/"><code class="highlighter-rouge">reactive-streams-jvm</code> project</a> contains <a href="https://github.com/reactive-streams/reactive-streams-jvm/blob/master/api/src/main/java9/org/reactivestreams/FlowAdapters.java">adapters</a> to go back and forth from legacy types to <code class="highlighter-rouge">Flow</code> types.</p>
+
+<p>You might as well use the <a href="https://smallrye.io/smallrye-mutiny-zero/0.4.3/flow-adapters/">adapters that I developed and maintain as part of Mutiny Zero</a>.</p>
+
+<p>Suppose that you have a library that has yet to migrate to <code class="highlighter-rouge">Flow</code> APIs.
+You can easily turn a <code class="highlighter-rouge">Publisher&lt;T&gt;</code> into a <code class="highlighter-rouge">Flow.Publisher&lt;T&gt;</code>:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">rsPublisher</span> <span class="o">=</span> <span class="n">connect</span><span class="o">(</span><span class="s">"foo"</span><span class="o">);</span> <span class="c1">// ... where 'connect' returns a Publisher&lt;String&gt;</span>
+
+<span class="nc">Flow</span><span class="o">.</span><span class="na">Publisher</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">flowPublisher</span> <span class="o">=</span> <span class="nc">AdaptersToFlow</span><span class="o">.</span><span class="na">publisher</span><span class="o">(</span><span class="n">rsPublisher</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p>Type adapters exist for the 4 interfaces of <em>Reactive Streams</em>, and they have virtually no cost.</p>
+
+<h3 id="passing-the-reactive-streams-tck">Passing the Reactive Streams TCK</h3>
+
+<p>While the <em>Reactive Streams</em> APIs are fairly simple, the evil is in the protocol and semantics.
+This is why publishers, processors and subscribers need to pass the <em>Reactive Streams TCK</em>.</p>
+
+<p><a href="https://github.com/reactive-streams/reactive-streams-jvm/tree/master/tck-flow">There is fortunately a <code class="highlighter-rouge">Flow</code> variant of the TCK</a>, so if you have implemented <em>Reactive Streams</em> the changes will be minimal as you transition to <code class="highlighter-rouge">Flow</code>.</p>
+
+<p>First, the TCK dependency Maven coordinates will become <code class="highlighter-rouge">org.reactivestreams:reactive-streams-tck-flow</code>.</p>
+
+<p>Next, you will need to move your test classes from <code class="highlighter-rouge">org.reactivestreams.tck.PublisherVerification&lt;T&gt;</code> as a base class to <code class="highlighter-rouge">org.reactivestreams.tck.flow.FlowPublisherVerification&lt;T&gt;</code>.</p>
+
+<p>The rest of your TCK test code will be the same, except that some method names have <code class="highlighter-rouge">Flow</code> in them: <code class="highlighter-rouge">createPublisher(long)</code> becomes <code class="highlighter-rouge">createFlowPublisher(long)</code>, etc.
+You can see that in <a href="https://github.com/smallrye/smallrye-mutiny-zero/blob/f795f242e5d88f0a44fb3838da1fcc0f6da49c68/mutiny-zero/src/test/java/mutiny/zero/tck/CompletionStageTckPublisherTest.java">one of the test cases from Mutiny Zero</a>.</p>
+
+<h3 id="conclusion">Conclusion</h3>
+
+<p>Migrating to the JDK <code class="highlighter-rouge">Flow</code> APIs is important for the modern Java ecosystem, especially as <em>Reactive Streams</em> APIs have been part of the JDK since Java 9.</p>
+
+<p>The migration is fairly transparent for application developers as they are unlikely to be directly using the low-level <em>Reactive Streams</em> types.
+This is instead the duty of frameworks, libraries and drivers to do this transition and impose one less dependency in application stacks.</p>
+
+<p>The migration in itself isn’t too hard to perform as types are isomorphic, but there is an inevitable transition period for stacks where multiple dependencies need to be aligned past Java 8 and on top of the JDK <code class="highlighter-rouge">Flow</code> APIs.
+Type adapters represent a virtually no-cost solution when alignment is not possible yet.</p>
+
+<p>The most important part for <em>Reactive Streams</em> implementers remains its TCK as the guardian of interoperability between various libraries.
+As the TCK already ships with a <code class="highlighter-rouge">Flow</code> variant, migrating away from the legacy APIs won’t break the behavior and interoperability of <em>Reactive Streams</em> implementations.</p>
+
+  </div><a class="u-url" href="/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
