@@ -30,7 +30,7 @@ GEM
       rouge (~> 3.0)
       safe_yaml (~> 1.0)
       terminal-table (~> 1.8)
-    jekyll-feed (0.16.0)
+    jekyll-feed (0.17.0)
       jekyll (>= 3.7, < 5.0)
     jekyll-redirect-from (0.16.0)
       jekyll (>= 3.3, < 5.0)
@@ -69,6 +69,7 @@ GEM
     terminal-table (1.8.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
     unicode-display_width (1.8.0)
+    webrick (1.7.0)
 
 PLATFORMS
   ruby
@@ -80,6 +81,7 @@ DEPENDENCIES
   jekyll-redirect-from
   jekyll-textile-converter
   minima
+  webrick (~> 1.7)
 
 BUNDLED WITH
-   2.2.32
+   2.3.26
