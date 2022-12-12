@@ -2,7 +2,7 @@
 set -ea
 
 GHP_DIR=_gh-pages
-REPO=git@github.com:jponge/website.git
+REPO=https://github.com/jponge/website.git
 
 echo "⚙️  Building..."
 bundle exec jekyll clean
