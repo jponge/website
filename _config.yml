@@ -15,7 +15,7 @@ linkedin_username: JulienPonge
 rss: rss
 mastodon:
     - username: jponge
-      instance: floss.social
+      instance: vivaldi.net
 
 header_pages:
   - blog/index.md
