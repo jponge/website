@@ -13,9 +13,6 @@ twitter_username: jponge
 github_username:  jponge
 linkedin_username: JulienPonge
 rss: rss
-mastodon:
-    - username: jponge
-      instance: social.vivaldi.net
 
 header_pages:
   - blog/index.md
