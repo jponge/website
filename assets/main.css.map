@@ -3,10 +3,10 @@
 	"file": "main.css",
 	"sources": [
 		"main.scss",
-		"../../../../../opt/homebrew/lib/ruby/gems/3.0.0/gems/minima-2.5.1/_sass/minima.scss",
-		"../../../../../opt/homebrew/lib/ruby/gems/3.0.0/gems/minima-2.5.1/_sass/minima/_base.scss",
-		"../../../../../opt/homebrew/lib/ruby/gems/3.0.0/gems/minima-2.5.1/_sass/minima/_layout.scss",
-		"../../../../../opt/homebrew/lib/ruby/gems/3.0.0/gems/minima-2.5.1/_sass/minima/_syntax-highlighting.scss"
+		"../../../../opt/homebrew/lib/ruby/gems/3.0.0/gems/minima-2.5.1/_sass/minima.scss",
+		"../../../../opt/homebrew/lib/ruby/gems/3.0.0/gems/minima-2.5.1/_sass/minima/_base.scss",
+		"../../../../opt/homebrew/lib/ruby/gems/3.0.0/gems/minima-2.5.1/_sass/minima/_layout.scss",
+		"../../../../opt/homebrew/lib/ruby/gems/3.0.0/gems/minima-2.5.1/_sass/minima/_syntax-highlighting.scss"
 	],
 	"sourcesContent": [
 		"@import url('https://fonts.googleapis.com/css2?family=Cousine:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');\n\n$base-font-family: \"IBM Plex Sans\", sans-serif;\n$base-font-size: 16px;\n\nmain {\n    font-family: \"IBM Plex Serif\", serif;\n}\n\nh1, h2, h3, h4, h5, h6 {\n    font-family: \"IBM Plex Sans\", sans-serif;\n}\n\npre, code {\n    font-family: \"Cousine\", monospace;\n}\n\n.front-pictures {\n    margin-bottom: 2rem;\n}\n\n.profile-pic {\n    box-shadow: 0px 4px 16px 0px #666;\n    transform: rotate(2deg);\n}\n\n.book-cover {\n    height: 360px;\n    margin-left: 3rem;\n    box-shadow: 0px 4px 16px 0px #666;\n    transform: rotate(2deg);\n}\n\n@import \"minima\";\n",

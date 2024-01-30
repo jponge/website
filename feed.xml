@@ -1,4 +1,217 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2022-12-12T22:38:28+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle></subtitle><entry><title type="html">Notes on migrating from the legacy Reactive Streams APIs to Java Flow</title><link href="https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow/" rel="alternate" type="text/html" title="Notes on migrating from the legacy Reactive Streams APIs to Java Flow" /><published>2022-08-30T00:00:00+02:00</published><updated>2022-08-30T00:00:00+02:00</updated><id>https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow</id><content type="html" xml:base="https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow/"><![CDATA[<p>The Java <a href="https://www.reactive-streams.org/">Reactive Streams</a> APIs have been part of the JDK since Java 9.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2024-01-30T10:14:10+01:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle></subtitle><entry><title type="html">The power of conventional commits</title><link href="https://julien.ponge.org/blog/the-power-of-conventional-commits/" rel="alternate" type="text/html" title="The power of conventional commits" /><published>2024-01-30T00:00:00+01:00</published><updated>2024-01-30T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/the-power-of-conventional-commits</id><content type="html" xml:base="https://julien.ponge.org/blog/the-power-of-conventional-commits/"><![CDATA[<p>I had been randomly exposed to <a href="https://www.conventionalcommits.org/">conventional commits</a> as part of my opensource activities, not really paying attention to this <em>weird</em> form of commit messages.
+It is only in the recent months that I have taken a serious look at them and realised how they were <strong>much better commits</strong>.</p>
+
+<p>Here is why I think you should pay notice, too! 😃</p>
+
+<h2 id="how-much-of-a-commit-is-a-commit">How much of a commit is a commit?</h2>
+
+<p>This is a classic problem in software engineering: you create a branch, you make some changes, and then you create a Git commit.
+In theory your commit is self-contained: it is a documentation update, or it is a bug fix, or it is a new feature, etc.</p>
+
+<p>Disciplined and self-contained commits are great because the Git history becomes very readable.
+It is also very easy to selectively drop a commit if something goes wrong (<code class="highlighter-rouge">git revert</code>) or port a given change to another (maintenance) branch (<code class="highlighter-rouge">git cherry-pick</code>).</p>
+
+<p>Of course theory and practice tend to disagree, especially as we work under time-sensitive constraints, so we often end up with commits that mix several changes in one, or branches with series of commits that should really be just one.</p>
+
+<p>Another problem is that of writing <em>proper</em> Git commits.
+After all, <a href="https://git-scm.com/docs/git-commit">a Git commit message is loosely defined</a> with the first line being a title / summary of the changes, and the longer body providing more details, as in:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Fixes a race condition in the concatMap operator
+
+Fixes concurrent signals handling leading to an inconsistent state,
+especially with the termination signals of the inner and outer
+subscribers.
+
+Fixes: #666
+QA-Approver: MrBean
+</code></pre></div></div>
+
+<p>So how are <a href="https://www.conventionalcommits.org/">conventional commits</a> any better than this?</p>
+
+<h2 id="from-human-readable-to-human--machine-readable">From human-readable to human &amp; machine-readable</h2>
+
+<p>The previous Git commit message was relatively well-structured:</p>
+<ul>
+  <li>the first line had a precise and concise summary, and</li>
+  <li>the next paragraph provided some insights on the changes being made, and</li>
+  <li>the footers provided key / value pairs that a tool could use to extract metadata: the bug being fixed, and who performed the quality assurance checks.</li>
+</ul>
+
+<p><a href="https://www.conventionalcommits.org/">Conventional commits</a> are nothing but taking this approach a step further by adding a structure to commit messages.
+Back to this example, this would give the following commit:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fix(operators): race condition in the concatMap operator
+
+Fixes concurrent signals handling leading to an inconsistent state,
+especially with the termination signals of the inner and outer
+subscribers.
+
+Issue: #666
+QA-Approver: MrBean
+</code></pre></div></div>
+
+<p>While this might look like a cosmetic change, this message has more structure!</p>
+
+<ul>
+  <li><code class="highlighter-rouge">fix</code> means that the change is a bug-fix. Other common types can be <code class="highlighter-rouge">feat</code> (feature), <code class="highlighter-rouge">docs</code> (documentation updates), <code class="highlighter-rouge">refactor</code> (refactoring), etc. In fact, you can create your own conventions around it, although the <a href="https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines">Angular conventions</a> are both widely accepted and fairly complete.</li>
+  <li>The <code class="highlighter-rouge">operators</code> scope gives more context: the fix applies to some <em>“operators”</em> area of the code base. Scoping is optional, though.</li>
+  <li>The rest of the first line gives a quick summary.</li>
+  <li>The body provides details, as before.</li>
+  <li>The footers can be used to reference issues, pull-requests, specifications, process sign-offs… actually anything that would make sense for a tool to extract as a commit metadata.</li>
+</ul>
+
+<p>The structure of a <em>conventional commit</em> message is as simple as:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;type&gt;[optional scope]: &lt;description&gt;
+
+[optional body]
+
+[optional footer(s)]
+</code></pre></div></div>
+
+<p>Note that the same ideas can be found in other approaches such as <a href="https://gitmoji.dev/">GitMoji</a>.
+Sure, emojis are fun to have in commits, but I personally find it easier to decipher that a commit is a bug fix when it starts with <code class="highlighter-rouge">fix:</code> rather than <code class="highlighter-rouge">🐛</code> (but my friend Philippe probably thinks otherwise 😇).</p>
+
+<h2 id="benefit-1---automatic-release-changelogs">Benefit #1 - Automatic release changelogs</h2>
+
+<p><a href="https://www.conventionalcommits.org/">Conventional commits</a> can be parsed by tools, and a very nice use-case is that of generating release changelogs.</p>
+
+<p>Here is a screenshot of what it looks like for the release of <a href="https://github.com/smallrye/smallrye-mutiny/releases/tag/2.5.6">Mutiny 2.5.6</a>:</p>
+
+<p><img src="/images/posts/2024/jreleaser-sample-changelog.png" alt="Changelog of the release of Mutiny 2.5.6" /></p>
+
+<p>I introduced <a href="https://jreleaser.org/">JReleaser</a> as part of the Mutiny release process when I made the project adopt conventional commits.
+The tool is able to group commits by kind (e.g., features, documentation updates, bug fixes, etc).
+It also provides a summary of the merged-pull requests, provided not just the pointers to such pull requests but also those of the fixed issues.</p>
+
+<h2 id="benefit-2---no-excuse-for-not-doing-semantic-versioning">Benefit #2 - No excuse for not doing semantic versioning</h2>
+
+<p>Shall your next version be 2.6.0 or 2.5.6?</p>
+
+<p>If you are maintaining a library then sticking to <a href="https://semver.org/">semantic versioning</a> should be a no-brainer.</p>
+<ul>
+  <li>Have you made breaking changes? Bump to 3.0.0.</li>
+  <li>Have you added new features while keeping backward compatibility? Bump to 2.6.0.</li>
+  <li>Have you <em>“only”</em> done bug fixes, documentation updates, non-user facing API internal changes? Bump to 2.5.6.</li>
+</ul>
+
+<p>This is, again, another good example where the theory is nice but practice slips 🤣
+This can be due to the marketing value of a version number, or just due to the fact that you have a bunch of changes and the last release was 3 months ago so you decide to raise the minor version number.</p>
+
+<p>We have all done that, but as library consumers it is quite easy to see how rigorous semantic versioning helps.</p>
+
+<p>Conventional commits make it quite easy to decide what the next release number shall be.
+I know that some projects leave it completely to release scripts to decide on the version number by inspecting commits.
+I personally prefer to inspect the Git history and have the last word:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git log --oneline --no-merges
+b9c3b93e build(deps): bump codecov/codecov-action from 3.1.4 to 3.1.5
+2ec49880 chore(release): set development version to 999-SNAPSHOT
+bc3ba4fd (tag: 2.5.6) chore(release): release Mutiny 2.5.6
+f18296bb (origin/fix/concatmap-early-null-innerUpstream) fix(concatMap): deadlock on inner upstream subscription
+796003cc fix(concatMap): check for early null inner subscriber
+32fdd3e3 build(deps): bump org.assertj:assertj-core from 3.25.1 to 3.25.2
+9dc8bdcd chore(release): set development version to 999-SNAPSHOT
+a5fca500 (tag: 2.5.5) chore(release): release Mutiny 2.5.5
+be54f155 (origin/fix/1494) fix: race condition on cancellation in UniCallbackSubscriber
+4811b4b4 (origin/refactor/concatmap-no-cas-on-unbounded) refactor: avoid a compare&amp;swap on unbounded requests
+b8da91f3 chore(release): clear RevAPI breaking change justifications
+c26a308f chore(release): set development version to 999-SNAPSHOT
+</code></pre></div></div>
+
+<p>In this short excerpt you can see that the last commits between tags did not have features (<code class="highlighter-rouge">feat: xyz</code>), hence hinting at patch releases.
+I have to admit that before adopting conventional commits I could have arbitrarily done minor rather than patch releases.</p>
+
+<p>The practice of conventional commits might also help me in deciding to delay the merge of a given pull-request.
+If I have bug fixes and new features in the pipe then I might first have a quick patch release, then merge the new features to plan a new minor (or even major) release.</p>
+
+<p>In fact I believe library maintainers shall not be afraid to frequently bump the major release number.
+If your web browser is at version 121 then why don’t you let your library be at version 12 if you can’t avoid breaking changes, even low-impact ones?
+At least downstream consumers of your library will be aware that you take versionning seriously.</p>
+
+<h2 id="benefit-3---hack-freely-and-make-sense-of-your-changes-later">Benefit #3 - Hack freely and make sense of your changes later</h2>
+
+<p>This might sound counter-intuitive, but conventional commits can be liberating!
+How is that possible, since each commit should be nicely self-contained?</p>
+
+<p>The trick is that because you know that you <em>eventually</em> need to expose conventional commits in your pull-requests, you will not be tempted to make half-backed commits.</p>
+
+<p>There are various ways to achieve this, but I suggest you have a look at <a href="/blog/a-workflow-for-experiments-in-git-scratchpad-branches/">my previous blog on scratchpad branch workflows</a>.
+The idea is pretty simple:</p>
+<ul>
+  <li>you start making changes in dirty branches where you can commit as often as you want, and use any message as you want, then</li>
+  <li>you eventually extract clean branches with nice, self-contained commits, and while I did not know at the time, conventional commits are a perfect fit to such a workflow!</li>
+</ul>
+
+<h2 id="bonus-1---how-to-check-pull-requests">Bonus #1 - How to check pull requests?</h2>
+
+<p>If your project is hosted on GitHub and uses GitHub Action, then it is quite easy to check that a pull-request meets conventional commits.</p>
+
+<p>There are several options that I had tested, but the one that worked better is <a href="https://github.com/wagoid/commitlint-github-action">wagoid/commitlint-github-action</a>.</p>
+
+<p>You can have a simple job in your workflow that looks like this, and it will by default use the Angular conventions:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">conventional-commits</span><span class="pi">:</span>
+<span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+<span class="na">name</span><span class="pi">:</span> <span class="s">Check conventional commits</span>
+<span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v4</span>
+    <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">wagoid/commitlint-github-action@v5</span>
+</code></pre></div></div>
+
+<p>Some people use local Git hooks to make sure that people do not commit wrong commits in the first place, but this is too much for me.</p>
+
+<h2 id="bonus-2---dependabot-and-conventional-commits">Bonus #2 - Dependabot and conventional commits</h2>
+
+<p>This again applies to projects hosted on GitHub.
+If you are using <a href="https://docs.github.com/en/code-security/dependabot">dependabot</a> to help you keeping dependencies up-to-date, then you need to configure it so it makes conventional commits.</p>
+
+<p>Simply edit your <code class="highlighter-rouge">.github/dependabot.yml</code> file to look like:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="m">2</span>
+<span class="na">updates</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">package-ecosystem</span><span class="pi">:</span> <span class="s">maven</span>
+  <span class="na">directory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/"</span>
+  <span class="na">schedule</span><span class="pi">:</span>
+    <span class="na">interval</span><span class="pi">:</span> <span class="s">daily</span>
+  <span class="na">commit-message</span><span class="pi">:</span>
+    <span class="na">prefix</span><span class="pi">:</span> <span class="s2">"</span><span class="s">build"</span>
+    <span class="na">include</span><span class="pi">:</span> <span class="s2">"</span><span class="s">scope"</span>
+  <span class="na">open-pull-requests-limit</span><span class="pi">:</span> <span class="m">10</span>
+<span class="pi">-</span> <span class="na">package-ecosystem</span><span class="pi">:</span> <span class="s">github-actions</span>
+  <span class="na">directory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/"</span>
+  <span class="na">schedule</span><span class="pi">:</span>
+    <span class="na">interval</span><span class="pi">:</span> <span class="s">weekly</span>
+  <span class="na">commit-message</span><span class="pi">:</span>
+    <span class="na">prefix</span><span class="pi">:</span> <span class="s2">"</span><span class="s">build"</span>
+    <span class="na">include</span><span class="pi">:</span> <span class="s2">"</span><span class="s">scope"</span>
+</code></pre></div></div>
+
+<p>The relevant part is in the <code class="highlighter-rouge">commit-message</code> object, which gives you commits of the form:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>build(deps): bump org.assertj:assertj-core from 3.25.1 to 3.25.2
+</code></pre></div></div>
+
+<p>The only minor glitch and well-known issue is that dependabot will make description lines that can be too long for the linter to pass.
+In my case I regularly have dependabot pull-requests that fail the <code class="highlighter-rouge">wagoid/commitlint-github-action</code> checks just because it makes for long lines.
+This easily happens with long Maven coordinates.</p>
+
+<p>There are two options:</p>
+<ol>
+  <li>just ignore this and proceed with a merge as long as other checks are green, knowing that many tools such as <a href="https://jreleaser.org/">JReleaser</a> do not care about the length of description lines, or</li>
+  <li>edit the <code class="highlighter-rouge">wagoid/commitlint-github-action</code> configuration with relaxed custom rules (<em>I will leave this as an exercice to the astute reader as we said in my past professional life</em> 😄).</li>
+</ol>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I hope that this blog post will have motivated you to explore <a href="https://www.conventionalcommits.org/">conventional commits</a>.
+I don’t use them in all of my projects, but I found them to be useful in the important ones that I maintain, with <a href="https://smallrye.io/smallrye-mutiny/latest/">Mutiny</a> being a good showcase as it is a critical component of larger projects such as <a href="https://quarkus.io/">Quarkus</a>.</p>
+
+<p>At first conventional commits look a bit weird and you will repeatedly wonder what is the format as you make commits.
+Still, they will quickly become a second nature and you will realise the benefits in terms to your software engineering processes.</p>
+
+<p>At the very least they will be a useful companion when it comes to planning, crafting and performing releases.
+And perhaps you will <em>finally</em> have that clean Git history, just like in the textbooks 🎉</p>]]></content><author><name></name></author><summary type="html"><![CDATA[I had been randomly exposed to conventional commits as part of my opensource activities, not really paying attention to this weird form of commit messages. It is only in the recent months that I have taken a serious look at them and realised how they were much better commits.]]></summary></entry><entry><title type="html">Notes on migrating from the legacy Reactive Streams APIs to Java Flow</title><link href="https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow/" rel="alternate" type="text/html" title="Notes on migrating from the legacy Reactive Streams APIs to Java Flow" /><published>2022-08-30T00:00:00+02:00</published><updated>2022-08-30T00:00:00+02:00</updated><id>https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow</id><content type="html" xml:base="https://julien.ponge.org/blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow/"><![CDATA[<p>The Java <a href="https://www.reactive-streams.org/">Reactive Streams</a> APIs have been part of the JDK since Java 9.</p>
 
 <p>It is about time for the modern Java ecosystem to migrate away from the legacy APIs (<code class="highlighter-rouge">org.reactivestreams:reactive-streams</code> Maven coordinates) and adopt the interfaces in <a href="https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.html"><code class="highlighter-rouge">java.util.concurrent.Flow</code></a>.</p>
 
@@ -1300,149 +1513,4 @@ keybase pgp export --secret -q IDENTIFIER | gpg --import --allow-secret-key-impo
 
 <p>Thanks again to <a href="https://github.com/pstadler/keybase-gpg-github">Patrick Stadler</a> for the original instructions.</p>
 
-<p>Have fun!</p>]]></content><author><name></name></author><summary type="html"><![CDATA[Edit 2020/05/15 Keybase has been acqui-hired by Zoom. Time will tell if Keybase will remain actively developed and secured, but perhaps it will be better to just go back to plain GnuPG with the pains if you need a key pair.]]></summary></entry><entry><title type="html">A good terminal experience with iTerm2 and ZSH on macOS</title><link href="https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/" rel="alternate" type="text/html" title="A good terminal experience with iTerm2 and ZSH on macOS" /><published>2019-11-14T00:00:00+01:00</published><updated>2019-11-14T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos</id><content type="html" xml:base="https://julien.ponge.org/blog/a-good-terminal-experience-with-iterm2-and-zsh-on-macos/"><![CDATA[<p>I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS.
-I use iTerm2, Zsh, and a few cool command-line tools.</p>
-
-<h3 id="iterm2">iTerm2</h3>
-
-<p>I am working on macOS, and I prefer the <a href="https://iterm2.com/">iTerm2</a> terminal emulator over the macOS <em>Terminal</em> application:</p>
-
-<p><img src="/images/posts/2019/iterm2.png" alt="iTerm2 in Action" /></p>
-
-<p>I especially enjoy the ability to split panes horizontally and vertically, as well as the keyboard shortcuts to move around.</p>
-
-<p>I use the minimal theme with the tab bar on top and the status bar in the bottom with a few helper icons like CPU usage and current process.
-The color theme is <a href="https://draculatheme.com/">Dracula</a>.
-I like this theme very much also in other tools, notably <em>Visual Studio Code</em> which is my currently preferred editor aside from <em>IntelliJ IDEA</em> for Java projects.
-I also use the <a href="https://github.com/microsoft/cascadia-code">Cascadia font from Microsoft</a> which is my preferred monospace font these days.</p>
-
-<h3 id="dot-files">Dot files</h3>
-
-<p>Everyone has their preferences for managing dot files.</p>
-
-<p>I am using a simple repository for that, with a bill-of-materials for applications to install automatically: <a href="https://github.com/jponge/dotfiles/tree/2019">https://github.com/jponge/dotfiles/tree/2019</a> (the 2019 edition, switch to another branch if you want).</p>
-
-<p>The dot files get sym-linked using <a href="https://www.gnu.org/software/stow/">GNU Stow</a>.
-For instance <code class="highlighter-rouge">~/.zshrc</code> points to <code class="highlighter-rouge">~/dotfiles/home/.zshrc</code>.</p>
-
-<p>There are various environment variables and shell functions that I rely on.
-They can be found in <code class="highlighter-rouge">~/dotfiles/env</code>, and they get loaded from <code class="highlighter-rouge">~/.zshrc</code> (or <code class="highlighter-rouge">~/.bash_profile</code> if you prefer Bash) using a simple for-loop:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>envfile <span class="k">in</span> ~/dotfiles/env/<span class="k">*</span>.sh<span class="p">;</span> <span class="k">do
-  </span><span class="nb">source</span> <span class="k">${</span><span class="nv">envfile</span><span class="k">}</span>
-<span class="k">done</span>
-</code></pre></div></div>
-
-<h3 id="oh-my-zsh">Oh My Zsh</h3>
-
-<p>There exist several Zsh plugin managers, but if you want something with sensible defaults and batteries included then <a href="https://ohmyz.sh/">Oh My Zsh</a> is a no-brainer.</p>
-
-<p>Once you have it installed, you will open <code class="highlighter-rouge">~/.zshrc</code> and start tweaking the configuration.
-It is very likely that you will start with the theme 😉</p>
-
-<p>I personally like the default <code class="highlighter-rouge">robbyrussell</code>, but you can also use a random theme and eventually find something you like better:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># (...)</span>
-<span class="nv">ZSH_THEME</span><span class="o">=</span><span class="s2">"random"</span>
-<span class="c"># (...)</span>
-</code></pre></div></div>
-
-<p>Next come the plugins, and this is all about the tools that you need to use on daily basis.
-Check <code class="highlighter-rouge">~/.oh-my-zsh/plugins/</code> to see all the plugins that come with <em>Oh My Zsh</em>.</p>
-
-<p>I personally have the following plugins in use, more on them in the next sections:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">plugins</span><span class="o">=(</span>
-  git
-  docker
-  fzf
-  httpie
-  minikube
-  zsh-syntax-highlighting
-  zsh-autosuggestions
-<span class="o">)</span>
-</code></pre></div></div>
-
-<p>I’d recommend not having too many plugins in use.
-You can often replace a plugin with loading a Zsh completion from the tool.</p>
-
-<h3 id="fzf-a-command-line-fuzzy-finder">fzf, a command-line fuzzy finder</h3>
-
-<p>You will have to install the tool for the corresponding <em>Oh My Zsh</em> plugin to work, so go to <a href="https://github.com/junegunn/fzf">https://github.com/junegunn/fzf</a>.</p>
-
-<p>This tool will help your for completions. A lot 😉</p>
-
-<h3 id="syntax-highlighting">Syntax highlighting</h3>
-
-<p>This external plugin provides syntax highlighting as you type shell commands, much like the <a href="http://www.fishshell.com/">Fish shell</a> would do.
-This is very useful, especially since you get instant feedback on non-existing commands, etc.</p>
-
-<p>Head over to <a href="https://github.com/zsh-users/zsh-syntax-highlighting">https://github.com/zsh-users/zsh-syntax-highlighting</a> for installation instructions, aka:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/zsh-users/zsh-syntax-highlighting.git <span class="se">\</span>
-    <span class="k">${</span><span class="nv">ZSH_CUSTOM</span><span class="k">:-</span><span class="p">~/.oh-my-zsh/custom</span><span class="k">}</span>/plugins/zsh-syntax-highlighting
-</code></pre></div></div>
-
-<h3 id="auto-suggestions">Auto-suggestions</h3>
-
-<p>There is another useful plugin for having a Fish-like experience with completion suggestions based on past history.</p>
-
-<p>Go to <a href="https://github.com/zsh-users/zsh-autosuggestions">https://github.com/zsh-users/zsh-autosuggestions</a> for more details, or simply run:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/zsh-users/zsh-autosuggestions <span class="se">\</span>
-    <span class="k">${</span><span class="nv">ZSH_CUSTOM</span><span class="k">:-</span><span class="p">~/.oh-my-zsh/custom</span><span class="k">}</span>/plugins/zsh-autosuggestions
-</code></pre></div></div>
-
-<h3 id="misc-useful-command-line-tools">Misc. useful command-line tools</h3>
-
-<p>There are a bunch of command-line tools that I use but that not everyone may know.</p>
-
-<ul>
-  <li><a href="https://httpie.org/">HTTPie</a> is great for doing HTTP requests. It comes with syntax highlighting and sensible ways to pass form fields, JSON data, files, etc. It is much better that <code class="highlighter-rouge">cURL</code> in a development context.</li>
-  <li><code class="highlighter-rouge">pstree</code> to list processes as a parent-child tree. This is not installed by default on macOS.</li>
-  <li><a href="https://github.com/sharkdp/bat">bat</a> is similar to <code class="highlighter-rouge">cat</code>, except it offers syntax highlighting (and other goodies).</li>
-  <li><a href="https://github.com/watchexec/watchexec">watchexec</a> is a general-purpose tool to watch files and trigger a command in response to changes.</li>
-  <li><a href="https://github.com/wagoodman/dive">dive</a> is a tool for exploring Docker images, and especially see what each layer brings to the filesystem.</li>
-  <li><a href="https://github.com/ddollar/foreman">foreman</a> is a tool for running multiple processes. You just specify commands in a <code class="highlighter-rouge">Procfile</code>, and then start them all and check their logs. It is very useful in development when you need to start many processes.</li>
-  <li><a href="https://hub.github.com/">hub</a> is the GitHub command-line tool for interacting with repositories. It is especially useful for checking out pull-requests.</li>
-  <li><a href="http://plantuml.com/">plantuml</a> is a fantastic tool for generating all sorts of diagrams from… text.</li>
-  <li><a href="https://github.com/shyiko/jabba">jabba</a> is a tool for managing Java virtual machines. It is frequently updated with builds of OpenJDK, Azul Zulu, GraalVM, Amazon Corretto, OpenJ9, etc.</li>
-</ul>
-
-<h4 id="edited-december-3rd-2019">Edited: December 3rd 2019</h4>
-
-<p>Since I wrote that post I came across further great command-line tools and tips 😉</p>
-
-<ul>
-  <li><a href="https://github.com/jonmosco/kube-ps1">kube-ps1</a> adds current Kubernetes context and namespace to the shell prompt.
-I do not enable it by default and I have a function ready when I need to enable it:</li>
-</ul>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>use_kube_ps1<span class="o">()</span> <span class="o">{</span>
-    <span class="nb">source</span> <span class="s2">"/usr/local/opt/kube-ps1/share/kube-ps1.sh"</span>
-    <span class="nv">PS1</span><span class="o">=</span><span class="s1">'$(kube_ps1)'</span><span class="nv">$PS1</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<ul>
-  <li><a href="https://hisham.hm/htop/">htop</a> is a replacement for <code class="highlighter-rouge">top</code> with a much much improved user interface.</li>
-  <li><a href="https://github.com/sharkdp/fd">fd</a> is a modern alternative to <code class="highlighter-rouge">find</code>.</li>
-  <li><a href="https://github.com/variadico/noti">noti</a> executes a command and sends a notification when done.
-This is very useful when running a long build, an upload, etc.</li>
-  <li><a href="https://github.com/ggreer/the_silver_searcher">ag</a> is a code search tool that can replace <code class="highlighter-rouge">grep</code> in many situations.</li>
-</ul>
-
-<p>I also added some aliases to simplify my <code class="highlighter-rouge">kubectl</code> usage:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">alias </span><span class="nv">k</span><span class="o">=</span><span class="s2">"kubectl"</span>
-<span class="nb">alias </span><span class="nv">ka</span><span class="o">=</span><span class="s2">"kubectl apply -f"</span>
-<span class="nb">alias </span><span class="nv">kd</span><span class="o">=</span><span class="s2">"kubectl delete -f"</span>
-<span class="nb">alias </span><span class="nv">kgp</span><span class="o">=</span><span class="s2">"kubectl get pods"</span>
-<span class="nb">alias </span><span class="nv">kgs</span><span class="o">=</span><span class="s2">"kubectl get services"</span>
-</code></pre></div></div>
-
-<p>Finally my growing usage of <code class="highlighter-rouge">bat</code> instead of <code class="highlighter-rouge">cat</code> has prompted me to define the following environment variables to have more sensible defaults:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">BAT_THEME</span><span class="o">=</span><span class="s2">"ansi-dark"</span>
-<span class="nb">export </span><span class="nv">BAT_STYLE</span><span class="o">=</span><span class="s2">"plain"</span>
-</code></pre></div></div>]]></content><author><name></name></author><summary type="html"><![CDATA[I spend a fair amount of time in terminal emulators, and here is how I get a good experience on macOS. I use iTerm2, Zsh, and a few cool command-line tools.]]></summary></entry></feed>
+<p>Have fun!</p>]]></content><author><name></name></author><summary type="html"><![CDATA[Edit 2020/05/15 Keybase has been acqui-hired by Zoom. Time will tell if Keybase will remain actively developed and secured, but perhaps it will be better to just go back to plain GnuPG with the pains if you need a key pair.]]></summary></entry></feed>

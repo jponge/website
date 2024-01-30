@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>The power of conventional commits | Julien Ponge</title>
+<meta name="generator" content="Jekyll v4.0.1" />
+<meta property="og:title" content="The power of conventional commits" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I had been randomly exposed to conventional commits as part of my opensource activities, not really paying attention to this weird form of commit messages. It is only in the recent months that I have taken a serious look at them and realised how they were much better commits." />
+<meta property="og:description" content="I had been randomly exposed to conventional commits as part of my opensource activities, not really paying attention to this weird form of commit messages. It is only in the recent months that I have taken a serious look at them and realised how they were much better commits." />
+<link rel="canonical" href="https://julien.ponge.org/blog/the-power-of-conventional-commits/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/the-power-of-conventional-commits/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-01-30T00:00:00+01:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="The power of conventional commits" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-01-30T00:00:00+01:00","datePublished":"2024-01-30T00:00:00+01:00","description":"I had been randomly exposed to conventional commits as part of my opensource activities, not really paying attention to this weird form of commit messages. It is only in the recent months that I have taken a serious look at them and realised how they were much better commits.","headline":"The power of conventional commits","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/the-power-of-conventional-commits/"},"url":"https://julien.ponge.org/blog/the-power-of-conventional-commits/"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">The power of conventional commits</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2024-01-30T00:00:00+01:00" itemprop="datePublished">Jan 30, 2024
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>I had been randomly exposed to <a href="https://www.conventionalcommits.org/">conventional commits</a> as part of my opensource activities, not really paying attention to this <em>weird</em> form of commit messages.
+It is only in the recent months that I have taken a serious look at them and realised how they were <strong>much better commits</strong>.</p>
+
+<p>Here is why I think you should pay notice, too! 😃</p>
+
+<h2 id="how-much-of-a-commit-is-a-commit">How much of a commit is a commit?</h2>
+
+<p>This is a classic problem in software engineering: you create a branch, you make some changes, and then you create a Git commit.
+In theory your commit is self-contained: it is a documentation update, or it is a bug fix, or it is a new feature, etc.</p>
+
+<p>Disciplined and self-contained commits are great because the Git history becomes very readable.
+It is also very easy to selectively drop a commit if something goes wrong (<code class="highlighter-rouge">git revert</code>) or port a given change to another (maintenance) branch (<code class="highlighter-rouge">git cherry-pick</code>).</p>
+
+<p>Of course theory and practice tend to disagree, especially as we work under time-sensitive constraints, so we often end up with commits that mix several changes in one, or branches with series of commits that should really be just one.</p>
+
+<p>Another problem is that of writing <em>proper</em> Git commits.
+After all, <a href="https://git-scm.com/docs/git-commit">a Git commit message is loosely defined</a> with the first line being a title / summary of the changes, and the longer body providing more details, as in:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Fixes a race condition in the concatMap operator
+
+Fixes concurrent signals handling leading to an inconsistent state,
+especially with the termination signals of the inner and outer
+subscribers.
+
+Fixes: #666
+QA-Approver: MrBean
+</code></pre></div></div>
+
+<p>So how are <a href="https://www.conventionalcommits.org/">conventional commits</a> any better than this?</p>
+
+<h2 id="from-human-readable-to-human--machine-readable">From human-readable to human &amp; machine-readable</h2>
+
+<p>The previous Git commit message was relatively well-structured:</p>
+<ul>
+  <li>the first line had a precise and concise summary, and</li>
+  <li>the next paragraph provided some insights on the changes being made, and</li>
+  <li>the footers provided key / value pairs that a tool could use to extract metadata: the bug being fixed, and who performed the quality assurance checks.</li>
+</ul>
+
+<p><a href="https://www.conventionalcommits.org/">Conventional commits</a> are nothing but taking this approach a step further by adding a structure to commit messages.
+Back to this example, this would give the following commit:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>fix(operators): race condition in the concatMap operator
+
+Fixes concurrent signals handling leading to an inconsistent state,
+especially with the termination signals of the inner and outer
+subscribers.
+
+Issue: #666
+QA-Approver: MrBean
+</code></pre></div></div>
+
+<p>While this might look like a cosmetic change, this message has more structure!</p>
+
+<ul>
+  <li><code class="highlighter-rouge">fix</code> means that the change is a bug-fix. Other common types can be <code class="highlighter-rouge">feat</code> (feature), <code class="highlighter-rouge">docs</code> (documentation updates), <code class="highlighter-rouge">refactor</code> (refactoring), etc. In fact, you can create your own conventions around it, although the <a href="https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines">Angular conventions</a> are both widely accepted and fairly complete.</li>
+  <li>The <code class="highlighter-rouge">operators</code> scope gives more context: the fix applies to some <em>“operators”</em> area of the code base. Scoping is optional, though.</li>
+  <li>The rest of the first line gives a quick summary.</li>
+  <li>The body provides details, as before.</li>
+  <li>The footers can be used to reference issues, pull-requests, specifications, process sign-offs… actually anything that would make sense for a tool to extract as a commit metadata.</li>
+</ul>
+
+<p>The structure of a <em>conventional commit</em> message is as simple as:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;type&gt;[optional scope]: &lt;description&gt;
+
+[optional body]
+
+[optional footer(s)]
+</code></pre></div></div>
+
+<p>Note that the same ideas can be found in other approaches such as <a href="https://gitmoji.dev/">GitMoji</a>.
+Sure, emojis are fun to have in commits, but I personally find it easier to decipher that a commit is a bug fix when it starts with <code class="highlighter-rouge">fix:</code> rather than <code class="highlighter-rouge">🐛</code> (but my friend Philippe probably thinks otherwise 😇).</p>
+
+<h2 id="benefit-1---automatic-release-changelogs">Benefit #1 - Automatic release changelogs</h2>
+
+<p><a href="https://www.conventionalcommits.org/">Conventional commits</a> can be parsed by tools, and a very nice use-case is that of generating release changelogs.</p>
+
+<p>Here is a screenshot of what it looks like for the release of <a href="https://github.com/smallrye/smallrye-mutiny/releases/tag/2.5.6">Mutiny 2.5.6</a>:</p>
+
+<p><img src="/images/posts/2024/jreleaser-sample-changelog.png" alt="Changelog of the release of Mutiny 2.5.6" /></p>
+
+<p>I introduced <a href="https://jreleaser.org/">JReleaser</a> as part of the Mutiny release process when I made the project adopt conventional commits.
+The tool is able to group commits by kind (e.g., features, documentation updates, bug fixes, etc).
+It also provides a summary of the merged-pull requests, provided not just the pointers to such pull requests but also those of the fixed issues.</p>
+
+<h2 id="benefit-2---no-excuse-for-not-doing-semantic-versioning">Benefit #2 - No excuse for not doing semantic versioning</h2>
+
+<p>Shall your next version be 2.6.0 or 2.5.6?</p>
+
+<p>If you are maintaining a library then sticking to <a href="https://semver.org/">semantic versioning</a> should be a no-brainer.</p>
+<ul>
+  <li>Have you made breaking changes? Bump to 3.0.0.</li>
+  <li>Have you added new features while keeping backward compatibility? Bump to 2.6.0.</li>
+  <li>Have you <em>“only”</em> done bug fixes, documentation updates, non-user facing API internal changes? Bump to 2.5.6.</li>
+</ul>
+
+<p>This is, again, another good example where the theory is nice but practice slips 🤣
+This can be due to the marketing value of a version number, or just due to the fact that you have a bunch of changes and the last release was 3 months ago so you decide to raise the minor version number.</p>
+
+<p>We have all done that, but as library consumers it is quite easy to see how rigorous semantic versioning helps.</p>
+
+<p>Conventional commits make it quite easy to decide what the next release number shall be.
+I know that some projects leave it completely to release scripts to decide on the version number by inspecting commits.
+I personally prefer to inspect the Git history and have the last word:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ git log --oneline --no-merges
+b9c3b93e build(deps): bump codecov/codecov-action from 3.1.4 to 3.1.5
+2ec49880 chore(release): set development version to 999-SNAPSHOT
+bc3ba4fd (tag: 2.5.6) chore(release): release Mutiny 2.5.6
+f18296bb (origin/fix/concatmap-early-null-innerUpstream) fix(concatMap): deadlock on inner upstream subscription
+796003cc fix(concatMap): check for early null inner subscriber
+32fdd3e3 build(deps): bump org.assertj:assertj-core from 3.25.1 to 3.25.2
+9dc8bdcd chore(release): set development version to 999-SNAPSHOT
+a5fca500 (tag: 2.5.5) chore(release): release Mutiny 2.5.5
+be54f155 (origin/fix/1494) fix: race condition on cancellation in UniCallbackSubscriber
+4811b4b4 (origin/refactor/concatmap-no-cas-on-unbounded) refactor: avoid a compare&amp;swap on unbounded requests
+b8da91f3 chore(release): clear RevAPI breaking change justifications
+c26a308f chore(release): set development version to 999-SNAPSHOT
+</code></pre></div></div>
+
+<p>In this short excerpt you can see that the last commits between tags did not have features (<code class="highlighter-rouge">feat: xyz</code>), hence hinting at patch releases.
+I have to admit that before adopting conventional commits I could have arbitrarily done minor rather than patch releases.</p>
+
+<p>The practice of conventional commits might also help me in deciding to delay the merge of a given pull-request.
+If I have bug fixes and new features in the pipe then I might first have a quick patch release, then merge the new features to plan a new minor (or even major) release.</p>
+
+<p>In fact I believe library maintainers shall not be afraid to frequently bump the major release number.
+If your web browser is at version 121 then why don’t you let your library be at version 12 if you can’t avoid breaking changes, even low-impact ones?
+At least downstream consumers of your library will be aware that you take versionning seriously.</p>
+
+<h2 id="benefit-3---hack-freely-and-make-sense-of-your-changes-later">Benefit #3 - Hack freely and make sense of your changes later</h2>
+
+<p>This might sound counter-intuitive, but conventional commits can be liberating!
+How is that possible, since each commit should be nicely self-contained?</p>
+
+<p>The trick is that because you know that you <em>eventually</em> need to expose conventional commits in your pull-requests, you will not be tempted to make half-backed commits.</p>
+
+<p>There are various ways to achieve this, but I suggest you have a look at <a href="/blog/a-workflow-for-experiments-in-git-scratchpad-branches/">my previous blog on scratchpad branch workflows</a>.
+The idea is pretty simple:</p>
+<ul>
+  <li>you start making changes in dirty branches where you can commit as often as you want, and use any message as you want, then</li>
+  <li>you eventually extract clean branches with nice, self-contained commits, and while I did not know at the time, conventional commits are a perfect fit to such a workflow!</li>
+</ul>
+
+<h2 id="bonus-1---how-to-check-pull-requests">Bonus #1 - How to check pull requests?</h2>
+
+<p>If your project is hosted on GitHub and uses GitHub Action, then it is quite easy to check that a pull-request meets conventional commits.</p>
+
+<p>There are several options that I had tested, but the one that worked better is <a href="https://github.com/wagoid/commitlint-github-action">wagoid/commitlint-github-action</a>.</p>
+
+<p>You can have a simple job in your workflow that looks like this, and it will by default use the Angular conventions:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">conventional-commits</span><span class="pi">:</span>
+<span class="na">runs-on</span><span class="pi">:</span> <span class="s">ubuntu-latest</span>
+<span class="na">name</span><span class="pi">:</span> <span class="s">Check conventional commits</span>
+<span class="na">steps</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">actions/checkout@v4</span>
+    <span class="pi">-</span> <span class="na">uses</span><span class="pi">:</span> <span class="s">wagoid/commitlint-github-action@v5</span>
+</code></pre></div></div>
+
+<p>Some people use local Git hooks to make sure that people do not commit wrong commits in the first place, but this is too much for me.</p>
+
+<h2 id="bonus-2---dependabot-and-conventional-commits">Bonus #2 - Dependabot and conventional commits</h2>
+
+<p>This again applies to projects hosted on GitHub.
+If you are using <a href="https://docs.github.com/en/code-security/dependabot">dependabot</a> to help you keeping dependencies up-to-date, then you need to configure it so it makes conventional commits.</p>
+
+<p>Simply edit your <code class="highlighter-rouge">.github/dependabot.yml</code> file to look like:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="m">2</span>
+<span class="na">updates</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">package-ecosystem</span><span class="pi">:</span> <span class="s">maven</span>
+  <span class="na">directory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/"</span>
+  <span class="na">schedule</span><span class="pi">:</span>
+    <span class="na">interval</span><span class="pi">:</span> <span class="s">daily</span>
+  <span class="na">commit-message</span><span class="pi">:</span>
+    <span class="na">prefix</span><span class="pi">:</span> <span class="s2">"</span><span class="s">build"</span>
+    <span class="na">include</span><span class="pi">:</span> <span class="s2">"</span><span class="s">scope"</span>
+  <span class="na">open-pull-requests-limit</span><span class="pi">:</span> <span class="m">10</span>
+<span class="pi">-</span> <span class="na">package-ecosystem</span><span class="pi">:</span> <span class="s">github-actions</span>
+  <span class="na">directory</span><span class="pi">:</span> <span class="s2">"</span><span class="s">/"</span>
+  <span class="na">schedule</span><span class="pi">:</span>
+    <span class="na">interval</span><span class="pi">:</span> <span class="s">weekly</span>
+  <span class="na">commit-message</span><span class="pi">:</span>
+    <span class="na">prefix</span><span class="pi">:</span> <span class="s2">"</span><span class="s">build"</span>
+    <span class="na">include</span><span class="pi">:</span> <span class="s2">"</span><span class="s">scope"</span>
+</code></pre></div></div>
+
+<p>The relevant part is in the <code class="highlighter-rouge">commit-message</code> object, which gives you commits of the form:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>build(deps): bump org.assertj:assertj-core from 3.25.1 to 3.25.2
+</code></pre></div></div>
+
+<p>The only minor glitch and well-known issue is that dependabot will make description lines that can be too long for the linter to pass.
+In my case I regularly have dependabot pull-requests that fail the <code class="highlighter-rouge">wagoid/commitlint-github-action</code> checks just because it makes for long lines.
+This easily happens with long Maven coordinates.</p>
+
+<p>There are two options:</p>
+<ol>
+  <li>just ignore this and proceed with a merge as long as other checks are green, knowing that many tools such as <a href="https://jreleaser.org/">JReleaser</a> do not care about the length of description lines, or</li>
+  <li>edit the <code class="highlighter-rouge">wagoid/commitlint-github-action</code> configuration with relaxed custom rules (<em>I will leave this as an exercice to the astute reader as we said in my past professional life</em> 😄).</li>
+</ol>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>I hope that this blog post will have motivated you to explore <a href="https://www.conventionalcommits.org/">conventional commits</a>.
+I don’t use them in all of my projects, but I found them to be useful in the important ones that I maintain, with <a href="https://smallrye.io/smallrye-mutiny/latest/">Mutiny</a> being a good showcase as it is a critical component of larger projects such as <a href="https://quarkus.io/">Quarkus</a>.</p>
+
+<p>At first conventional commits look a bit weird and you will repeatedly wonder what is the format as you make commits.
+Still, they will quickly become a second nature and you will realise the benefits in terms to your software engineering processes.</p>
+
+<p>At the very least they will be a useful companion when it comes to planning, crafting and performing releases.
+And perhaps you will <em>finally</em> have that clean Git history, just like in the textbooks 🎉</p>
+
+  </div><a class="u-url" href="/blog/the-power-of-conventional-commits/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
