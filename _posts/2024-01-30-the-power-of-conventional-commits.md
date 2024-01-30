@@ -57,13 +57,13 @@ QA-Approver: MrBean
 
 While this might look like a cosmetic change, this message has more structure!
 
-- `fix` means that the change is a bug-fix. Other common types can be `feat` (feature), `docs` (documentation updates), `refactor` (refactoring), etc. In fact, you can create your own conventions around it, although the [Angular conventions](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines) are both widely accepted and complete.
+- `fix` means that the change is a bug-fix. Other common types can be `feat` (feature), `docs` (documentation updates), `refactor` (refactoring), etc. In fact, you can create your own conventions around it, although the [Angular conventions](https://github.com/angular/angular/blob/22b96b9/CONTRIBUTING.md#-commit-message-guidelines) are both widely accepted and fairly complete.
 - The `operators` scope gives more context: the fix applies to some _"operators"_ area of the code base. Scoping is optional, though.
 - The rest of the first line gives a quick summary.
 - The body provides details, as before.
 - The footers can be used to reference issues, pull-requests, specifications, process sign-offs... actually anything that would make sense for a tool to extract as a commit metadata.
 
-The structure of a commit message is as simple as:
+The structure of a *conventional commit* message is as simple as:
 
 ```
 <type>[optional scope]: <description>
@@ -125,6 +125,13 @@ c26a308f chore(release): set development version to 999-SNAPSHOT
 In this short excerpt you can see that the last commits between tags did not have features (`feat: xyz`), hence hinting at patch releases.
 I have to admit that before adopting conventional commits I could have arbitrarily done minor rather than patch releases.
 
+The practice of conventional commits might also help me in deciding to delay the merge of a given pull-request.
+If I have bug fixes and new features in the pipe then I might first have a quick patch release, then merge the new features to plan a new minor (or even major) release.
+
+In fact I believe library maintainers shall not be afraid to frequently bump the major release number.
+If your web browser is at version 121 then why don't you let your library be at version 12 if you can't avoid breaking changes, even low-impact ones?
+At least downstream consumers of your library will be aware that you take versionning seriously.
+
 ## Benefit #3 - Hack freely and make sense of your changes later
 
 This might sound counter-intuitive, but conventional commits can be liberating!
@@ -135,7 +142,7 @@ The trick is that because you know that you _eventually_ need to expose conventi
 There are various ways to achieve this, but I suggest you have a look at [my previous blog on scratchpad branch workflows]({% post_url 2022-03-09-a-workflow-for-experiments-in-git-scratchpad-branches %}).
 The idea is pretty simple:
 - you start making changes in dirty branches where you can commit as often as you want, and use any message as you want, then
-- you eventually extract clean branches with nice, self-contained commits, and while I did not know at the time, conventional commits are a perfect fit to such a workflow.
+- you eventually extract clean branches with nice, self-contained commits, and while I did not know at the time, conventional commits are a perfect fit to such a workflow!
 
 ## Bonus #1 - How to check pull requests?
 
@@ -193,17 +200,17 @@ The only minor glitch and well-known issue is that dependabot will make descript
 In my case I regularly have dependabot pull-requests that fail the `wagoid/commitlint-github-action` checks just because it makes for long lines.
 This easily happens with long Maven coordinates.
 
-There are options:
-- just ignore this and proceed with a merge as long as other checks are green, knowing that many tools such as [JReleaser](https://jreleaser.org/) do not care about the length of description line, or
-- edit the `wagoid/commitlint-github-action` configuration with relaxed custom rules (I will leave this as an exercice to the astute reader as we said in my past professional life 😄).
+There are two options:
+1. just ignore this and proceed with a merge as long as other checks are green, knowing that many tools such as [JReleaser](https://jreleaser.org/) do not care about the length of description lines, or
+2. edit the `wagoid/commitlint-github-action` configuration with relaxed custom rules (_I will leave this as an exercice to the astute reader as we said in my past professional life_ 😄).
 
 ## Conclusion
 
 I hope that this blog post will have motivated you to explore [conventional commits](https://www.conventionalcommits.org/).
-I don't use them in all of my projects, but I found them to be useful in the important ones that I maintain, with [Mutiny](https://smallrye.io/smallrye-mutiny/latest/) being good showcase as it is a critical component of projects such as [Quarkus](https://quarkus.io/).
+I don't use them in all of my projects, but I found them to be useful in the important ones that I maintain, with [Mutiny](https://smallrye.io/smallrye-mutiny/latest/) being a good showcase as it is a critical component of larger projects such as [Quarkus](https://quarkus.io/).
 
-At first they look a bit weird and you will repeatedly wonder what is the format as you make commits.
-Still, they will quickly become a second nature and you will realise the benefits in terms to your software engineering process.
+At first conventional commits look a bit weird and you will repeatedly wonder what is the format as you make commits.
+Still, they will quickly become a second nature and you will realise the benefits in terms to your software engineering processes.
 
 At the very least they will be a useful companion when it comes to planning, crafting and performing releases.
 And perhaps you will _finally_ have that clean Git history, just like in the textbooks 🎉
