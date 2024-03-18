@@ -11,6 +11,8 @@ pre, code { font-family: "Cousine", monospace; }
 
 .book-cover { height: 360px; margin-left: 3rem; box-shadow: 0px 4px 16px 0px #666; transform: rotate(2deg); }
 
+.jc-pic { height: 4em; }
+
 /** Reset some basic elements */
 body, h1, h2, h3, h4, h5, h6, p, blockquote, pre, hr, dl, dd, ol, ul, figure { margin: 0; padding: 0; }
 
