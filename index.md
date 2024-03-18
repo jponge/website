@@ -21,6 +21,9 @@ I am based in [Lyon, France](https://en.wikipedia.org/wiki/Lyon).
 
 Before joining Red Hat, I was an **Associate Professor** in computer science and engineering at [INSA Lyon](http://www.insa-lyon.fr/) and the [CITI Laboratory](http://www.citi-lab.fr/) where I have held various teaching, research, management and executive positions.
 
+<img src="/images/duke_champion.png" alt="Java Champion" class="jc-pic" /><br/>
+My long-standing contributions to the Java community got me elected as a [Java Champion](https://javachampions.org/).
+
 ## I've worked here 👨🏻‍💻
 
 * Since October 2018: **Principal Software Engineer** at **Red Hat**.
