@@ -15,7 +15,7 @@ redirect_from:
     </a>
 </p>
 
-I am a **Principal Software Engineer** at [Red Hat](https://www.redhat.com/).
+I am a **Senior Principal Software Engineer** at [Red Hat](https://www.redhat.com/).
 I am primarily working on _reactive_ things, including [Eclipse Vert.x](https://vertx.io/), [Mutiny](https://smallrye.io/smallrye-mutiny/) and [Quarkus](https://quarkus.io).
 I am based in [Lyon, France](https://en.wikipedia.org/wiki/Lyon).
 
@@ -26,7 +26,8 @@ My long-standing contributions to the Java community got me elected as a [Java C
 
 ## I've worked here 👨🏻‍💻
 
-* Since October 2018: **Principal Software Engineer** at **Red Hat**.
+* Since April 2024: **Senior Principal Software Engineer** at **Red Hat**.
+* October 2018 to March 2024: **Principal Software Engineer** at **Red Hat**.
 * September 2016 to August 2018: **Delegation to Red Hat** to work on the [Eclipse Vert.x project](https://vertx.io/), thanks to an agreement between INSA Lyon and [Red Hat](https://www.redhat.com/).
 * 2009 -- 2018: **Associate Professor** (tenured) and **Researcher** at INSA Lyon Telecom and the CITI Laboratory.
 * 2016 -- 2017: **Scientific Deputy Manager** of the [Spie ICS - INSA Lyon IoT Chair](http://www.citi-lab.fr/chairs/iot-chair/).
