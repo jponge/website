@@ -20,7 +20,7 @@ I am based in [Lyon, France](https://en.wikipedia.org/wiki/Lyon).
 
 I am primarily working on _reactive_ things, including [Eclipse Vert.x](https://vertx.io/), [Mutiny](https://smallrye.io/smallrye-mutiny/) and [Quarkus](https://quarkus.io).
 
-I am the author of the reference book [Vert.x in Action - Reactive Java](https://www.manning.com/books/vertx-in-action) published by Manning.
+I am the author of the reference book [Vert.x in Action - Asynchronous and Reactive Java](https://www.manning.com/books/vertx-in-action) published by Manning.
 
 Before joining Red Hat, I was an **Associate Professor** in computer science and engineering at [INSA Lyon](http://www.insa-lyon.fr/) and the [CITI Laboratory](http://www.citi-lab.fr/) where I have held various teaching, research, management and executive positions.
 
