@@ -15,9 +15,12 @@ redirect_from:
     </a>
 </p>
 
-I am a **Senior Principal Software Engineer** at [Red Hat](https://www.redhat.com/).
-I am primarily working on _reactive_ things, including [Eclipse Vert.x](https://vertx.io/), [Mutiny](https://smallrye.io/smallrye-mutiny/) and [Quarkus](https://quarkus.io).
+I am a **Senior Principal Software Engineer** (_individual contributor_) at [Red Hat](https://www.redhat.com/).
 I am based in [Lyon, France](https://en.wikipedia.org/wiki/Lyon).
+
+I am primarily working on _reactive_ things, including [Eclipse Vert.x](https://vertx.io/), [Mutiny](https://smallrye.io/smallrye-mutiny/) and [Quarkus](https://quarkus.io).
+
+I am the author of the reference book [Vert.x in Action - Reactive Java](https://www.manning.com/books/vertx-in-action) published by Manning.
 
 Before joining Red Hat, I was an **Associate Professor** in computer science and engineering at [INSA Lyon](http://www.insa-lyon.fr/) and the [CITI Laboratory](http://www.citi-lab.fr/) where I have held various teaching, research, management and executive positions.
 
@@ -71,9 +74,9 @@ Check out my [full publications page](/academia/publications/) for a more compre
 
 * Arthur Navarro (since March 2022, funded by [Red Hat Research](https://research.redhat.com/)), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Characterizing and optimizing reactive systems, a language-runtime continuum**.
 
-* Patrik Fortier (Since fall 2017, funded by the INSA Lyon / Spie ICS chair on the Internet of Things), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Programming language abstractions for the Internet of Things**.
+* Patrik Fortier (Defending May 2024, funded by the INSA Lyon / Spie ICS chair on the Internet of Things), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Programming language abstractions for the Internet of Things era**.
 
-* Stefan-Gabriel Chitic (Fall 2013 -- March 2018, French Research Ministry Grant), co-supervision with [Olivier Simonin](http://perso.citi-lab.fr/osimonin/). **Middleware and programming models for multi-robot systems**, defended March 15th 2018. Stefan now works at [CERN](https://home.cern/).
+* Stefan-Gabriel Chitic (Defended March 2018, French Research Ministry Grant), co-supervision with [Olivier Simonin](http://perso.citi-lab.fr/osimonin/). **Middleware and programming models for multi-robot systems**, defended March 15th 2018. Stefan now works at [CERN](https://home.cern/).
 
 ## I studied there 🎓
 
