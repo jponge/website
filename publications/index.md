@@ -33,6 +33,8 @@ Julien Ponge. **Vert.x in Action. Asynchronous and Reactive Java**. Manning Publ
 
 ## International peer-reviewed conferences ##
 
+* Arthur Navarro, Julien Ponge, Frédéric Le Mouël, and Clément Escoffier. **Considerations for integrating virtual threads in a Java framework: a Quarkus example in a resource-constrained environment.** *DEBS'23 (17th ACM International Conference on Distributed and Event-based Systems)*, June 2023, New-York, NY, USA. [DOI](https://dl.acm.org/doi/10.1145/3583678.3596895) [HAL entry](https://inria.hal.science/hal-04112339)
+
 * Julien Ponge and Mark Little. **Scalability and resilience in practice: current trends and opportunities**. *SRDS 2019 (38th International Symposium on Reliable Distributed Systems)*, October 2019, Lyon, France. [PDF](/files/publications/srds-jpml19.pdf)
 
 * Roya Golchay, Frédéric Le Mouël, Julien Ponge and Nicolas Stouls. **Spontaneous Proximity Clouds: Making Mobile Devices to Collaborate for Resource and Data Sharing**. *CollaborateCom 2016*, November 2016, Beijing, China. [HAL entry](https://hal.inria.fr/hal-01391114)
