@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>The Pod in Podman | Julien Ponge</title>
+<meta name="generator" content="Jekyll v4.0.1" />
+<meta property="og:title" content="The Pod in Podman" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="What is Podman?" />
+<meta property="og:description" content="What is Podman?" />
+<link rel="canonical" href="https://julien.ponge.org/blog/the-pod-in-podman/" />
+<meta property="og:url" content="https://julien.ponge.org/blog/the-pod-in-podman/" />
+<meta property="og:site_name" content="Julien Ponge" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-07-03T00:00:00+02:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="The Pod in Podman" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-07-03T00:00:00+02:00","datePublished":"2024-07-03T00:00:00+02:00","description":"What is Podman?","headline":"The Pod in Podman","mainEntityOfPage":{"@type":"WebPage","@id":"https://julien.ponge.org/blog/the-pod-in-podman/"},"url":"https://julien.ponge.org/blog/the-pod-in-podman/"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://julien.ponge.org/feed.xml" title="Julien Ponge" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Julien Ponge</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/">Blog</a><a class="page-link" href="/publications/">Publications</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">The Pod in Podman</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2024-07-03T00:00:00+02:00" itemprop="datePublished">Jul 3, 2024
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="what-is-podman">What is Podman?</h2>
+
+<blockquote>
+  <p>Podman is an open source container, pod, and container image management engine. Podman makes it easy to find, run, build, and share containers.</p>
+
+  <p>– See <a href="https://podman.io/features">https://podman.io/features</a></p>
+</blockquote>
+
+<p>If you are new to Podman then I recommend watching this <a href="https://www.youtube.com/watch?v=5WML8gX2F1c">IBM Technology “What is Podman? How is it Different Than Docker?” video</a>:</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5WML8gX2F1c?si=x9iBeBsxo57q3TnK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+
+<h2 id="let-there-be-pods">Let there be pods!</h2>
+
+<p>Just like <code class="highlighter-rouge">docker</code>, <code class="highlighter-rouge">podman</code> can build and run containers that live next to the other.</p>
+
+<p>But just like Kubernetes, <code class="highlighter-rouge">podman</code> can define <em>pods</em> that host <em>multiple</em> containers.</p>
+
+<p>Paraphrasing the <a href="https://kubernetes.io/docs/concepts/workloads/pods/">Kubernetes documentation on pods</a>:</p>
+
+<blockquote>
+  <p>A Pod (as in a pod of whales or pea pod) is a group of one or more containers, with shared storage and network resources, and a specification for how to run the containers.
+A Pod’s contents are always co-located and co-scheduled, and run in a shared context.
+A Pod models an application-specific “logical host”: it contains one or more application containers which are relatively tightly coupled.
+In non-cloud contexts, applications executed on the same physical or virtual machine are analogous to cloud applications executed on the same logical host.</p>
+</blockquote>
+
+<p>Vastly simplifying concepts you can think of a <em>pod</em> as logical unit equivalent to a <em>machine</em> / <em>host</em>.</p>
+
+<h3 id="example-app">Example app</h3>
+
+<p>Let’s use a simple 2-containers application:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">foo</code> is a Node app exposing a HTTP endpoint on port 3001</li>
+  <li><code class="highlighter-rouge">bar</code> does the same, but on port 3000</li>
+  <li><code class="highlighter-rouge">foo</code> makes a HTTP client request to <code class="highlighter-rouge">bar</code> and decorates the payload to make a response.</li>
+</ul>
+
+<p>The <code class="highlighter-rouge">bar</code> app responds as in:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl localhost:3000
+Hello from bar app%
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">foo</code> app first makes a HTTP request to <code class="highlighter-rouge">bar</code>, then wraps the response between 2 lines (<code class="highlighter-rouge">---- fetching from bar ----</code> and <code class="highlighter-rouge">---- done ----</code>):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl localhost:3001
+---- fetching from bar ----
+Hello from bar app
+---- done ----
+</code></pre></div></div>
+
+<p>The code of <code class="highlighter-rouge">bar</code> is:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="p">{</span> <span class="nx">createServer</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">node:http</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">hostname</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">0.0.0.0</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">port</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">createServer</span><span class="p">((</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="dl">'</span><span class="s1">Content-Type</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">text/plain</span><span class="dl">'</span><span class="p">);</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="dl">'</span><span class="s1">Hello from bar app</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="nx">hostname</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`[bar] Server running at http://</span><span class="p">${</span><span class="nx">hostname</span><span class="p">}</span><span class="s2">:</span><span class="p">${</span><span class="nx">port</span><span class="p">}</span><span class="s2">/`</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>while the code of <code class="highlighter-rouge">foo</code> is:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">node:http</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">hostname</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">0.0.0.0</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">port</span> <span class="o">=</span> <span class="mi">3001</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">((</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="dl">'</span><span class="s1">Content-Type</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">text/plain</span><span class="dl">'</span><span class="p">);</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="dl">'</span><span class="s1">---- fetching from bar ----</span><span class="se">\n</span><span class="dl">'</span><span class="p">);</span>
+  <span class="nx">http</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">http://localhost:3000</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">resp</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">resp</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">data</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">chunk</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">chunk</span><span class="p">));</span>
+    <span class="nx">resp</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">end</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="dl">'</span><span class="se">\n</span><span class="s1">---- done ----</span><span class="se">\n</span><span class="dl">'</span><span class="p">));</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+
+<span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="nx">hostname</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`[foo] Server running at http://</span><span class="p">${</span><span class="nx">hostname</span><span class="p">}</span><span class="s2">:</span><span class="p">${</span><span class="nx">port</span><span class="p">}</span><span class="s2">/`</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="lets-have-containers">Let’s have containers!</h3>
+
+<p>Creating container images in Podman is not very different from what you might be used to with Docker.</p>
+
+<p>Let’s have a <code class="highlighter-rouge">Containerfile</code> for <code class="highlighter-rouge">foo</code> (you can repeat the process for <code class="highlighter-rouge">bar</code> by changing exposed port to 3000):</p>
+
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> docker.io/library/node</span>
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+<span class="k">COPY</span><span class="s"> app.js ./</span>
+<span class="k">EXPOSE</span><span class="s"> 3001</span>
+<span class="k">CMD</span><span class="s"> [ "node", "app.js" ]</span>
+</code></pre></div></div>
+
+<p>You can build the container image with <code class="highlighter-rouge">podman build</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman build . --tag foo-app
+STEP 1/5: FROM docker.io/library/node
+STEP 2/5: WORKDIR /app
+--&gt; Using cache cb6cce87d57c1e551af3a542dbc16f46e3845d89914041293b086cc87422cd7a
+--&gt; cb6cce87d57c
+STEP 3/5: COPY app.js ./
+--&gt; Using cache e290cd9a99acb46233462ce4d1f72b996e91f58fec7250207454780ff0206c88
+--&gt; e290cd9a99ac
+STEP 4/5: EXPOSE 3001
+--&gt; Using cache 390ba14a42564fa4ad01d77368d7b839a96f8fd4fe3ff845fc1ac4761c86233a
+--&gt; 390ba14a4256
+STEP 5/5: CMD [ "node", "app.js" ]
+--&gt; Using cache 6ccf2a3dd8b14b50404ba786d160646c081152ef84354e6b90923121cd4c6d1f
+COMMIT foo-app
+--&gt; 6ccf2a3dd8b1
+Successfully tagged localhost/foo-app:latest
+6ccf2a3dd8b14b50404ba786d160646c081152ef84354e6b90923121cd4c6d1f
+</code></pre></div></div>
+
+<h3 id="lets-have-pods">Let’s have pods!</h3>
+
+<p>Now that we have <code class="highlighter-rouge">foo-app</code> and <code class="highlighter-rouge">bar-app</code> container images, let’s create a pod:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman pod create --name node-apps -p 3001:3001
+20b79d10cba251f5ac89ebaac92fc89de6d4761fcbd19c62da08e02109329655
+</code></pre></div></div>
+
+<p>This creates a pod named <code class="highlighter-rouge">node-apps</code>.
+You can also see a familiar port mapping where the host port 3001 is exposed externally on port 3001.</p>
+
+<p>This means that once containers for <code class="highlighter-rouge">foo</code> and <code class="highlighter-rouge">bar</code> have been attached, only <code class="highlighter-rouge">foo</code> will be reachable from the outside world.
+The <code class="highlighter-rouge">bar</code> container will only be available from within the pod, so when <code class="highlighter-rouge">foo</code> makes a HTTP client request to <code class="highlighter-rouge">localhost:3000</code> it will work (remember that containers on a pod are on the same “host”).</p>
+
+<p>Here’s how to deploy containers to the pod:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman run -dt --pod node-apps bar-app:latest
+42cd68be34f1ac824eec0e9efb4b1ccaff07b443601a72e1bb73a4a012c7109d
+$ podman run -dt --pod node-apps foo-app:latest
+f058a9ff57a71b5a2d149a227db7c47616d3ca28459cb237bb535c05630b398c
+</code></pre></div></div>
+
+<p>We can check that everything is working:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman ps -a --pod
+CONTAINER ID  IMAGE                                                  COMMAND      CREATED         STATUS         PORTS                   NAMES               POD ID        PODNAME
+1dd231d291bf  localhost/podman-pause:5.0.0-dev-8a643c243-1710720000               11 minutes ago  Up 55 seconds  0.0.0.0:3001-&gt;3001/tcp  20b79d10cba2-infra  20b79d10cba2  node-apps
+42cd68be34f1  localhost/bar-app:latest                               node app.js  55 seconds ago  Up 55 seconds  0.0.0.0:3001-&gt;3001/tcp  keen_yalow          20b79d10cba2  node-apps
+f058a9ff57a7  localhost/foo-app:latest                               node app.js  51 seconds ago  Up 51 seconds  0.0.0.0:3001-&gt;3001/tcp  pensive_swanson     20b79d10cba2  node-apps
+</code></pre></div></div>
+
+<p>We can check that the <code class="highlighter-rouge">bar</code> container is not reachable:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl localhost:3000
+curl: (7) Failed to connect to localhost port 3000 after 0 ms: Couldn't connect to server
+</code></pre></div></div>
+
+<p>while the <code class="highlighter-rouge">foo</code> container is reachable:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl localhost:3001
+---- fetching from bar ----
+Hello from bar app
+---- done ----
+</code></pre></div></div>
+
+<p>Last but not least, since a pod is a logical unit, we can turn everything down all at once:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman pod kill node-apps
+20b79d10cba251f5ac89ebaac92fc89de6d4761fcbd19c62da08e02109329655
+$ podman pod rm node-apps
+20b79d10cba251f5ac89ebaac92fc89de6d4761fcbd19c62da08e02109329655
+</code></pre></div></div>
+
+<p>💡 Note that pods can also be very useful in development settings.
+There are indeed a few instances where I have replaced <em>Docker Compose</em> with plain Kubernetes pod descriptors, typically to run middleware such as PostgreSQL, Apache Kafka, etc.</p>
+
+<h2 id="what-if-we-could-get-kubernetes-pods">What if we could get… Kubernetes pods?</h2>
+
+<p>This is where things get even more interesting: Podman can work with Kubernetes containers, pods and volumes.</p>
+
+<h3 id="generating-kubernetes-descriptors-from-podman">Generating Kubernetes descriptors from Podman</h3>
+
+<p>Podman can generate Kubernetes descriptors for containers, pods and volumes it manages.</p>
+
+<p>Back to the <code class="highlighter-rouge">node-apps</code> pod we had manually created before, we can ask Podman to generate us the following YAML payload:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman kube generate node-apps
+# Save the output of this file and use kubectl create -f to import
+# it into Kubernetes.
+#
+# Created with podman-5.0.0-dev-8a643c243
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2024-04-30T21:03:42Z"
+  labels:
+    app: node-apps
+  name: node-apps
+spec:
+  containers:
+  - args:
+    - node
+    - app.js
+    env:
+    - name: TERM
+      value: xterm
+    image: localhost/bar-app:latest
+    name: determinedhermann
+    ports:
+    - containerPort: 3001
+      hostPort: 3001
+    tty: true
+  - args:
+    - node
+    - app.js
+    env:
+    - name: TERM
+      value: xterm
+    image: localhost/foo-app:latest
+    name: amazingdriscoll
+    tty: true
+</code></pre></div></div>
+
+<p>With a little cleanup and polishing, this pod definition can be simplified as:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Pod</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">node-apps</span> 
+  <span class="na">name</span><span class="pi">:</span> <span class="s">node-apps</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">containers</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">bar</span>
+      <span class="na">image</span><span class="pi">:</span> <span class="s">bar-app:latest</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">foo</span>
+      <span class="na">image</span><span class="pi">:</span> <span class="s">foo-app:latest</span>
+      <span class="na">ports</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">3001</span>
+          <span class="na">hostPort</span><span class="pi">:</span> <span class="m">3001</span>
+</code></pre></div></div>
+
+<h3 id="podman-can-consume-kubernetes-resources">Podman can consume Kubernetes resources</h3>
+
+<p>Podman can directly consume the pod definition above:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman kube play --replace pod.yaml
+Pods stopped:
+b236ec4ebc3a584fd4fff502f3ea547f258671ff4eee59da5d440aeb5c78643a
+Pods removed:
+b236ec4ebc3a584fd4fff502f3ea547f258671ff4eee59da5d440aeb5c78643a
+Secrets removed:
+Volumes removed:
+Pod:
+77d8e61fe855a85fd9e388b6ba783add3b81f2481b79feb63d961ecfb19c0b1a
+Containers:
+7075333e4fe277f9524da64290991b62d2fbaa85f3d5e5958552dca0ded748d5
+aa227002f0d076a624025ba9d9c4761340779fa7a63536b2d68e304317853bfc
+</code></pre></div></div>
+
+<p>You can feed Podman with more than pod Kubernetes definitions.
+At the time of this writing, <code class="highlighter-rouge">podman kube play</code> supports <em>Pods</em>, <em>Deployments</em>, <em>DaemonSets</em> and <em>PersistentVolumeClaims</em> resources!</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Podman is fun, but people often forget that there is… well… “Pod” in “Podman” 😄</p>
+
+<p>I personaly find it quite compelling in development settings.
+How about you? 
+Have you found some interesting patterns? 
+I’d be interested to hear about it! <em>(check my social networks and ping me)</em></p>
+
+  </div><a class="u-url" href="/blog/the-pod-in-podman/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Julien Ponge</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Julien Ponge</li><li><a class="u-email" href="mailto:julien@ponge.org">julien@ponge.org</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jponge</span></a></li><li><a href="https://www.linkedin.com/in/JulienPonge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg> <span class="username">JulienPonge</span></a></li><li><a href="https://www.twitter.com/jponge"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jponge</span></a></li><li><a href="/feed.xml"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#rss"></use></svg> <span>rss</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
