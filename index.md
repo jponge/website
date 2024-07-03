@@ -74,7 +74,7 @@ Check out my [full publications page](/academia/publications/) for a more compre
 
 * Arthur Navarro (since March 2022, funded by [Red Hat Research](https://research.redhat.com/)), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Characterizing and optimizing reactive systems, a language-runtime continuum**.
 
-* Patrik Fortier (Defending May 2024, funded by the INSA Lyon / Spie ICS chair on the Internet of Things), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Programming language abstractions for the Internet of Things era**.
+* Patrik Fortier (Defended May 2024, funded by the INSA Lyon / Spie ICS chair on the Internet of Things), co-supervision with [Frédéric Le Mouël](http://perso.citi.insa-lyon.fr/flemouel/). **Programming language abstractions for the Internet of Things era**.
 
 * Stefan-Gabriel Chitic (Defended March 2018, French Research Ministry Grant), co-supervision with [Olivier Simonin](http://perso.citi-lab.fr/osimonin/). **Middleware and programming models for multi-robot systems**, defended March 15th 2018. Stefan now works at [CERN](https://home.cern/).
 
