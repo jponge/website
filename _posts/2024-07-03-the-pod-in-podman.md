@@ -1,7 +1,6 @@
 ---
 title: The Pod in Podman
 layout: post
-draft: true
 ---
 
 ## What is Podman?
