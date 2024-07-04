@@ -1,4 +1,281 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2024-07-03T22:17:08+02:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle></subtitle><entry><title type="html">The power of conventional commits</title><link href="https://julien.ponge.org/blog/the-power-of-conventional-commits/" rel="alternate" type="text/html" title="The power of conventional commits" /><published>2024-01-30T00:00:00+01:00</published><updated>2024-01-30T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/the-power-of-conventional-commits</id><content type="html" xml:base="https://julien.ponge.org/blog/the-power-of-conventional-commits/"><![CDATA[<p>I had been randomly exposed to <a href="https://www.conventionalcommits.org/">conventional commits</a> as part of my opensource activities, not really paying attention to this <em>weird</em> form of commit messages.
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.0.1">Jekyll</generator><link href="https://julien.ponge.org/feed.xml" rel="self" type="application/atom+xml" /><link href="https://julien.ponge.org/" rel="alternate" type="text/html" /><updated>2024-07-04T14:29:36+02:00</updated><id>https://julien.ponge.org/feed.xml</id><title type="html">Julien Ponge</title><subtitle></subtitle><entry><title type="html">The Pod in Podman</title><link href="https://julien.ponge.org/blog/the-pod-in-podman/" rel="alternate" type="text/html" title="The Pod in Podman" /><published>2024-07-03T00:00:00+02:00</published><updated>2024-07-03T00:00:00+02:00</updated><id>https://julien.ponge.org/blog/the-pod-in-podman</id><content type="html" xml:base="https://julien.ponge.org/blog/the-pod-in-podman/"><![CDATA[<h2 id="what-is-podman">What is Podman?</h2>
+
+<blockquote>
+  <p>Podman is an open source container, pod, and container image management engine. Podman makes it easy to find, run, build, and share containers.</p>
+
+  <p>– See <a href="https://podman.io/features">https://podman.io/features</a></p>
+</blockquote>
+
+<p>If you are new to Podman then I recommend watching this <a href="https://www.youtube.com/watch?v=5WML8gX2F1c">IBM Technology “What is Podman? How is it Different Than Docker?” video</a>:</p>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5WML8gX2F1c?si=x9iBeBsxo57q3TnK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen=""></iframe>
+
+<h2 id="let-there-be-pods">Let there be pods!</h2>
+
+<p>Just like <code class="highlighter-rouge">docker</code>, <code class="highlighter-rouge">podman</code> can build and run containers that live next to the other.</p>
+
+<p>But just like Kubernetes, <code class="highlighter-rouge">podman</code> can define <em>pods</em> that host <em>multiple</em> containers.</p>
+
+<p>Paraphrasing the <a href="https://kubernetes.io/docs/concepts/workloads/pods/">Kubernetes documentation on pods</a>:</p>
+
+<blockquote>
+  <p>A Pod (as in a pod of whales or pea pod) is a group of one or more containers, with shared storage and network resources, and a specification for how to run the containers.
+A Pod’s contents are always co-located and co-scheduled, and run in a shared context.
+A Pod models an application-specific “logical host”: it contains one or more application containers which are relatively tightly coupled.
+In non-cloud contexts, applications executed on the same physical or virtual machine are analogous to cloud applications executed on the same logical host.</p>
+</blockquote>
+
+<p>Vastly simplifying concepts you can think of a <em>pod</em> as logical unit equivalent to a <em>machine</em> / <em>host</em>.</p>
+
+<h3 id="example-app">Example app</h3>
+
+<p>Let’s use a simple 2-containers application:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">foo</code> is a Node app exposing a HTTP endpoint on port 3001</li>
+  <li><code class="highlighter-rouge">bar</code> does the same, but on port 3000</li>
+  <li><code class="highlighter-rouge">foo</code> makes a HTTP client request to <code class="highlighter-rouge">bar</code> and decorates the payload to make a response.</li>
+</ul>
+
+<p>The <code class="highlighter-rouge">bar</code> app responds as in:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl localhost:3000
+Hello from bar app%
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">foo</code> app first makes a HTTP request to <code class="highlighter-rouge">bar</code>, then wraps the response between 2 lines (<code class="highlighter-rouge">---- fetching from bar ----</code> and <code class="highlighter-rouge">---- done ----</code>):</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl localhost:3001
+---- fetching from bar ----
+Hello from bar app
+---- done ----
+</code></pre></div></div>
+
+<p>The code of <code class="highlighter-rouge">bar</code> is:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="p">{</span> <span class="nx">createServer</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">node:http</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">hostname</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">0.0.0.0</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">port</span> <span class="o">=</span> <span class="mi">3000</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">createServer</span><span class="p">((</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="dl">'</span><span class="s1">Content-Type</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">text/plain</span><span class="dl">'</span><span class="p">);</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="dl">'</span><span class="s1">Hello from bar app</span><span class="dl">'</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="nx">hostname</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`[bar] Server running at http://</span><span class="p">${</span><span class="nx">hostname</span><span class="p">}</span><span class="s2">:</span><span class="p">${</span><span class="nx">port</span><span class="p">}</span><span class="s2">/`</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<p>while the code of <code class="highlighter-rouge">foo</code> is:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">http</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">node:http</span><span class="dl">'</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">hostname</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">0.0.0.0</span><span class="dl">'</span><span class="p">;</span>
+<span class="kd">const</span> <span class="nx">port</span> <span class="o">=</span> <span class="mi">3001</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">http</span><span class="p">.</span><span class="nx">createServer</span><span class="p">((</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">=</span> <span class="mi">200</span><span class="p">;</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="dl">'</span><span class="s1">Content-Type</span><span class="dl">'</span><span class="p">,</span> <span class="dl">'</span><span class="s1">text/plain</span><span class="dl">'</span><span class="p">);</span>
+  <span class="nx">res</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="dl">'</span><span class="s1">---- fetching from bar ----</span><span class="se">\n</span><span class="dl">'</span><span class="p">);</span>
+  <span class="nx">http</span><span class="p">.</span><span class="kd">get</span><span class="p">(</span><span class="dl">'</span><span class="s1">http://localhost:3000</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">resp</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">resp</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">data</span><span class="dl">'</span><span class="p">,</span> <span class="p">(</span><span class="nx">chunk</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">chunk</span><span class="p">));</span>
+    <span class="nx">resp</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="dl">'</span><span class="s1">end</span><span class="dl">'</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="nx">res</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="dl">'</span><span class="se">\n</span><span class="s1">---- done ----</span><span class="se">\n</span><span class="dl">'</span><span class="p">));</span>
+  <span class="p">});</span>
+<span class="p">});</span>
+
+<span class="nx">server</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="nx">hostname</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">`[foo] Server running at http://</span><span class="p">${</span><span class="nx">hostname</span><span class="p">}</span><span class="s2">:</span><span class="p">${</span><span class="nx">port</span><span class="p">}</span><span class="s2">/`</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div></div>
+
+<h3 id="lets-have-containers">Let’s have containers!</h3>
+
+<p>Creating container images in Podman is not very different from what you might be used to with Docker.</p>
+
+<p>Let’s have a <code class="highlighter-rouge">Containerfile</code> for <code class="highlighter-rouge">foo</code> (you can repeat the process for <code class="highlighter-rouge">bar</code> by changing exposed port to 3000):</p>
+
+<div class="language-dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> docker.io/library/node</span>
+<span class="k">WORKDIR</span><span class="s"> /app</span>
+<span class="k">COPY</span><span class="s"> app.js ./</span>
+<span class="k">EXPOSE</span><span class="s"> 3001</span>
+<span class="k">CMD</span><span class="s"> [ "node", "app.js" ]</span>
+</code></pre></div></div>
+
+<p>You can build the container image with <code class="highlighter-rouge">podman build</code>:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman build . --tag foo-app
+STEP 1/5: FROM docker.io/library/node
+STEP 2/5: WORKDIR /app
+--&gt; Using cache cb6cce87d57c1e551af3a542dbc16f46e3845d89914041293b086cc87422cd7a
+--&gt; cb6cce87d57c
+STEP 3/5: COPY app.js ./
+--&gt; Using cache e290cd9a99acb46233462ce4d1f72b996e91f58fec7250207454780ff0206c88
+--&gt; e290cd9a99ac
+STEP 4/5: EXPOSE 3001
+--&gt; Using cache 390ba14a42564fa4ad01d77368d7b839a96f8fd4fe3ff845fc1ac4761c86233a
+--&gt; 390ba14a4256
+STEP 5/5: CMD [ "node", "app.js" ]
+--&gt; Using cache 6ccf2a3dd8b14b50404ba786d160646c081152ef84354e6b90923121cd4c6d1f
+COMMIT foo-app
+--&gt; 6ccf2a3dd8b1
+Successfully tagged localhost/foo-app:latest
+6ccf2a3dd8b14b50404ba786d160646c081152ef84354e6b90923121cd4c6d1f
+</code></pre></div></div>
+
+<h3 id="lets-have-pods">Let’s have pods!</h3>
+
+<p>Now that we have <code class="highlighter-rouge">foo-app</code> and <code class="highlighter-rouge">bar-app</code> container images, let’s create a pod:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman pod create --name node-apps -p 3001:3001
+20b79d10cba251f5ac89ebaac92fc89de6d4761fcbd19c62da08e02109329655
+</code></pre></div></div>
+
+<p>This creates a pod named <code class="highlighter-rouge">node-apps</code>.
+You can also see a familiar port mapping where the host port 3001 is exposed externally on port 3001.</p>
+
+<p>This means that once containers for <code class="highlighter-rouge">foo</code> and <code class="highlighter-rouge">bar</code> have been attached, only <code class="highlighter-rouge">foo</code> will be reachable from the outside world.
+The <code class="highlighter-rouge">bar</code> container will only be available from within the pod, so when <code class="highlighter-rouge">foo</code> makes a HTTP client request to <code class="highlighter-rouge">localhost:3000</code> it will work (remember that containers on a pod are on the same “host”).</p>
+
+<p>Here’s how to deploy containers to the pod:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman run -dt --pod node-apps bar-app:latest
+42cd68be34f1ac824eec0e9efb4b1ccaff07b443601a72e1bb73a4a012c7109d
+$ podman run -dt --pod node-apps foo-app:latest
+f058a9ff57a71b5a2d149a227db7c47616d3ca28459cb237bb535c05630b398c
+</code></pre></div></div>
+
+<p>We can check that everything is working:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman ps -a --pod
+CONTAINER ID  IMAGE                                                  COMMAND      CREATED         STATUS         PORTS                   NAMES               POD ID        PODNAME
+1dd231d291bf  localhost/podman-pause:5.0.0-dev-8a643c243-1710720000               11 minutes ago  Up 55 seconds  0.0.0.0:3001-&gt;3001/tcp  20b79d10cba2-infra  20b79d10cba2  node-apps
+42cd68be34f1  localhost/bar-app:latest                               node app.js  55 seconds ago  Up 55 seconds  0.0.0.0:3001-&gt;3001/tcp  keen_yalow          20b79d10cba2  node-apps
+f058a9ff57a7  localhost/foo-app:latest                               node app.js  51 seconds ago  Up 51 seconds  0.0.0.0:3001-&gt;3001/tcp  pensive_swanson     20b79d10cba2  node-apps
+</code></pre></div></div>
+
+<p>We can check that the <code class="highlighter-rouge">bar</code> container is not reachable:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl localhost:3000
+curl: (7) Failed to connect to localhost port 3000 after 0 ms: Couldn't connect to server
+</code></pre></div></div>
+
+<p>while the <code class="highlighter-rouge">foo</code> container is reachable:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl localhost:3001
+---- fetching from bar ----
+Hello from bar app
+---- done ----
+</code></pre></div></div>
+
+<p>Last but not least, since a pod is a logical unit, we can turn everything down all at once:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman pod kill node-apps
+20b79d10cba251f5ac89ebaac92fc89de6d4761fcbd19c62da08e02109329655
+$ podman pod rm node-apps
+20b79d10cba251f5ac89ebaac92fc89de6d4761fcbd19c62da08e02109329655
+</code></pre></div></div>
+
+<p>💡 Note that pods can also be very useful in development settings.
+There are indeed a few instances where I have replaced <em>Docker Compose</em> with plain Kubernetes pod descriptors, typically to run middleware such as PostgreSQL, Apache Kafka, etc.</p>
+
+<h2 id="what-if-we-could-get-kubernetes-pods">What if we could get… Kubernetes pods?</h2>
+
+<p>This is where things get even more interesting: Podman can work with Kubernetes containers, pods and volumes.</p>
+
+<h3 id="generating-kubernetes-descriptors-from-podman">Generating Kubernetes descriptors from Podman</h3>
+
+<p>Podman can generate Kubernetes descriptors for containers, pods and volumes it manages.</p>
+
+<p>Back to the <code class="highlighter-rouge">node-apps</code> pod we had manually created before, we can ask Podman to generate us the following YAML payload:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman kube generate node-apps
+# Save the output of this file and use kubectl create -f to import
+# it into Kubernetes.
+#
+# Created with podman-5.0.0-dev-8a643c243
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2024-04-30T21:03:42Z"
+  labels:
+    app: node-apps
+  name: node-apps
+spec:
+  containers:
+  - args:
+    - node
+    - app.js
+    env:
+    - name: TERM
+      value: xterm
+    image: localhost/bar-app:latest
+    name: determinedhermann
+    ports:
+    - containerPort: 3001
+      hostPort: 3001
+    tty: true
+  - args:
+    - node
+    - app.js
+    env:
+    - name: TERM
+      value: xterm
+    image: localhost/foo-app:latest
+    name: amazingdriscoll
+    tty: true
+</code></pre></div></div>
+
+<p>With a little cleanup and polishing, this pod definition can be simplified as:</p>
+
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">apiVersion</span><span class="pi">:</span> <span class="s">v1</span>
+<span class="na">kind</span><span class="pi">:</span> <span class="s">Pod</span>
+<span class="na">metadata</span><span class="pi">:</span>
+  <span class="na">labels</span><span class="pi">:</span>
+    <span class="na">app</span><span class="pi">:</span> <span class="s">node-apps</span> 
+  <span class="na">name</span><span class="pi">:</span> <span class="s">node-apps</span>
+<span class="na">spec</span><span class="pi">:</span>
+  <span class="na">containers</span><span class="pi">:</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">bar</span>
+      <span class="na">image</span><span class="pi">:</span> <span class="s">bar-app:latest</span>
+    <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">foo</span>
+      <span class="na">image</span><span class="pi">:</span> <span class="s">foo-app:latest</span>
+      <span class="na">ports</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">containerPort</span><span class="pi">:</span> <span class="m">3001</span>
+          <span class="na">hostPort</span><span class="pi">:</span> <span class="m">3001</span>
+</code></pre></div></div>
+
+<h3 id="podman-can-consume-kubernetes-resources">Podman can consume Kubernetes resources</h3>
+
+<p>Podman can directly consume the pod definition above:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ podman kube play --replace pod.yaml
+Pods stopped:
+b236ec4ebc3a584fd4fff502f3ea547f258671ff4eee59da5d440aeb5c78643a
+Pods removed:
+b236ec4ebc3a584fd4fff502f3ea547f258671ff4eee59da5d440aeb5c78643a
+Secrets removed:
+Volumes removed:
+Pod:
+77d8e61fe855a85fd9e388b6ba783add3b81f2481b79feb63d961ecfb19c0b1a
+Containers:
+7075333e4fe277f9524da64290991b62d2fbaa85f3d5e5958552dca0ded748d5
+aa227002f0d076a624025ba9d9c4761340779fa7a63536b2d68e304317853bfc
+</code></pre></div></div>
+
+<p>You can feed Podman with more than pod Kubernetes definitions.
+At the time of this writing, <code class="highlighter-rouge">podman kube play</code> supports <em>Pods</em>, <em>Deployments</em>, <em>DaemonSets</em> and <em>PersistentVolumeClaims</em> resources!</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>Podman is fun, but people often forget that there is… well… “Pod” in “Podman” 😄</p>
+
+<p>I personaly find it quite compelling in development settings.
+How about you? 
+Have you found some interesting patterns? 
+I’d be interested to hear about it! <em>(check my social networks and ping me)</em></p>]]></content><author><name></name></author><summary type="html"><![CDATA[What is Podman?]]></summary></entry><entry><title type="html">The power of conventional commits</title><link href="https://julien.ponge.org/blog/the-power-of-conventional-commits/" rel="alternate" type="text/html" title="The power of conventional commits" /><published>2024-01-30T00:00:00+01:00</published><updated>2024-01-30T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/the-power-of-conventional-commits</id><content type="html" xml:base="https://julien.ponge.org/blog/the-power-of-conventional-commits/"><![CDATA[<p>I had been randomly exposed to <a href="https://www.conventionalcommits.org/">conventional commits</a> as part of my opensource activities, not really paying attention to this <em>weird</em> form of commit messages.
 It is only in the recent months that I have taken a serious look at them and realised how they were <strong>much better commits</strong>.</p>
 
 <p>Here is why I think you should pay notice, too! 😃</p>
@@ -1292,225 +1569,4 @@ gpg <span class="nt">--fast-import</span> <span class="nt">--no-tty</span> <span
 <p>Writing this book has been a long and fun journey.
 I wrote this book with the goal of teaching concepts that will still be relevant in the years to come, and I hope that you will learn useful lessons from it!</p>
 
-<p>Have fun and take care 👍</p>]]></content><author><name></name></author><summary type="html"><![CDATA[After:]]></summary></entry><entry><title type="html">Simpler GnuPG with another look at Keybase</title><link href="https://julien.ponge.org/blog/simpler-gnupg-with-another-look-at-keybase/" rel="alternate" type="text/html" title="Simpler GnuPG with another look at Keybase" /><published>2020-01-31T00:00:00+01:00</published><updated>2020-01-31T00:00:00+01:00</updated><id>https://julien.ponge.org/blog/simpler-gnupg-with-another-look-at-keybase</id><content type="html" xml:base="https://julien.ponge.org/blog/simpler-gnupg-with-another-look-at-keybase/"><![CDATA[<p><strong>Edit 2020/05/15</strong></p>
-<blockquote>
-  <p><a href="https://keybase.io/blog/keybase-joins-zoom">Keybase has been acqui-hired by Zoom</a>.
-Time will tell if Keybase will remain actively developed and secured, but perhaps it will be better to just go back to plain GnuPG with the pains if you need a key pair.</p>
-</blockquote>
-
-<p>–</p>
-
-<p>I recently decided to revoke a 10 years old GnuPG key pair that I was using across machines, and decided to start from a clean sheet.
-I wanted to ensure I could continue using GnuPG to sign opensource release materials, but also sign public Git commits.
-Until then all I used to sign were Git tags.</p>
-
-<p>As I wanted to find a better solution than just using plain GnuPG and its numerous practicability flaws, I gained renewed interest in <a href="https://keybase.io">Keybase</a>, especially as it now provides more than just a streamlined experience with encryption tools.</p>
-
-<p>The configuration steps are adapted from <a href="https://github.com/pstadler/keybase-gpg-github">Patrick Stadler’s instructions on GitHub</a>.
-There is a macOS bias in some of the commands which you can easily adapt to other Unix systems 😉</p>
-
-<h3 id="the-gnupg-experience-">The GnuPG experience 😟</h3>
-
-<p>I have a <em>“love - hate - hate - love - hate - hate - hate”</em> relation with GnuPG.</p>
-
-<p>This tool has a horrible user interface, and I have never really found it useful for communications.
-Over 15 years I have had a few GnuPG-encrypted email communications with colleagues or friends, but it has always been a hindrance.
-Also while it did encrypt communication content, there is enough meta-data in plain text with email (title, recipients, etc) to make GnuPG email encryption a half-baked solution to a real problem.</p>
-
-<p>Still, GnuPG is useful because we may have files to encrypt so their content can only be read by ourselves and maybe a few people.
-We may also want to sign files for integrity checks.
-This is especially important with opensource development where signing source and release artifacts is a plus, and often a necessity.</p>
-
-<p>Generating a key pair with GnuPG is not very difficult, and under 2 minutes you can have one and push it to some public key servers.
-The problem is that once you have a key pair then no one really knows if the identity claimed is real or not.
-So you can get to your friends or at so-called “key signing parties” and sign other people key to claim that you have verified that some public key does belong to the person it claims to be.
-By doing so keys form trust networks, which helps recognizing plausibly authentic versus fake keys.</p>
-
-<p>In practice no one but a few geeks or activists will want to do that seriously.
-You will likely do it with a few friends and colleagues once in a while, and… that will be it.
-And of course people will loose their keys and they will not even have a revocation key 😇</p>
-
-<h3 id="enter-keybase-">Enter Keybase 🤔</h3>
-
-<p>The <a href="https://keybase.io">Keybase</a> service was introduced a few years back with the interesting idea of mapping social / public identities to encryption keys.
-Keybase essentially introduced a modern way to build trust networks, because people can check that <code class="highlighter-rouge">user123</code> on Keybase is also <code class="highlighter-rouge">user123_coder</code> on GitHub, <code class="highlighter-rouge">user123</code> on Twitter, and that the user owns the <code class="highlighter-rouge">iamuser123.org</code> domain.
-One can do so by posting Keybase-signed messages to these social networks and places.
-This is a good idea, because from social networks and Keybase accounts linked to those social networks, you can build a trust network on Keybase.</p>
-
-<p>Keybase also offered streamlined web and command line user interfaces for managing Keybase, following people and encrypting / decrypting content.
-Keybase provides a simplified workflow for common tasks including key management (e.g., fetching keys of your contacts), and it has GnuPG interoperability.
-You may even make the <em>devilish</em> (read: <em>convenient</em>) choice of having your keys stored on Keybase, or just attach existing GnuPG keys that you will still manage locally.</p>
-
-<p>Like many people I on-boarded when the service opened and it went viral on Twitter.
-But then like many people I never really used it because, well, I’m not using GnuPG everyday anyway.</p>
-
-<h3 id="fast-forward-keybase-today-">Fast-forward Keybase today 🤔</h3>
-
-<p>I believe that Keybase deserves a second wave of interest, because the modern Keybase is way more interesting than just mapping identities to encryption keys.</p>
-
-<p>Indeed Keybase now offers:</p>
-
-<ul>
-  <li>a chat system for individuals,</li>
-  <li>a nicely-done Slack-like chat for teams,</li>
-  <li>private, group and public file sharing (e.g., folder <code class="highlighter-rouge">me,other</code> is shared between 2 users),</li>
-  <li>Git repositories for yourself and teams,</li>
-  <li>some crypto-currency thing which I don’t care about.</li>
-</ul>
-
-<p>This is interesting as everything is encrypted.
-There are many contexts where using Keybase makes sense, such as research groups in Universities.
-This is a context where institutions will typically provide you with bad tools and services, refrain you from using well-known tools, and the boundaries of who you work with are quite malleable since you work with people at other institutions and companies.
-Here Keybase can be a secure replacement for chat, file sharing and (unpublished) source code management tools.</p>
-
-<p>So how can we we use Keybase and also make GnuPG friendly to other tools like Git?</p>
-
-<h3 id="setup-keybase-">Setup Keybase 💡</h3>
-
-<p>On macOS with <em>Homebrew</em> all you need is:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>gnupg
-brew cask <span class="nb">install </span>keybase
-</code></pre></div></div>
-
-<p>For other types of installation please refer to <a href="https://keybase.io/download">the Keybase website download section</a>.</p>
-
-<p>You will then want to use <code class="highlighter-rouge">keybase login</code> to either register your machine or create a new account.
-You can also use the desktop client for a friendlier experience.</p>
-
-<p>You will want to claim identity proofs in various places and services: Twitter, GitHub, your website, your domain name, etc.
-You can do so with <code class="highlighter-rouge">keybase prove</code> or the desktop client.</p>
-
-<p>Last but not least, you will want to <em>follow</em> people: <code class="highlighter-rouge">keybase follow</code> is your friend 😉</p>
-
-<h3 id="generate-a-gnupg-key-">Generate a GnuPG key 💡</h3>
-
-<p>Now you need Keybase to generate a GnuPG key for you:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keybase pgp gen <span class="nt">--multi</span>
-</code></pre></div></div>
-
-<p>The <code class="highlighter-rouge">--multi</code> flag will allow you to generate a key with multiple name / email addresses.
-In my case I have 2 personal email addresses and my Red Hat work email that I’m also using for opensource contributions.</p>
-
-<p>Once this is done you run the following command to know the identifier of your secret key:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--list-secret-keys</span> <span class="nt">--keyid-format</span> LONG
-</code></pre></div></div>
-
-<p>And of course note the identifier for your public key, here in another format:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--list-keys</span>  <span class="nt">--keyid-format</span> 0xshort
-</code></pre></div></div>
-
-<h3 id="publicize-your-gnupg-public-key-">Publicize your GnuPG public key 🎙</h3>
-
-<p>Various services like Maven Central will want your public key to be available from a trusty key server.</p>
-
-<p>You can use <code class="highlighter-rouge">gpg</code> to send your key to various key servers, as in:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--keyserver</span> pgp.mit.edu <span class="nt">--send-keys</span> IDENTIFIER_OF_YOUR_PUBLIC_KEY
-</code></pre></div></div>
-
-<p>You may find it equally useful to use the web interfaces of a few popular key servers to paste and upload your public key.
-In that case first copy your public key to the clipboard (<code class="highlighter-rouge">pbcopy</code> is macOS specific):</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--armor</span> <span class="nt">--export</span> ONE_OF_YOUR_EMAIL_ADDRESS | pbcopy -
-</code></pre></div></div>
-
-<p>then go to a few places:</p>
-
-<ul>
-  <li><a href="https://keyserver.2ndquadrant.com">https://keyserver.2ndquadrant.com</a></li>
-  <li><a href="https://pgp.mit.edu">https://pgp.mit.edu</a></li>
-  <li><a href="https://keyserver.ubuntu.com">https://keyserver.ubuntu.com</a></li>
-</ul>
-
-<p>Your key will quickly be synchronized between a network of public key servers.</p>
-
-<h3 id="git-and-github-gitlab-etc-commit-signing-">Git (and GitHub, GitLab, etc) commit signing ✅</h3>
-
-<p>Your signing key is your private key identifier.
-With that information, enable commit signing globally:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git config <span class="nt">--global</span> user.signingkey PRIVATE_KEY_IDENTIFIER
-git config <span class="nt">--global</span> commit.gpgsign <span class="nb">true</span>
-</code></pre></div></div>
-
-<p>If you are on macOS you will need to install <code class="highlighter-rouge">pinentry-mac</code>:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew <span class="nb">install </span>pinentry-mac
-</code></pre></div></div>
-
-<p>and then edit <code class="highlighter-rouge">~/.gnupg/gpg-agent.conf</code> so it contains the following line:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pinentry-program /usr/local/bin/pinentry-mac
-</code></pre></div></div>
-
-<p>The first time you do a signed commit you will be prompted to enter your secret key passphrase, and you will be offered to save it in your macOS user keychain.
-If you do so then you will automatically sign commits and tags without having to worry about the passphrase.</p>
-
-<p>You can now tell your Git repository hosting services about your key, so it can show that your commits have been signed and that the signature is yours:</p>
-
-<ul>
-  <li>get your key in your clipboard (<code class="highlighter-rouge">gpg --armor --export ONE_OF_YOUR_EMAIL_ADDRESS | pbcopy -</code>),</li>
-  <li>in the case of GitHub go to <a href="https://github.com/settings/keys">https://github.com/settings/keys</a>,</li>
-  <li>for other providers like GitLab, check in your profile / settings.</li>
-</ul>
-
-<h3 id="gradle-and-key-signing-️">Gradle and key signing 🤦‍♂️</h3>
-
-<p>I encountered a few issues with the <a href="https://docs.gradle.org/current/userguide/signing_plugin.html">Gradle signing plugin</a>.
-I could not make it use the GnuPG agent, and I had to let it use the default which is to use a secret key ring file.</p>
-
-<p>Edit <code class="highlighter-rouge">~/.gradle/gradle.properties</code> so all your projects share the same configuration.
-You will need 3 signing-specific entries:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>signing.keyId=0x1234
-signing.password=my-secret-password
-signing.secretKeyRingFile=/Users/user123/.gnupg/secring.gpg
-</code></pre></div></div>
-
-<p>Replace <code class="highlighter-rouge">signing.keyId</code> with your private key identifier, <code class="highlighter-rouge">signing.password</code> with the key password, and replace <code class="highlighter-rouge">/Users/user123/</code> with the path to your user account.
-You may also want to lock down the file permissions with <code class="highlighter-rouge">chmod</code> so only your account can read it (remember, your passphrase is in plain text).</p>
-
-<p>The <code class="highlighter-rouge">secring.gpg</code> file may not exist if this is a first install, so run this command:</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--keyring</span> secring.gpg <span class="nt">--export-secret-keys</span> <span class="o">&gt;</span> ~/.gnupg/secring.gpg
-</code></pre></div></div>
-
-<h3 id="enter-a-new-machine-">Enter a new machine 💡</h3>
-
-<p>What happens if you have another machine to provision, be it as a replacement or as a complement?</p>
-
-<p>Assuming that you created your GnuPG key from Keybase, it is stored and managed by Keybase.
-All you need to do is login on the new machine with your Keybase account, then:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keybase pgp list
-</code></pre></div></div>
-
-<p>should give your GnuPG key identifier.
-You can then import the public and private keys as follows:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>keybase pgp export -q IDENTIFIER | gpg --import
-keybase pgp export --secret -q IDENTIFIER | gpg --import --allow-secret-key-import
-</code></pre></div></div>
-
-<p>Encryption experts <em>will</em> complain, especially if you let Keybase store your private keys, but:</p>
-
-<ol>
-  <li>storing your private key on a plain USB drive or unencrypted cloud storage is also dangerous, and</li>
-  <li>if you really need to communicate sensible data to someone else then you will learn GnuPG in-depth, you will be very strict regarding key generation, validation, trust, storage and exchange. Also you will probably hide your real identity, so Keybase  will not be useful here.</li>
-</ol>
-
-<h3 id="conclusion">Conclusion</h3>
-
-<p>Keybase + GnuPG sounds like a nice combo.</p>
-
-<p>👋 By the way you can find me on Keybase at <a href="https://keybase.io/jponge">https://keybase.io/jponge</a>.</p>
-
-<p>Ping me there and let me know if this was useful to you 😎</p>
-
-<p>Thanks again to <a href="https://github.com/pstadler/keybase-gpg-github">Patrick Stadler</a> for the original instructions.</p>
-
-<p>Have fun!</p>]]></content><author><name></name></author><summary type="html"><![CDATA[Edit 2020/05/15 Keybase has been acqui-hired by Zoom. Time will tell if Keybase will remain actively developed and secured, but perhaps it will be better to just go back to plain GnuPG with the pains if you need a key pair.]]></summary></entry></feed>
+<p>Have fun and take care 👍</p>]]></content><author><name></name></author><summary type="html"><![CDATA[After:]]></summary></entry></feed>
