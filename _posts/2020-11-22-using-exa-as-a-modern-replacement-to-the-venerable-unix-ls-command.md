@@ -3,6 +3,8 @@ title: "Using exa as a modern replacement to the venerable Unix ls command"
 layout: post
 ---
 
+**Update 2024/09/24**: `exa` is not maintained anymore, use the [eza](https://github.com/eza-community/eza) fork instead.
+
 # Using exa as a modern replacement to the venerable Unix ls command
 
 So you know `ls` (often found as `/bin/ls`), the good old Unix command to list files in a directory.
