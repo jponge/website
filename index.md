@@ -15,21 +15,22 @@ redirect_from:
     </a>
 </p>
 
-I am a **Senior Principal Software Engineer** (_individual contributor_) at [Red Hat](https://www.redhat.com/).
+I am a **Director, Senior Principal Software Engineer (Red Hat)** at [IBM](https://www.ibm.com/).
 I am based in [Lyon, France](https://en.wikipedia.org/wiki/Lyon).
 
-I am primarily working on _reactive_ things, including [Eclipse Vert.x](https://vertx.io/), [Mutiny](https://smallrye.io/smallrye-mutiny/) and [Quarkus](https://quarkus.io).
+As an _individual contributor_, I am primarily working on _reactive_ topics, including [Quarkus](https://quarkus.io), [Mutiny](https://smallrye.io/smallrye-mutiny/) and [Eclipse Vert.x](https://vertx.io/).
 
 I am the author of the reference book [Vert.x in Action - Asynchronous and Reactive Java](https://www.manning.com/books/vertx-in-action) published by Manning.
 
-Before joining Red Hat, I was an **Associate Professor** in computer science and engineering at [INSA Lyon](http://www.insa-lyon.fr/) and the [CITI Laboratory](http://www.citi-lab.fr/) where I have held various teaching, research, management and executive positions.
+Before joining Red Hat then IBM, I was an **Associate Professor** in computer science and engineering at [INSA Lyon](http://www.insa-lyon.fr/) and the [CITI Laboratory](http://www.citi-lab.fr/) where I have held various teaching, research, management and executive positions.
 
 <img src="/images/duke_champion.png" alt="Java Champion" class="jc-pic" /><br/>
 My long-standing contributions to the Java community got me elected as a [Java Champion](https://javachampions.org/).
 
 ## I've worked here 👨🏻‍💻
 
-* Since April 2024: **Senior Principal Software Engineer** at **Red Hat**.
+* Since September 2025: **Director, Senior Principal Software Engineer (Red Hat)** at **IBM**.
+* April 2024 to August 2025: **Senior Principal Software Engineer** at **Red Hat**.
 * October 2018 to March 2024: **Principal Software Engineer** at **Red Hat**.
 * September 2016 to August 2018: **Delegation to Red Hat** to work on the [Eclipse Vert.x project](https://vertx.io/), thanks to an agreement between INSA Lyon and [Red Hat](https://www.redhat.com/).
 * 2009 -- 2018: **Associate Professor** (tenured) and **Researcher** at INSA Lyon Telecom and the CITI Laboratory.
@@ -85,3 +86,4 @@ Check out my [full publications page](/academia/publications/) for a more compre
 * 2004: Master, [Clermont-Auvergne University](https://www.uca.fr).
 * 2002: Bachelor, [Clermont-Auvergne University](https://www.uca.fr).
 * 1999: High-school degree, [Lycée Alain Colas](http://lyc58-colas.ac-dijon.fr), Nevers.
+ 
