@@ -1,0 +1,2 @@
+default:
+    hugo server --buildDrafts
