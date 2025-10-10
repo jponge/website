@@ -1,3 +1,51 @@
 baseURL: 'https://julien.ponge.org/'
 languageCode: 'en-us'
 title: 'Julien Ponge'
+
+theme: 'typo'
+params:
+  description: Julien Ponge
+  theme: auto
+  colorPalette: default
+  hideHeader: false
+  homeIntroTitle: G'day!
+  homeIntroContent: |
+    <img src="./about/me.png" alt="Julien Ponge" class="profile-pic">
+
+    I am [Julien](/about) — an [open-source engineer](https://github.com/jponge), 
+    [computer scientist](/publications), [Java Champion](https://javachampions.org/), and 
+    [author](https://www.manning.com/books/vertx-in-action) passionate about reactive systems and modern Java.
+
+    I work as a **Senior Principal Software Engineer (Red Hat)** at [IBM](https://www.ibm.com/), 
+    helping drive innovation in cloud-native Java and next-generation middleware.
+
+    I am based in [Lyon, France](https://en.wikipedia.org/wiki/Lyon).
+  paginationSize: 100
+  listSummaries: true
+  listDateFormat: 2 Jan 2006
+  breadcrumbs:
+    enabled: false
+    showCurrentPage: true
+    home: Home
+  social:
+    - name: linkedin
+      url: https://www.linkedin.com/in/JulienPonge
+    - name: bluesky
+      url: https://bsky.app/profile/julien.ponge.org
+    - name: github
+      url: https://github.com/jponge
+  menu:    
+    - name: home
+      url: /
+    - name: about
+      url: /about
+    - name: posts
+      url: /posts
+    - name: publications
+      url: /publications    
+markup:
+  highlight:
+    style: algol
+  goldmark:
+    renderer:
+      unsafe: true

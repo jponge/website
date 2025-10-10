@@ -1,0 +1,16 @@
+.profile-pic {
+    width: 300px;
+    box-shadow: 0px 4px 16px 0px #666;
+    transform: rotate(2deg);
+}
+
+.book-cover {
+    width: 300px;
+    margin-left: 3rem;
+    box-shadow: 0px 4px 16px 0px #666;
+    transform: rotate(2deg);
+}
+
+.jc-duke {
+    height: 4em;
+}
