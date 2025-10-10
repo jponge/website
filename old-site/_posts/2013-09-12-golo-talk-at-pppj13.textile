@@ -1,0 +1,11 @@
+---
+title: "Golo Talk at PPPJ 2013"
+layout: post
+---
+
+Here are the slides of the talk that I just gave at the "PPPJ 2013 conference:":http://pppj2013.dhbw.de/conference-pppj2013.html
+
+<script async class="speakerdeck-embed" data-id="fa415880fdcf0130f6d8022f0de05eea" data-ratio="1.77777777777778" src="//speakerdeck.com/assets/embed.js"></script>
+
+You can download "the corresponding paper":http://dx.doi.org/10.1145/2500828.2500844, too! 
+

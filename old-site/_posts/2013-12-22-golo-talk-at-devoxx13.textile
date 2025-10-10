@@ -1,0 +1,15 @@
+---
+title: "Golo Talk at Devoxx 2013"
+layout: post
+---
+
+"The talk that I gave at Devoxx 2013 on Golo":http://www.parleys.com/play/529c6e3fe4b0e619540cc3c6
+is now available on Parleys:
+
+<iframe type="text/html" width="420" height="290" mozallowfullscreen="true" webkitallowfullscreen="true" src="http://parleys.com/share.html#play/529c6e3fe4b0e619540cc3c6" frameborder="0">&lt;br /&gt;</iframe>
+
+You can watch it now you have a Devoxx 2013 subscription on Parleys. Otherwise the nice folks at
+Parleys will make it _eventually_ available for free before Devoxx 2014.
+
+As usual feel free to leave me (constructive) feedback!
+
