@@ -19,6 +19,9 @@ params:
     I work as a **Senior Principal Software Engineer (Red Hat)** at [IBM](https://www.ibm.com/), 
     helping drive innovation in cloud-native Java and next-generation middleware.
 
+    I am an alumnus from [Université Clermont Auvergne](https://www.uca.fr/) and
+    [UNSW Sydney](https://www.unsw.edu.au/).
+
     I am based in [Lyon, France](https://en.wikipedia.org/wiki/Lyon).
   paginationSize: 100
   listSummaries: true
@@ -32,6 +35,8 @@ params:
       url: https://www.linkedin.com/in/JulienPonge
     - name: bluesky
       url: https://bsky.app/profile/julien.ponge.org
+    - name: x
+      url: https://x.com/jponge
     - name: github
       url: https://github.com/jponge
   menu:    
