@@ -24,7 +24,7 @@ params:
 
     I am based in [Lyon, France](https://en.wikipedia.org/wiki/Lyon).
   paginationSize: 100
-  listSummaries: true
+  listSummaries: false
   listDateFormat: 2 Jan 2006
   breadcrumbs:
     enabled: false
