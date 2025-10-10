@@ -30,7 +30,7 @@ We formalized the following timing constraints: `CInvoke` constraints define tim
 
 ## Downloads ##
 
-* [Final French version](../phd-thesis-french-version.pdf) (the text is in English!).
+* [Final French version](./phd-thesis-french-version.pdf) (the text is in English!).
 * [LIMOS-published version on HAL](https://tel.archives-ouvertes.fr/tel-00730187)
-* [French PhD defense slides](../slides-phd-defense.pdf). Also [on SlideShare](http://www.slideshare.net/julien.ponge/phd-defense-presentation/).
-* [Final Australian version](../phd-thesis-australian-version.pdf). You can also [get it from the UNSW Library](http://unsworks.unsw.edu.au/vital/access/manager/Repository/unsworks:3806).
+* [French PhD defense slides](./slides-phd-defense.pdf). Also [on SlideShare](http://www.slideshare.net/julien.ponge/phd-defense-presentation/).
+* [Final Australian version](./phd-thesis-australian-version.pdf). You can also [get it from the UNSW Library](http://unsworks.unsw.edu.au/vital/access/manager/Repository/unsworks:3806).

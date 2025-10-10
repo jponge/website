@@ -3,7 +3,7 @@ title: Publications
 ---
 
 All my publications are being listed here.
-[My PhD thesis](phd-thesis/) is an exception as it was worth its own page 🙂
+[My PhD thesis](../phd-thesis/) is an exception as it was worth its own page 🙂
 
 Since it is hard keeping track of everything that was published, you may also find my publications in public repositories:
 
