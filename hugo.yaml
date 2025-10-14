@@ -55,9 +55,14 @@ params:
     enable: true
     websiteId: '925f920f-557c-4194-99b9-732e6221b066'
     src: 'https://cloud.umami.is/script.js'
+
 markup:
   highlight:
     style: algol
   goldmark:
     renderer:
       unsafe: true
+
+caches:
+  images:
+    dir: :cacheDir/images
