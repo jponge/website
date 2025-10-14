@@ -32,6 +32,8 @@ params:
     showCurrentPage: true
     home: "~"
   social:
+    - name: gmail
+      url: mailto:julien@ponge.org
     - name: linkedin
       url: https://www.linkedin.com/in/JulienPonge
     - name: github
