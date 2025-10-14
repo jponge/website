@@ -54,7 +54,8 @@ params:
   umami:
     enable: true
     websiteId: '925f920f-557c-4194-99b9-732e6221b066'
-    src: 'https://cloud.umami.is/script.js'
+    # src: 'https://cloud.umami.is/script.js'
+    src: '/umami.js'
 
 markup:
   highlight:
