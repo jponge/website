@@ -1,6 +1,3 @@
-_site
-.sass-cache
-.jekyll-metadata
 .DS_Store
-_gh-pages
-.jekyll-cache
+.hugo_build.lock
+public/

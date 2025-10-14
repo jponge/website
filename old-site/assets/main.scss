@@ -1,0 +1,41 @@
+---
+---
+
+@import url('https://fonts.googleapis.com/css2?family=Cousine:ital,wght@0,400;0,700;1,400;1,700&family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+
+$base-font-family: "IBM Plex Sans", sans-serif;
+$base-font-size: 16px;
+
+main {
+    font-family: "IBM Plex Serif", serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "IBM Plex Sans", sans-serif;
+}
+
+pre, code {
+    font-family: "Cousine", monospace;
+}
+
+.front-pictures {
+    margin-bottom: 2rem;
+}
+
+.profile-pic {
+    box-shadow: 0px 4px 16px 0px #666;
+    transform: rotate(2deg);
+}
+
+.book-cover {
+    height: 360px;
+    margin-left: 3rem;
+    box-shadow: 0px 4px 16px 0px #666;
+    transform: rotate(2deg);
+}
+
+.jc-pic {
+    height: 4em;
+}
+
+@import "minima";
