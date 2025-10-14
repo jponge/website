@@ -25,10 +25,10 @@ There is nothing wrong with pruning content from time to time 🙂
 
 As [announced in February 2025](https://www.redhat.com/en/blog/evolving-our-middleware-strategy), I have transferred from Red Hat to IBM.
 
-You can read more about it from [Mark Little's blog](https://markclittle.blogspot.com/2025/03/red-hat-middleware-moving-to-ibm.html).
+You can read another perspective about the move from [Mark Little's blog](https://markclittle.blogspot.com/2025/03/red-hat-middleware-moving-to-ibm.html).
 
 I am now working for a different company, but on a daily basis nothing has really changed.
-We are still working on making modern Java awesome 😎
+We are still working on **making modern Java awesome** 😎
 
 ## Java Champion
 
@@ -38,11 +38,13 @@ It's a huge honor 😊
 
 ## Volcamp 2025
 
-I had the pleasure to talk about the _"best excuses for not choosing Quarkus"_ at the [Volcamp 2025 conference](https://www.volcamp.io/).
-I will try to have more public speaking engagements in the future as this is something I enjoy, but life and the lockdowns years have somehow taken their toll.
+I talked about the _"best excuses for not choosing Quarkus"_ at the [Volcamp 2025 conference](https://www.volcamp.io/), a friendly regional French tech conference.
+I will try to resume a more active public speaking activity as this is something that I truly enjoy, and it is complementary to the ongoing customer and corporate engagements that I have.
 
 I also had the pleasure of being invited by [David Pilato](https://david.pilato.fr/) behind the decks!
 
 ![DJ with David Pilato](./dj-with-david.jpeg)
 
-It had been 4 years or so since I last did some bedroom DJ-ing, but David was very helpful and friendly, as he always is 🙂
+It had been 4 years or so since I last did some bedroom DJ-ing, but David was very reassuring and friendly, as he always is 🙂
+
+This is also a perk of going to conferences: you get to meet _nice_ human beings.

@@ -3,6 +3,7 @@ languageCode: 'en-us'
 title: 'Julien Ponge'
 
 theme: 'typo'
+
 params:
   description: Julien Ponge
   theme: auto
@@ -27,18 +28,18 @@ params:
   listSummaries: false
   listDateFormat: 2 Jan 2006
   breadcrumbs:
-    enabled: false
+    enabled: true
     showCurrentPage: true
-    home: Home
+    home: "~"
   social:
     - name: linkedin
       url: https://www.linkedin.com/in/JulienPonge
+    - name: github
+      url: https://github.com/jponge
     - name: bluesky
       url: https://bsky.app/profile/julien.ponge.org
     - name: x
       url: https://x.com/jponge
-    - name: github
-      url: https://github.com/jponge
   menu:    
     - name: home
       url: /
@@ -48,6 +49,10 @@ params:
       url: /posts
     - name: publications
       url: /publications    
+  umami:
+    enable: true
+    websiteId: '925f920f-557c-4194-99b9-732e6221b066'
+    src: 'https://cloud.umami.is/script.js'
 markup:
   highlight:
     style: algol
