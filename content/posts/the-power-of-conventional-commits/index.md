@@ -4,6 +4,8 @@ title: 'The Power of Conventional Commits'
 readTime: true
 toc: true
 autonumber: true
+aliases:
+  - /blog/the-power-of-conventional-commits
 ---
 
 I had been randomly exposed to [conventional commits](https://www.conventionalcommits.org/) as part of my opensource activities, not really paying attention to this _weird_ form of commit messages.

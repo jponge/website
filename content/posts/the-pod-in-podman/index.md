@@ -4,6 +4,8 @@ title: 'The Pod in Podman'
 readTime: true
 toc: true
 autonumber: true
+aliases:
+  - /blog/the-pod-in-podman
 ---
 
 ## What is Podman?

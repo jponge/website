@@ -4,6 +4,8 @@ title: 'Not All Java Single Threaded Executors Are Created Equal: a Java Finaliz
 readTime: true
 toc: true
 autonumber: true
+aliases:
+    - /blog/not-all-java-single-threaded-executors-are-created-equal-a-java-finalizer-horror-story
 ---
 
 I was recently puzzled by flaky tests in [Mutiny](https://smallrye.io/smallrye-mutiny/).

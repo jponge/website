@@ -4,6 +4,8 @@ title: 'Developer Certificate of Origin Versus Contributor License Agreements'
 readTime: true
 toc: true
 autonumber: true
+aliases:
+    - /blog/developer-certificate-of-origin-versus-contributor-license-agreements
 ---
 
 [I am in favor of using _contributor license agreements (CLA)_]({{< relref "in-defense-of-contributor-license-agreements">}})

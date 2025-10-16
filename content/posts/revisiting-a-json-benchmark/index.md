@@ -4,6 +4,8 @@ title: 'Revisiting a (JSON) Benchmark'
 readTime: true
 toc: true
 autonumber: true
+aliases:
+  - /blog/revisiting-a-json-benchmark
 ---
 
 > **Update 2014/04/29:** for the record Boon is the new JSON implementation for Groovy. 

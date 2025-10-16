@@ -4,6 +4,8 @@ title: 'Taking a Part Time Industry Leave to Work on Vert.x at Red Hat'
 readTime: true
 toc: false
 autonumber: true
+aliases:
+     - /blog/taking-a-part-time-industry-leave-to-work-on-vertx-at-redhat
 ---
 
 I am very happy to announce that I am joining the Vert.x team at Red Hat starting next Monday!

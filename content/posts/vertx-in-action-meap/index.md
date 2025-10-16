@@ -4,6 +4,8 @@ title: 'Vertx in Action MEAP'
 readTime: true
 toc: false
 autonumber: true
+aliases:
+    - /blog/vertx-in-action-meap
 ---
 
 [![Cover of Vert.x in Action](./MEAP-cover.png)](https://www.manning.com/books/vertx-in-action?a_aid=vertx-in-action&a_bid=22152024)

@@ -4,6 +4,8 @@ title: 'Vertx in Action Has Been Published!'
 readTime: true
 toc: false
 autonumber: true
+aliases:
+    - /blog/vertx-in-action-has-been-published
 ---
 
 After:

@@ -4,6 +4,8 @@ title: 'The Mozilla Public License Version 2.0: A Good Middle Ground?'
 readTime: true
 toc: true
 autonumber: true
+aliases:
+    - /blog/mozilla-public-license-v2-a-good-middleground
 ---
 
 The release of the [Mozilla Public License Version 2.0](http://www.mozilla.org/MPL/2.0/) probably flew under the radar [when it happened in January 2012](https://mpl.mozilla.org/2012/01/03/announcing-mpl-2-0/).

@@ -3,6 +3,8 @@ date: '2022-03-09'
 title: 'A Workflow for Experiments in Git: Scratchpad Branches'
 readTime: true
 autonumber: true
+aliases:
+    - /blog/a-workflow-for-experiments-in-git-scratchpad-branches
 ---
 
 Git is a fantastic tool to manage source code.

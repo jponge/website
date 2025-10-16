@@ -4,6 +4,8 @@ title: 'Playing with Test Fuzzing in Go'
 readTime: true
 toc: true
 autonumber: true
+aliases:
+  - /blog/playing-with-test-fuzzing-in-go
 ---
 
 Go 1.18 recently introduced _test fuzzing_, so I decided to give it a go (no no, I'm not making a stupid joke).

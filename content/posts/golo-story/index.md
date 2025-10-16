@@ -4,6 +4,8 @@ title: 'Golo Story'
 readTime: true
 toc: true
 autonumber: true
+aliases:
+    - /blog/golo-story
 ---
 
 

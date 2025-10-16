@@ -4,6 +4,8 @@ title: 'In Defense of Contributor License Agreements'
 readTime: true
 toc: true
 autonumber: true
+aliases:
+    - /blog/in-defense-of-contributor-license-agreements
 ---
 
 The other day I stumbled upon a retweet on the anger of [Pierre Joye](https://twitter.com/PierreJoye) against contributor license agreements (CLAs):

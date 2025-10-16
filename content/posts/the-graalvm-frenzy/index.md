@@ -4,6 +4,8 @@ title: 'The GraalVM Frenzy'
 readTime: true
 toc: true
 autonumber: true
+aliases:
+     - /blog/the-graalvm-frenzy
 ---
 
 It seems like the whole Java ecosystem is going mad these days with [GraalVM](https://www.graalvm.org/). Every library and framework wants to proudly work on GraalVM, making GraalVM a new *silver bullet* for modern Java applications.

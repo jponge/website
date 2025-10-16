@@ -4,6 +4,8 @@ title: 'Hello Red Hat'
 readTime: true
 toc: false
 autonumber: true
+aliases:
+    - /blog/hello-redhat
 ---
 
 Two years ago I ventured into spending some time in industry.

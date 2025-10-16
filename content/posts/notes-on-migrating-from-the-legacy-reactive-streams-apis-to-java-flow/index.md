@@ -4,6 +4,8 @@ title: 'Notes on Migrating From the Legacy Reactive Streams APIs to Java Flow'
 readTime: true
 toc: true
 autonumber: true
+aliases:
+    - /blog/notes-on-migrating-from-the-legacy-reactive-streams-apis-to-java-flow
 ---
 
 The Java [Reactive Streams](https://www.reactive-streams.org/) APIs have been part of the JDK since Java 9.

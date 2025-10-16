@@ -3,6 +3,8 @@ date: '2021-10-18'
 title: 'Publication: Analysing the Performance and Costs of Reactive Programming Libraries in Java'
 readTime: true
 autonumber: true
+aliases:
+  - /blog/publication-performance-and-costs-of-reactive-programming-libraries-in-java
 ---
 
 I presented today a new publication called [Analysing the Performance and Costs of Reactive Programming Libraries in Java](https://dl.acm.org/doi/10.1145/3486605.3486788) at the [8th ACM SIGPLAN International Workshop on Reactive and Event-Based Languages and Systems (REBLS)](https://2021.splashcon.org/home/rebls-2021) (a workshop of [Splash 2021](https://2021.splashcon.org/)).

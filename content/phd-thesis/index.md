@@ -1,5 +1,7 @@
 ---
 title: PhD Thesis
+aliases:
+    - /publications/phd-thesis
 ---
 
 I did a joint PhD (2004 -- 2008) between [Université Blaise Pascal](http://www.univ-bpclermont.fr/) (Clermont-Ferrand, France) and [The University of New South Wales](http://www.unsw.edu.au/) (Sydney, Australia), meaning that I obtained a PhD from each University.
@@ -18,17 +20,17 @@ I obtained my French PhD (*"Doctorat en Informatique de l'Université Blaise Pas
 
 I obtained my Australian PhD (*under cotutelle agreements*) from the University of New South Wales in December 2008. The manuscript was accepted at the first round, without any modification request from the reviewers.
 
-## Title ##
+## Title
 
 Model-based Analysis of Time-aware Web Services Interactions
 
-## Abstract ##
+## Abstract
 
 Web services are increasingly gaining acceptance as a framework for facilitating application-to-application interactions within and across enterprises. It is commonly accepted that a service description should include not only the interface, but also the business protocol supported by the service. The present work focuses on the formalization of the important category of protocols that include time-related constraints (called timed protocols), and the impact of time on compatibility and replaceability analysis.
 
 We formalized the following timing constraints: `CInvoke` constraints define time windows of availability while `MInvoke` constraints define expirations deadlines. We extended techniques for compatibility and replaceability analysis between timed protocols by using a semantic-preserving mapping between timed protocols and timed automata, leading to the novel class of protocol timed automata (PTA). Specifically, PTA exhibit silent transitions that cannot be removed in general, yet they are closed under complementation, making every type of compatibility or replaceability analysis decidable. Finally, we implemented our approach in the context of a larger project called ServiceMosaic, a model-driven framework for web service life-cycle management.
 
-## Downloads ##
+## Downloads
 
 * [Final French version](./phd-thesis-french-version.pdf) (the text is in English!).
 * [LIMOS-published version on HAL](https://tel.archives-ouvertes.fr/tel-00730187)

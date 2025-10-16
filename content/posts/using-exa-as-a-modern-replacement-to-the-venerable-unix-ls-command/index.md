@@ -4,6 +4,8 @@ title: 'Using Exa (Eza) as a Modern Replacement to the Venerable Unix "ls" Comma
 readTime: true
 toc: true
 autonumber: true
+aliases:
+    - /blog/using-exa-as-a-modern-replacement-to-the-venerable-unix-ls-command
 ---
 
 **🚨 Update 2024/09/24**: `exa` is not maintained anymore, use the [eza](https://github.com/eza-community/eza) fork instead.
