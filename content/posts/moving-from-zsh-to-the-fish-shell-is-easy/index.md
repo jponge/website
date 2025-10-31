@@ -149,7 +149,7 @@ fisher install reitzig/sdkman-for-fish@v2.1.0
 
 ### Tide prompt
 
-Choosing a prompt is a personal preference, and as mentionned above I went with [tide](https://github.com/IlanCosman/tide) (but again, [Starship](https://starship.rs/) is still great).
+Choosing a prompt is a personal preference, and as mentioned above I went with [tide](https://github.com/IlanCosman/tide) (but again, [Starship](https://starship.rs/) is still great).
 
 The cool thing with `tide` is that it loads _fast_ because it takes advantage of asynchronous prompt definitions.
 If loading `git` information from your current folder takes time because it is a big repository, then `tide` won't block the prompt, the `git`-related information will appear when it is ready.
