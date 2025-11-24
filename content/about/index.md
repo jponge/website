@@ -56,9 +56,9 @@ For a full list, visit my [publications page](/academia/publications/).
 
 ## PhD supervision 👨‍🔬 👩‍🔬
 
-* **Arthur Navarro** (since 2022, [Red Hat Research](https://research.redhat.com/)) — *Characterizing and optimizing reactive systems: a language-runtime continuum*  
-* **Patrik Fortier** (defended 2024, INSA Lyon / Spie ICS IoT Chair) — *Programming language abstractions for the Internet of Things*  
-* **Stefan-Gabriel Chitic** (defended 2018, French Ministry Grant) — *Middleware and programming models for multi-robot systems*.
+* **Arthur Navarro** (defended 2025, [Red Hat Research](https://research.redhat.com/) / ANRT CIFRE) — *Choreography extraction and projection for the verification and the optimization of reactive distributed systems: a language-runtime continuum*
+* **Patrik Fortier** (defended 2024, INSA Lyon / Spie ICS IoT Chair) — *Programming language abstractions for the Internet of Things*. https://theses.fr/2024ISAL0039.
+* **Stefan-Gabriel Chitic** (defended 2018, French Ministry Grant) — *Middleware and programming models for multi-robot systems*. https://theses.fr/2018LYSEI018.
 
 ## Education 🎓
 
