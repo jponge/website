@@ -24,7 +24,7 @@ Julien Ponge. **Vert.x in Action. Asynchronous and Reactive Java**. Manning Publ
 
 ## Peer-reviewed international journals ##
 
-* Stéphane Frénot, Frédéric Le Mouël, Julien Ponge and Guillaume Salagnac. **Various Extensions for the Ambient OSGi Framework.** *International Journal of Adaptive, Resilient and Autonomic Systems (IJARAS)*, 2(3):1–12, July 2011. DOI 10.4018/jaras.2011070101. [Link](http://www.igi-global.com/bookstore/article.aspx?titleid=55450).
+* Stéphane Frénot, Frédéric Le Mouël, Julien Ponge and Guillaume Salagnac. **Various Extensions for the Ambient OSGi Framework.** *International Journal of Adaptive, Resilient and Autonomic Systems (IJARAS)*, 2(3):1–12, July 2011. DOI 10.4018/jaras.2011070101. [HAL entry](https://inria.hal.science/inria-00515189v1)
 
 * Julien Ponge, Boualem Benatallah, Fabio Casati and Farouk Toumani. **Analysis and Applications of Timed Service Protocols.** *ACM Transactions on Software Engineering and Methodology* in vol. 19, issue #4. October 2010. [DOI](http://dx.doi.org/10.1145/1734229.1734230). [PDF of a preliminary version](./preliminary-version-analysis-and-applications-of-timed-service-protocols.pdf).
 
@@ -64,7 +64,7 @@ Julien Ponge. **Vert.x in Action. Asynchronous and Reactive Java**. Manning Publ
 
 * Patrik Fortier, Julien Ponge and Frédéric Le Mouël. **Dyninka: a framework for distributed FaaS dataflow.** Fifth Annual UK System Research Challenges Workshop, March 2020, Newton Aycliffe, United Kingdom. [HAL entry](https://hal.archives-ouvertes.fr/hal-02915715)
 
-* Baptiste Maingret, Frédéric Le Mouël, Julien Ponge, Nicolas Stouls, Jian Cao and Yannick Loiseau. **Towards a Decoupled Context-Oriented Programming Language for the Internet of Things**. *In Proceedings of the 7th International Workshop on Context-Oriented Programming ([COP'2015](http://2015.ecoop.org/track/COP-2015-papers)) in conjunction with the European Conference on Object-Oriented Programming (ECOOP'2015).* Prague, Czech Republic, July 2015.
+* Baptiste Maingret, Frédéric Le Mouël, Julien Ponge, Nicolas Stouls, Jian Cao and Yannick Loiseau. **Towards a Decoupled Context-Oriented Programming Language for the Internet of Things**. *In Proceedings of the 7th International Workshop on Context-Oriented Programming ([COP'2015](http://2015.ecoop.org/track/COP-2015-papers)) in conjunction with the European Conference on Object-Oriented Programming (ECOOP'2015).* Prague, Czech Republic, July 2015. [HAL entry](https://inria.hal.science/hal-01180586v1)
 
 * Roya Golchay, Frédéric Le Mouël, Stéphane Frénot and Julien Ponge. **Towards Bridging IoT and Cloud Services: Proposing Smartphones as Mobile and Autonomic Service Gateways.** *In Actes des 7ème Journées Francophones de la Mobilité et Ubiquité (UbiMob'2011)*, pp. 45–48, Toulouse, France, June 2011. Position Paper. [PDF](./UbiMob2011.pdf)
 
@@ -78,7 +78,7 @@ Julien Ponge. **Vert.x in Action. Asynchronous and Reactive Java**. Manning Publ
 
 * Oscar Carrillo, Nicolas Stouls, Raphael Laurent, Nikolai Plokhoi, Qifan Zhou, Julien Ponge and Frédéric Le Mouël. **HardenedGolo : pour augmenter le niveau de confiance en un code Golo**. *16èmes journées sur les Approches Formelles dans l'Assistance au Développement de Logiciels (AFADL'17)*. Montpellier, France. June 2017. [HAL entry](https://hal.inria.fr/hal-01526659)
 
-* Stefan-Gabriel Chitic, Julien Ponge and Olivier Simonin. **SDfR protocol : Service Discovery for Robots.** *Journée sur les Architectures Logicielles pour la Robotique Autonome, les Systèmes Cyber-Physiques et les Systèmes Auto-Adaptables.* Paris, France, December 2014.
+* Stefan-Gabriel Chitic, Julien Ponge and Olivier Simonin. **SDfR protocol : Service Discovery for Robots.** *Journée sur les Architectures Logicielles pour la Robotique Autonome, les Systèmes Cyber-Physiques et les Systèmes Auto-Adaptables.* Paris, France, December 2014. [HAL entry](https://hal.science/hal-01104246v1)
 
 * Stefan-Gabriel Chitic, Julien Ponge and Olivier Simonin. **Intergiciels pour systèmes multi-robots: état de l'art.** *In Proceedings of UbiMob2014 : 10èmes journées francophones Mobilité et Ubiquité*. Sophia Antipolis. France, June 2014. [HAL entry](http://hal.archives-ouvertes.fr/hal-00994810)
 
