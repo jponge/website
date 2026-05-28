@@ -43,7 +43,7 @@ Fish picks it up automatically.
 
 ## Fish as a system-wide default shell?
 
-I had advised to set Fish a s default shell.
+I had advised to set Fish as the default shell.
 
 Some people complain that this is a bad idea since Fish is not a "Posix" shell.
 I never ran into any issue by doing so, especially as any sane Unix script always has a _shebang_ to specify what interpreter to use (`sh`, `bash`, `zsh`, `fish` or even `python` / `ruby`, etc).
